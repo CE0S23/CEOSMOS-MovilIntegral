@@ -76,7 +76,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     'Inicio',
     'Explorar',
     'Mi sesión',
-    'Dispositivos',
+    'Equipos', // «Dispositivos» no cabe con 6 pestañas en 360 dp
     'Prácticas',
     'Perfil',
   ];

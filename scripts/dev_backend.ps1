@@ -26,7 +26,7 @@ if (-not $Neon) {
     & "$Pg\initdb.exe" -D $data -U ceosmos -A trust -E UTF8 --locale=C | Out-Null
     $nueva = $true
   }
-  & "$Pg\pg_ctl.exe" -D $data -o '-p 5433 -h 127.0.0.1' -l (Join-Path $root '.devdb\postgres.log') status | Out-Null
+  & "$Pg\pg_ctl.exe" -D $data status | Out-Null
   if ($LASTEXITCODE -ne 0) {
     Start-Process -WindowStyle Hidden "$Pg\pg_ctl.exe" -ArgumentList @('-D', $data, '-o', '"-p 5433 -h 127.0.0.1"', '-l', (Join-Path $root '.devdb\postgres.log'), 'start')
     Start-Sleep -Seconds 4
