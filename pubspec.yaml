@@ -1,7 +1,7 @@
 name: ceosmos_movil_integral
 description: CEOSMOS — concentración, inspiración y bienestar en una app Flutter.
 publish_to: none
-version: 1.0.0+1
+version: 1.1.0+2
 environment:
   sdk: ^3.11.5
 dependencies:
@@ -9,9 +9,35 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
+  # CEOSMOS
   audioplayers: ^6.7.1
   crypto: ^3.0.7
   cupertino_icons: ^1.0.8
+  http: ^1.6.0
+  path_provider: ^2.1.5
+  url_launcher: ^6.3.2
+  # Prácticas 3 y 4 (ConsultaWeb)
+  floor: ^1.5.0
+  sqflite: ^2.4.2+1
+  # Examen 1 y Práctica 7
+  shared_preferences: ^2.5.6
+  # Práctica 7 (Firebase con app con nombre «practica7»)
+  firebase_core: ^4.3.0
+  firebase_auth: ^6.1.3
+  cloud_firestore: ^6.1.1
+  # Prototipo del delegado de Firestore para apps con nombre (ver lib/practicas/p07/firebase_p07.dart).
+  cloud_firestore_platform_interface: ^8.0.7
+  firebase_storage: ^13.0.5
+  file_picker: ^10.3.8
+  provider: ^6.1.5+1
+  connectivity_plus: ^7.0.0
+  # flutter_localizations fija intl 0.20.2; MediConnect pedía ^0.20.3 y solo usa DateFormat.
+  intl: ^0.20.2
+  # Evaluación 2 (MediConnect) y almacén seguro de CEOSMOS
+  dio: ^5.11.1
+  # 11.x exige win32 6 y choca con file_picker 10 (P7, win32 5); 10.3.x conserva la API usada.
+  flutter_secure_storage: ^10.3.4
+  uuid: ^4.6.0
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -19,6 +45,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^6.0.0
   audioplayers_platform_interface: ^7.1.1
+  shared_preferences_platform_interface: ^2.4.2
 flutter:
   uses-material-design: true
   assets:

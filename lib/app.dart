@@ -10,6 +10,7 @@ import 'ui/explore_screen.dart';
 import 'ui/session_screen.dart';
 import 'ui/devices_screen.dart';
 import 'ui/profile_screen.dart';
+import 'practicas/practicas_screen.dart';
 import 'ui/theme.dart';
 import 'ui/widgets.dart';
 
@@ -64,6 +65,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     'Explorar',
     'Mi sesión',
     'Dispositivos',
+    'Prácticas',
     'Perfil',
   ];
   static const _icons = [
@@ -71,6 +73,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     Icons.explore_outlined,
     Icons.timelapse_rounded,
     Icons.devices_other_outlined,
+    Icons.science_outlined,
     Icons.person_outline_rounded,
   ];
 
@@ -219,6 +222,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         onExplore: () => _explore(null),
       ),
       3 => DevicesScreen(state: state),
+      4 => const PracticasScreen(),
       _ => ProfileScreen(
         state: state,
         onFavorites: () => _explore(null, favorites: true),
@@ -354,7 +358,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                         Tooltip(
                           message: 'Ver mi perfil',
                           child: InkWell(
-                            onTap: () => _navigate(4),
+                            onTap: () => _navigate(5),
                             borderRadius: BorderRadius.circular(20),
                             child: CircleAvatar(
                               radius: 18,

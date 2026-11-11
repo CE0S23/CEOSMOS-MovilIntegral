@@ -1,0 +1,357 @@
+package com.ceosmos.practicas.p10
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.automirrored.filled.List
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+/**
+ * Incidencias Seguras – Práctica 10: autenticación y control de acceso a la base de datos
+ * compartida entre dos dispositivos.
+ *
+ * Cada teléfono inicia sesión con una cuenta distinta de Firebase Authentication (correo y
+ * contraseña). Las incidencias guardan el UID de su propietario y las reglas de Firestore solo
+ * permiten leer y modificar las propias.
+ *
+ * Pestañas:
+ *  - Incidencias: alta, edición, asignación y eliminación; incidencias asignadas y ajenas (pruebas manuales).
+ *  - Seguridad: matriz SEG-01 … SEG-14, llenada con lo que responde el servidor a las pruebas manuales.
+ *  - Bitácora: operaciones exitosas y rechazadas con su mensaje de error.
+ *  - Cuenta: UID, correo, proyecto y usuarios registrados; cierre de sesión.
+ */
+class MainActivity : ComponentActivity() {
+
+    private val vm: IncidenciasViewModel by viewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent { IncidenciasTheme { IncidenciasApp(vm) } }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Navegación principal
+// ---------------------------------------------------------------------------
+
+private enum class Pestana(val titulo: String, val icono: ImageVector) {
+    INCIDENCIAS("Incidencias", Icons.Filled.Warning),
+    SEGURIDAD("Seguridad", Icons.Filled.Lock),
+    BITACORA("Bitácora", Icons.AutoMirrored.Filled.List),
+    CUENTA("Cuenta", Icons.Filled.Person),
+}
+
+@Composable
+fun IncidenciasApp(vm: IncidenciasViewModel) {
+    val snackbar = remember { SnackbarHostState() }
+
+    // Notificación visual: cada aviso del ViewModel aparece en la parte inferior.
+    LaunchedEffect(Unit) {
+        vm.avisos.collect { aviso ->
+            snackbar.currentSnackbarData?.dismiss()
+            launch { snackbar.showSnackbar(aviso) }
+        }
+    }
+    when {
+        !vm.configurado -> PantallaSinFirebase()
+        vm.usuario == null -> PantallaLogin(vm, snackbar)
+        else -> PantallaPrincipal(vm, snackbar)
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun PantallaPrincipal(vm: IncidenciasViewModel, snackbar: SnackbarHostState) {
+    var seleccion by rememberSaveable { mutableIntStateOf(0) }
+    val actual = Pestana.entries[seleccion]
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            Modifier.size(38.dp).background(colorUsuario(vm.correo), CircleShape),
+                            contentAlignment = Alignment.Center,
+                        ) { Text(inicialUsuario(vm.correo), color = Color.White, fontWeight = FontWeight.Bold) }
+                        Spacer(Modifier.width(10.dp))
+                        Column {
+                            Text(vm.correo, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, maxLines = 1)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                PuntoEstado(vm.enLinea)
+                                Spacer(Modifier.width(5.dp))
+                                Text("UID ${vm.uid}", style = MaterialTheme.typography.labelSmall, fontFamily = FontFamily.Monospace, maxLines = 1)
+                            }
+                        }
+                    }
+                },
+                actions = {
+                    IconButton(onClick = vm::cerrarSesion) { Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Cerrar sesión") }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+            )
+        },
+        snackbarHost = { SnackbarHost(snackbar) },
+        bottomBar = {
+            NavigationBar {
+                Pestana.entries.forEachIndexed { i, p ->
+                    NavigationBarItem(
+                        selected = i == seleccion,
+                        onClick = { seleccion = i },
+                        icon = { Icon(p.icono, contentDescription = null) },
+                        label = { Text(p.titulo) },
+                    )
+                }
+            }
+        },
+    ) { relleno ->
+        Box(Modifier.padding(relleno).fillMaxSize().imePadding()) {
+            when (actual) {
+                Pestana.INCIDENCIAS -> PantallaIncidencias(vm)
+                Pestana.SEGURIDAD -> PantallaSeguridad(vm)
+                Pestana.BITACORA -> PantallaBitacora(vm)
+                Pestana.CUENTA -> PantallaCuenta(vm)
+            }
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Pantallas de inicio
+// ---------------------------------------------------------------------------
+
+@Composable
+private fun PantallaSinFirebase() {
+    Column(
+        Modifier.fillMaxSize().padding(28.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally,
+    ) {
+        Icon(Icons.Filled.Info, contentDescription = null, modifier = Modifier.size(48.dp), tint = MaterialTheme.colorScheme.primary)
+        Spacer(Modifier.height(12.dp))
+        Text("Falta configurar Firebase", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+        Spacer(Modifier.height(8.dp))
+        Text(
+            "Copia google-services.json en app/ y vuelve a compilar.",
+            textAlign = TextAlign.Center,
+        )
+    }
+}
+
+/** Cuentas de prueba de la práctica: los botones solo rellenan el correo. */
+private val CUENTAS_PRUEBA = listOf("Usuario A" to "usuario.a@incidencias-p10.com", "Usuario B" to "usuario.b@incidencias-p10.com")
+
+@Composable
+private fun PantallaLogin(vm: IncidenciasViewModel, snackbar: SnackbarHostState) {
+    var correo by rememberSaveable { mutableStateOf("") }
+    var clave by rememberSaveable { mutableStateOf("") }
+    Scaffold(snackbarHost = { SnackbarHost(snackbar) }) { relleno ->
+        Column(
+            Modifier.padding(relleno).fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(24.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+        ) {
+            Spacer(Modifier.height(16.dp))
+            Icon(Icons.Filled.Lock, contentDescription = null, modifier = Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
+            Text("Incidencias Seguras", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
+            Text("Inicia sesión con tu cuenta. Solo podrás ver y modificar las incidencias que tú registraste.")
+            Text("Proyecto de Firebase: ${vm.proyecto}", fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall)
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+                CUENTAS_PRUEBA.forEach { (nombre, c) ->
+                    OutlinedButton(onClick = { correo = c }, modifier = Modifier.weight(1f)) { Text(nombre) }
+                }
+            }
+            OutlinedTextField(
+                correo, { correo = it.trim() }, label = { Text("Correo") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
+            )
+            OutlinedTextField(
+                clave, { clave = it }, label = { Text("Contraseña") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
+            )
+            vm.errorSesion?.let { Aviso(it, Color(0xFFB71C1C)) }
+            Button(onClick = { vm.iniciarSesion(correo, clave) }, enabled = !vm.autenticando, modifier = Modifier.fillMaxWidth().height(52.dp)) {
+                if (vm.autenticando) Progreso() else Text("Iniciar sesión")
+            }
+            OutlinedButton(onClick = { vm.crearCuenta(correo, clave) }, enabled = !vm.autenticando, modifier = Modifier.fillMaxWidth()) {
+                Text("Crear cuenta")
+            }
+            HorizontalDivider(Modifier.padding(vertical = 8.dp))
+            Text("Prueba SEG-10 (sin sesión)", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+            Text(
+                "Intenta leer la colección $COLECCION y crear un documento sin haber iniciado sesión. Firestore debe rechazar ambas operaciones.",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            OutlinedButton(onClick = vm::probarSinSesion, enabled = !vm.autenticando, modifier = Modifier.fillMaxWidth()) {
+                Text("Intentar leer y escribir sin sesión")
+            }
+            vm.pruebaSinSesion?.let {
+                Aviso(it, if ("PERMITIDA" in it) Color(0xFFB71C1C) else Color(0xFF2E7D32))
+                // Al intentar sin sesión se muestran los tickets que dejó la última cuenta de este teléfono.
+                vm.ultimaSesion?.let { r -> UltimaSesion(r) }
+            }
+        }
+    }
+}
+
+/** Tickets que tenía la última cuenta que usó este teléfono (copia local, no se lee de Firestore). */
+@Composable
+private fun UltimaSesion(r: ResumenSesion) {
+    Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = MaterialTheme.shapes.medium) {
+        Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+            Text("Última sesión en este teléfono", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
+            Text("${r.correo} · ${fecha(r.fecha)}", style = MaterialTheme.typography.bodySmall, fontFamily = FontFamily.Monospace)
+            Text("Tickets (${r.tickets.size}):", style = MaterialTheme.typography.bodySmall)
+            if (r.tickets.isEmpty()) Text("Ninguno.", style = MaterialTheme.typography.bodySmall)
+            r.tickets.forEach { t ->
+                Text("• ${t.titulo} — ${t.estado} · ${t.prioridad} · ${t.rol}", style = MaterialTheme.typography.bodySmall)
+            }
+            Text(
+                "Copia guardada en este teléfono al usar la app; no se consulta a Firestore sin sesión.",
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+        }
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Componentes compartidos
+// ---------------------------------------------------------------------------
+
+private val formatoHora = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+private val formatoHoraMs = SimpleDateFormat("HH:mm:ss.SSS", Locale.getDefault())
+private val formatoFecha = SimpleDateFormat("dd/MM HH:mm:ss", Locale.getDefault())
+
+fun hora(ms: Long?): String = ms?.let { formatoHora.format(Date(it)) } ?: "—"
+fun horaMs(ms: Long): String = formatoHoraMs.format(Date(ms))
+fun fecha(ms: Long?): String = ms?.let { formatoFecha.format(Date(it)) } ?: "—"
+
+/** "usuario.a@…" → "A". Las cuentas de prueba terminan en la letra del usuario. */
+fun inicialUsuario(correo: String): String = correo.substringBefore("@").substringAfterLast(".").take(1).uppercase().ifEmpty { "?" }
+
+/** A en azul, B en verde; cualquier otra cuenta en gris. */
+fun colorUsuario(correo: String): Color = when (inicialUsuario(correo)) {
+    "A" -> Color(0xFF1E5AA8)
+    "B" -> Color(0xFF2E7D32)
+    else -> Color(0xFF616161)
+}
+
+fun colorEstado(estado: Estado): Color = when (estado) {
+    Estado.PENDIENTE -> Color(0xFF8D6E00)
+    Estado.EN_PROCESO -> Color(0xFF1565C0)
+    Estado.RESUELTA -> Color(0xFF2E7D32)
+}
+
+fun colorPrioridad(prioridad: Prioridad): Color = when (prioridad) {
+    Prioridad.BAJA -> Color(0xFF607D8B)
+    Prioridad.MEDIA -> Color(0xFF00838F)
+    Prioridad.ALTA -> Color(0xFFE65100)
+    Prioridad.CRITICA -> Color(0xFFB71C1C)
+}
+
+fun colorEvento(tipo: TipoEvento): Color = when (tipo) {
+    TipoEvento.LOCAL -> Color(0xFF1E5AA8)
+    TipoEvento.REMOTO -> Color(0xFF2E7D32)
+    TipoEvento.AVISO -> Color(0xFFE65100)
+    TipoEvento.ERROR -> Color(0xFFB71C1C)
+}
+
+/** Punto verde (en línea) o gris (sin conexión). */
+@Composable
+fun PuntoEstado(enLinea: Boolean) {
+    Box(Modifier.size(8.dp).background(if (enLinea) Color(0xFF2E7D32) else Color(0xFF9E9E9E), CircleShape))
+}
+
+@Composable
+fun Etiqueta(texto: String, fondo: Color, contenido: Color = Color.White) {
+    Surface(color = fondo, contentColor = contenido, shape = RoundedCornerShape(50)) {
+        Text(texto, style = MaterialTheme.typography.labelSmall, modifier = Modifier.padding(horizontal = 8.dp, vertical = 2.dp), maxLines = 1)
+    }
+}
+
+@Composable
+fun Progreso() = CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2.dp)
+
+// ---------------------------------------------------------------------------
+// Tema
+// ---------------------------------------------------------------------------
+
+@Composable
+fun IncidenciasTheme(content: @Composable () -> Unit) {
+    val esquema = if (isSystemInDarkTheme()) {
+        darkColorScheme(primary = Color(0xFFFFB59A), onPrimary = Color(0xFF5A1A00), primaryContainer = Color(0xFF8A3311))
+    } else {
+        lightColorScheme(primary = Color(0xFFB5471B), onPrimary = Color.White, primaryContainer = Color(0xFFFFDBCF))
+    }
+    MaterialTheme(colorScheme = esquema, content = content)
+}
