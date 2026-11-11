@@ -57,3 +57,6 @@ app.*.map.json
 .env
 *.env.local
 android/key.properties
+
+# Base PostgreSQL local de desarrollo (scripts/dev_backend.ps1)
+/.devdb/
