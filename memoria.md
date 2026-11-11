@@ -26,20 +26,23 @@ dispositivos vinculados y biblioteca multimedia) se guardan en PostgreSQL.
 - Rama `movil-integral` de la API: módulos `/focus-sessions`, `/favorites`,
   `/devices`; migración aditiva `20261111170000_movil_integral`; CSRF solo para
   autenticación por cookie; límite general 120/min (auth 10/min).
-- La migración **no se aplicó a Neon** (la política de permisos lo bloqueó por
-  ser producción). Pruebas hechas con PostgreSQL 16 local (`.devdb`, puerto 5433).
-- Resend: la `RESEND_API_KEY` actual es inválida; los códigos de verificación no
-  se envían hasta configurarla.
+- Migración aplicada en Neon el 11/11/2026 (autorizada). El API local corre
+  contra Neon; también existe una base PostgreSQL 16 de desarrollo (`.devdb`, 5433).
+- Resend: nueva API key de envío y remitente `noreply@ceosmos.online` (dominio
+  verificado); verificación de correo probada de punta a punta.
+- El backend mantiene una sola sesión por usuario (cada login revoca las demás).
 
 ## Verificación registrada (11/11/2026)
 
 - `flutter analyze`: sin problemas. `flutter test`: 56/56.
 - E2E en emulador Pixel 6 API 34 contra la API real: aprobado.
+- Samsung S24 (Android 16) contra Neon: registro + correo + verificación, datos,
+  wearable TCP, audio en segundo plano, P6 por Wi-Fi real y P9 entre dispositivos.
 - Recorrido manual en el emulador de CEOSMOS y de cada práctica; capturas en
   `capturas/`. Detalle en `REPORTE_FINAL.md`.
 
 ## Pendientes conocidos
 
-Passkeys WebAuthn móviles, CEOSMOS TV, BLE, notificación de audio en segundo
-plano (servicio en primer plano), prueba con wearable físico y Android físico,
+Railway (pago y redespliegue), cuenta ADMIN en Neon, passkeys WebAuthn móviles,
+CEOSMOS TV, BLE, servicio en primer plano para audio, wearable físico y las
 contraseñas de las cuentas de prueba de la Práctica 7. Ver `REPORTE_FINAL.md`.

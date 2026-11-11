@@ -1,6 +1,6 @@
 # Reporte final · CEOSMOS Móvil Integral
 
-Fecha: 11 de noviembre de 2026. Pruebas en emulador Android **Pixel 6, API 34, x86_64** (sin teléfono físico).
+Fecha: 11 de noviembre de 2026. Pruebas en emulador Android **Pixel 6, API 34, x86_64** y, en la segunda parte, en un **Samsung Galaxy S24 (SM-S721B, Android 16, arm64)** conectado por USB contra la base de producción **Neon**.
 
 ## 1. Resumen
 
@@ -55,6 +55,20 @@ Cambios en el backend (repo `WEBANGULAR`, rama `movil-integral`, commit `6285ca1
 
 ## 4. Pruebas
 
+### Segunda parte: producción (Neon) + Resend + teléfono físico
+
+- **Neon:** migración `20261111170000_movil_integral` aplicada con autorización (vía `prisma/migrate-ws.js --apply`); el API corre contra Neon (`Prisma connected to Neon PostgreSQL`).
+- **Resend:** nueva API key «CEOSMOS-MOVIL-INTEGRAL» (solo envío) escrita en el `.env` del API sin mostrarse; remitente `CEOSMOS <noreply@ceosmos.online>` (dominio verificado en Resend).
+- **Registro real desde el S24:** cuenta creada → correo de verificación **enviado y entregado** (Resend: Sent → Delivered) → código ingresado → «Correo verificado» → login contra Neon.
+- **Datos en Neon desde el teléfono** (comprobados por la API): favorito `orbit`, dispositivo «CEOSMOS Band» con `lastSeenAt`, sesión de enfoque de 130 s con resumen del wearable en JSONB (129 lecturas, 72.1 bpm promedio).
+- **Audio en segundo plano (teléfono real):** con la app detenida y el lanzador en primer plano, el reproductor siguió reiniciando su bucle (`Received media started` a las 13:51:20) → sigue sonando en segundo plano.
+- **P6 MobileConnect por Wi-Fi real:** sala creada en el S24 (`192.168.100.74:5000`), la PC (`192.168.100.11`) se conectó como B con el protocolo de la práctica: el teléfono recibió «Hola desde la PC por Wi-Fi» y la PC recibió `A	13:53	Respuesta desde el S24` (más los `PING` del protocolo).
+- **P9 entre dispositivos:** el S24 muestra `CEOSMOS_P9_001`, la incidencia escrita desde el emulador (base compartida `mesaayuda-p7`).
+- **Política de una sesión:** el backend borra las sesiones anteriores en cada login; al iniciar sesión con la misma cuenta desde otro cliente, la app del teléfono recibió 401 y volvió correctamente a la pantalla de acceso.
+- Compilación para el teléfono: `flutter build apk --debug --target-platform android-arm64 --dart-define=CEOSMOS_API_URL=http://localhost:8080/api` + `adb reverse tcp:8080 tcp:8080` (y `3443` para MediConnect, `5050` para la banda de prueba).
+
+### Primera parte: emulador
+
 - `flutter analyze`: **No issues found**.
 - `flutter test`: **56/56** (unidad, widgets, suite de caja negra de Práctica 8 adaptada, prácticas P3-4/P6/Examen 1/BD). Las pruebas usan un doble HTTP del contrato de la API (`test/support/fake_ceosmos_api.dart`); incluyen una conexión TCP real con un `ServerSocket` local y la caché LRU en disco.
 - E2E en el emulador contra la API real (`integration_test/critical_flow_test.dart`): **aprobado**.
@@ -66,19 +80,17 @@ Cambios en el backend (repo `WEBANGULAR`, rama `movil-integral`, commit `6285ca1
 
 | Pendiente | Motivo | Qué necesito de ti |
 | --- | --- | --- |
-| Aplicar la migración en **Neon (producción)** | La política de permisos bloqueó escribir en la base de producción. La app se probó con PostgreSQL local con el mismo esquema | Tu autorización, o ejecútalo tú: `cd ceosmos-api; node prisma/migrate-ws.js --apply` (o `npx prisma migrate deploy` desde una red con el puerto 5432 abierto) |
 | API en Railway | Responde `404 Application not found` | Volver a desplegar la rama `movil-integral` y compilar con `--dart-define=CEOSMOS_API_URL=https://…/api` |
-| Correos de verificación/recuperación | `RESEND_API_KEY` inválida («API key is invalid»): el registro funciona pero el código no llega | Una API key válida de Resend (y dominio verificado para enviar a cualquier correo) |
+| Cuenta ADMIN en Neon | Crear un ADMIN directamente en producción con el seed fue bloqueado por la política de permisos; el panel ADMIN se probó en la base local | Ejecuta tú `SEED_ROLE=ADMIN … node prisma/seed-movil.js` con el `.env` de Neon, o cambia el rol de tu cuenta desde la web |
 | P7: recorrido con sesión | Las contraseñas de `admin/agente/usuario1/usuario2.p7@example.com` «se entregan por separado» y no están en el proyecto | Las contraseñas de prueba (o permiso para crear cuentas nuevas en `practica7-8-941cb`) |
-| P6 por Wi-Fi | El AVD no tiene interfaz Wi-Fi (solo `eth0`) y la práctica exige Wi-Fi por diseño; se probó su simulación local | Dos teléfonos físicos o un AVD con Wi-Fi |
 | Passkeys WebAuthn en móvil | Requiere `assetlinks.json` publicado en el dominio RP (`ceosmos-t8ee.vercel.app`) y Credential Manager | Acceso al dominio para publicar `assetlinks.json` con la huella SHA-256 de firma |
 | CEOSMOS TV | El código de la PWA TV no está disponible (solo un prototipo Figma) | El repositorio de la app TV |
 | Wearable físico y BLE | Sin hardware; el cliente TCP se probó con `scripts/banda_tcp_prueba.js` (herramienta de prueba del protocolo) | La banda o el simulador del cuatrimestre anterior |
-| Audio en segundo plano audible | El emulador no permitió confirmar salida de audio; falta notificación de servicio en primer plano para que Android no lo detenga en sesiones largas | Prueba en teléfono físico |
+| Notificación de audio en segundo plano | Comprobado que sigue sonando en el S24; falta un servicio en primer plano con notificación para que Android no lo detenga en sesiones muy largas | — |
 | APK de 3-4, 5, 6 y Examen 1 originales | Se compilaron solo para ARM64 y no corren en el emulador x86_64; se verificaron con sus pruebas y dentro de CEOSMOS | — |
 | Pruebas originales de P6 | 11 de 21 ya fallaban en el proyecto entregado (desincronizadas con su código) | — |
 
-Cuentas de la **base local de desarrollo** (no existen en producción): `usuario@ceosmos.test` / `Ceosmos#Dev2026` (USER) y `admin@ceosmos.test` / `Admin#Ceosmos2026` (ADMIN). También en `.devdb/CUENTAS_DEV.txt` (ignorado por git).
+Cuenta de prueba creada en **Neon** desde el teléfono: `delivered@resend.dev` (dirección de prueba oficial de Resend, USER); su contraseña está en `.devdb/CUENTAS_DEV.txt`. Cuentas de la **base local de desarrollo** (no existen en producción): `usuario@ceosmos.test` / `Ceosmos#Dev2026` (USER) y `admin@ceosmos.test` / `Admin#Ceosmos2026` (ADMIN). También en `.devdb/CUENTAS_DEV.txt` (ignorado por git).
 
 ## 6. Cómo correr el proyecto y el emulador
 
@@ -106,6 +118,8 @@ Variables: `CEOSMOS_API_URL` (dart-define de la app); en la API, las de `ceosmos
 ## 7. Capturas (`capturas/`)
 
 CEOSMOS: `ceosmos_01_login.png`, `ceosmos_02_login_error_servidor.png`, `ceosmos_03_inicio.png` (menú principal), `ceosmos_04_explorar.png`, `ceosmos_04_explorar_favorito.png`, `ceosmos_05_biblioteca.png`, `ceosmos_06_dispositivos_wearable_tcp.png`, `ceosmos_07_sesion_en_curso.png`, `ceosmos_07b_mi_sesion.png`, `ceosmos_08_perfil.png`, `ceosmos_09_perfil_historial.png`, `ceosmos_10_admin.png`, `ceosmos_11_admin_usuario_desactivado.png`, `ceosmos_12_registro_validacion.png`, `ceosmos_13_verificacion_correo.png`, `ceosmos_14_codigo_incorrecto.png`.
+
+Teléfono S24 (Neon): `celular_01_correo_verificado.png`, `celular_02_inicio_neon.png`, `celular_03_wearable_tcp.png`, `celular_04_sesion_audio.png`, `celular_05_p06_wifi_tcp.png`, `celular_06_p09.png`, `celular_07_p07.png`.
 
 Prácticas: `ventana_practicas.png`, `practica_p03_04_consulta_web.png`, `practica_p03_04_sqlite_usuarios.png`, `practica_p05_acceso_concedido.png`, `practica_p06_mobileconnect.png`, `practica_examen1_incidencia_guardada.png`, `practica_p07_firebase_auth.png`, `practica_bd_flutter_firestore_lectura_escritura.png`, `practica_bd_nativo_firestore.png`, `practica_p09_incidencia_guardada.png`, `practica_p10_incidencia_propia.png`, `practica_eval2_mediconnect_cita.png`.
 
