@@ -22,7 +22,14 @@ class CeosmosApp extends StatefulWidget {
 }
 
 class _CeosmosAppState extends State<CeosmosApp> {
-  late final AppState _state = widget.state ?? AppState();
+  late final AppState _state = widget.state ?? AppState.production();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.state == null) _state.restore();
+  }
+
   @override
   void dispose() {
     if (widget.state == null) _state.dispose();
@@ -39,9 +46,14 @@ class _CeosmosAppState extends State<CeosmosApp> {
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
     home: ListenableBuilder(
       listenable: _state,
-      builder: (context, _) => _state.user == null
-          ? AuthScreen(state: _state)
-          : AppShell(key: ValueKey(_state.user!.id), state: _state),
+      builder: (context, _) => switch (_state.status) {
+        AuthStatus.restoring => const _Arranque(),
+        AuthStatus.signedOut => AuthScreen(state: _state),
+        AuthStatus.signedIn => AppShell(
+          key: ValueKey(_state.user!.id),
+          state: _state,
+        ),
+      },
     ),
   );
 }
@@ -87,14 +99,22 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   void _sessionChanged() {
     if (_previousSession && !widget.state.hasSession) unawaited(_sound.stop());
     _previousSession = widget.state.hasSession;
+    final aviso = widget.state.notice;
+    // Si la sesión terminó, el aviso lo muestra la pantalla de acceso.
+    if (aviso != null && mounted && widget.state.user != null) {
+      widget.state.takeNotice();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(aviso)));
+      });
+    }
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.hidden) {
-      unawaited(_sound.stop());
-    }
+    // Audio en segundo plano: la sesión y su ambiente siguen sonando con la
+    // pantalla apagada; solo se detiene si el sistema cierra la app.
+    if (state == AppLifecycleState.detached) unawaited(_sound.stop());
     if (state == AppLifecycleState.resumed) widget.state.tick();
   }
 
@@ -122,7 +142,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   }
 
   Future<void> _open(MediaItem item) async {
-    var minutes = widget.state.workspace.preferredMinutes;
+    var minutes = sessionMinutes.contains(widget.state.workspace.preferredMinutes)
+        ? widget.state.workspace.preferredMinutes
+        : 25;
     final selected = await showModalBottomSheet<int>(
       context: context,
       isScrollControlled: true,
@@ -161,7 +183,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                   Wrap(
                     spacing: 10,
                     runSpacing: 8,
-                    children: [5, 15, 25, 45]
+                    children: sessionMinutes
                         .map(
                           (value) => ChoiceChip(
                             label: Text('$value min'),
@@ -316,7 +338,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                     const Padding(
                       padding: EdgeInsets.only(left: 8),
                       child: Text(
-                        'MÓVIL INTEGRAL  /  01',
+                        'MÓVIL INTEGRAL',
                         style: TextStyle(
                           fontSize: 10,
                           letterSpacing: 1.4,
@@ -351,9 +373,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                             ),
                           ),
                         const Spacer(),
-                        if (wide) ...[
-                          const Tag('PRIMER PARCIAL', color: Cosmos.muted),
-                          const SizedBox(width: 20),
+                        if (state.user!.isAdmin) ...[
+                          const Tag('ADMIN', color: Cosmos.peach),
+                          const SizedBox(width: 12),
                         ],
                         Tooltip(
                           message: 'Ver mi perfil',
@@ -473,6 +495,26 @@ class _SessionBar extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    ),
+  );
+}
+
+/// Pantalla breve mientras se valida la sesión guardada con la API.
+class _Arranque extends StatelessWidget {
+  const _Arranque();
+  @override
+  Widget build(BuildContext context) => const Scaffold(
+    body: Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Brand(),
+          SizedBox(height: 28),
+          CircularProgressIndicator(),
+          SizedBox(height: 16),
+          Text('Conectando con CEOSMOS…', style: TextStyle(color: Cosmos.muted)),
+        ],
       ),
     ),
   );

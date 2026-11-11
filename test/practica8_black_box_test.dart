@@ -1,15 +1,18 @@
 // PRÁCTICA 8. Pruebas de caja negra: entradas por controles y salidas visibles.
 // Ejecutar con: flutter test test/practica8_black_box_test.dart
+// Desde la Fase 4 la app usa la API real; aquí se ejecuta contra un doble HTTP
+// del contrato de la API (test/support/fake_ceosmos_api.dart).
 import 'dart:async';
 
 import 'package:ceosmos_movil_integral/app.dart';
 import 'package:ceosmos_movil_integral/core/app_state.dart';
-import 'package:ceosmos_movil_integral/data/auth_repository.dart';
 import 'package:ceosmos_movil_integral/data/catalog.dart';
 import 'package:audioplayers_platform_interface/audioplayers_platform_interface.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+
+import 'support/fake_ceosmos_api.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -41,12 +44,18 @@ void main() {
     );
   });
 
+  late FakeCeosmosApi api;
+  setUp(() {
+    api = FakeCeosmosApi()..addUser('demo@ceosmos.mx', 'Clave#2026', username: 'Explorador');
+  });
+
   Future<AppState> launch(WidgetTester tester, {AppState? state}) async {
     tester.view.physicalSize = const Size(390, 844);
     tester.view.devicePixelRatio = 1;
     addTearDown(tester.view.resetPhysicalSize);
     addTearDown(tester.view.resetDevicePixelRatio);
-    final appState = state ?? AppState(startTicker: false);
+    final appState = state ?? api.appState();
+    if (appState.status == AuthStatus.restoring) appState.status = AuthStatus.signedOut;
     addTearDown(appState.dispose);
     addTearDown(() async {
       await tester.pumpWidget(const SizedBox());
@@ -71,20 +80,30 @@ void main() {
     String password,
   ) async {
     await tapText(tester, '¿Primera vez? Crea una cuenta');
-    await tester.enterText(find.widgetWithText(TextFormField, 'Nombre'), name);
+    await tester.enterText(find.widgetWithText(TextFormField, 'Nombre de usuario'), name);
     await tester.enterText(find.widgetWithText(TextFormField, 'Correo electrónico'), email);
-    await tester.enterText(find.widgetWithText(TextFormField, 'Contraseña'), password);
-    await tapText(tester, 'Crear cuenta local');
+    await tester.enterText(find.widgetWithText(TextFormField, 'Contraseña nueva'), password);
+    await tester.tap(find.widgetWithText(FilledButton, 'Crear cuenta'));
+    await tester.pumpAndSettle();
   }
 
   Future<void> login(WidgetTester tester, String email, String password) async {
     await tester.enterText(find.widgetWithText(TextFormField, 'Correo electrónico'), email);
     await tester.enterText(find.widgetWithText(TextFormField, 'Contraseña'), password);
-    await tapText(tester, 'Iniciar sesión');
+    await tester.tap(find.widgetWithText(FilledButton, 'Iniciar sesión'));
+    await tester.pumpAndSettle();
   }
 
+  /// Verifica el correo con el código que el servidor envió.
+  Future<void> verify(WidgetTester tester, String email) async {
+    await tester.enterText(find.widgetWithText(TextFormField, 'Código de verificación'), api.verificationCodes[email]!);
+    await tester.tap(find.widgetWithText(FilledButton, 'Verificar'));
+    await tester.pumpAndSettle();
+  }
+
+  /// Entra con la cuenta de prueba registrada en el servidor.
   Future<void> demo(WidgetTester tester) async {
-    await tapText(tester, 'Explorar demo');
+    await login(tester, 'demo@ceosmos.mx', 'Clave#2026');
     expect(find.text('Hola, Explorador ✦'), findsOneWidget);
   }
 
@@ -112,50 +131,47 @@ void main() {
     expect(find.text('Objetivo: 5 minutos'), findsOneWidget);
   }
 
-  testWidgets('CP-01 REQ-VAL-01 nombre de un carácter se rechaza', (tester) async {
+  testWidgets('CP-01 REQ-VAL-01 nombre de dos caracteres se rechaza', (tester) async {
     await launch(tester);
-    await register(tester, 'A', 'a@ceosmos.mx', 'clave1234');
-    expect(find.text('Escribe al menos 2 caracteres.'), findsOneWidget);
-    expect(find.text('Un nuevo comienzo.'), findsOneWidget);
+    await register(tester, 'An', 'a@ceosmos.mx', 'Clave#2026');
+    expect(find.text('Entre 3 y 30 caracteres.'), findsOneWidget);
+    expect(api.calls, isEmpty);
   });
 
-  testWidgets('CP-02 REQ-VAL-01 contraseña de siete caracteres se rechaza', (tester) async {
+  testWidgets('CP-02 REQ-VAL-01 contraseña sin la política del servidor se rechaza', (tester) async {
     await launch(tester);
-    await register(tester, 'Ana', 'ana@ceosmos.mx', 'clave12');
-    expect(find.text('Usa al menos 8 caracteres.'), findsOneWidget);
-    expect(find.text('Un nuevo comienzo.'), findsOneWidget);
+    await register(tester, 'Ana', 'ana@ceosmos.mx', 'clave1234');
+    expect(find.text('Usa mayúscula, minúscula, número y símbolo.'), findsOneWidget);
+    expect(api.calls, isEmpty);
   });
 
   testWidgets('CP-03 REQ-VAL-01 correo sin arroba se rechaza', (tester) async {
     await launch(tester);
-    await register(tester, 'Ana', 'correo-invalido', 'clave1234');
+    await register(tester, 'Ana', 'correo-invalido', 'Clave#2026');
     expect(find.text('Escribe un correo válido.'), findsOneWidget);
   });
 
-  testWidgets('CP-04 REQ-VAL-01 registro válido normaliza el correo', (tester) async {
+  testWidgets('CP-04 REQ-VAL-01 registro válido normaliza el correo y pide verificación', (tester) async {
     await launch(tester);
-    await register(tester, 'Ana', ' ANA@CEOSMOS.MX ', 'clave1234');
+    await register(tester, 'Ana', ' ANA@CEOSMOS.MX ', 'Clave#2026');
+    expect(find.text('Verifica tu correo.'), findsOneWidget);
+    await verify(tester, 'ana@ceosmos.mx');
+    expect(find.text('Correo verificado. Ya puedes iniciar sesión.'), findsOneWidget);
+    await login(tester, 'ana@ceosmos.mx', 'Clave#2026');
     expect(find.text('Hola, Ana ✦'), findsOneWidget);
-    await tab(tester, Icons.person_outline_rounded);
-    expect(find.text('ana@ceosmos.mx'), findsOneWidget);
   });
 
   testWidgets('CP-05 REQ-VAL-02 correo duplicado se rechaza', (tester) async {
     await launch(tester);
-    await register(tester, 'Ana', 'ana@ceosmos.mx', 'clave1234');
-    await signOut(tester);
-    await register(tester, 'Otra', 'ANA@CEOSMOS.MX', 'clave9999');
-    expect(find.text('Este correo ya tiene una cuenta local. Inicia sesión.'), findsOneWidget);
-    expect(find.text('Un nuevo comienzo.'), findsOneWidget);
+    await register(tester, 'Otra', 'DEMO@CEOSMOS.MX', 'Clave#2026');
+    expect(find.text('Ese correo o nombre de usuario ya está registrado.'), findsOneWidget);
   });
 
   testWidgets('CP-06 REQ-VAL-02 contraseña incorrecta no concede acceso', (tester) async {
     await launch(tester);
-    await register(tester, 'Ana', 'ana@ceosmos.mx', 'clave1234');
-    await signOut(tester);
-    await login(tester, 'ana@ceosmos.mx', 'erronea9');
-    expect(find.text('Correo o contraseña incorrectos. Crea una cuenta local o entra a la demo.'), findsOneWidget);
-    expect(find.text('Vuelve a tu centro.'), findsOneWidget);
+    await login(tester, 'demo@ceosmos.mx', 'Erronea#99');
+    expect(find.text('Correo o contraseña incorrectos.'), findsOneWidget);
+    expect(find.text('Explora tu cosmos'), findsNothing);
   });
 
   testWidgets('CP-07 REQ-OP-02 búsqueda normaliza acentos y muestra vacío', (tester) async {
@@ -204,11 +220,7 @@ void main() {
 
   testWidgets('CP-10 REQ-OP-01 sesión pausa, continúa y termina una vez', (tester) async {
     var clock = DateTime(2026, 10, 23, 12);
-    final state = AppState(
-      auth: MemoryAuthRepository(now: () => clock),
-      now: () => clock,
-      startTicker: false,
-    );
+    final state = api.appState(now: () => clock);
     await launch(tester, state: state);
     await demo(tester);
     await startOrbit(tester);
@@ -233,40 +245,46 @@ void main() {
     expect(find.text('Finalizada'), findsOneWidget);
   });
 
-  testWidgets('CP-11 REQ-OP-04 Band y TV se vinculan y desvinculan', (tester) async {
+  testWidgets('CP-11 REQ-OP-04 wearable se vincula y desvincula en la cuenta', (tester) async {
     await launch(tester);
     await demo(tester);
     await tab(tester, Icons.devices_other_outlined);
-    await tester.ensureVisible(find.text('Simular vinculación').first);
-    await tester.tap(find.text('Simular vinculación').first);
+    expect(find.text('Sin dispositivos vinculados'), findsOneWidget);
+    await tapText(tester, 'Vincular wearable');
+    await tester.enterText(find.widgetWithText(TextFormField, 'Dirección TCP (IP:puerto)'), 'sin-puerto');
+    await tester.tap(find.widgetWithText(FilledButton, 'Vincular'));
     await tester.pumpAndSettle();
-    expect(find.text('DATOS FICTICIOS'), findsOneWidget);
-    await tester.ensureVisible(find.text('Simular vinculación').first);
-    await tester.tap(find.text('Simular vinculación').first);
+    expect(find.text('Usa el formato IP:puerto.'), findsOneWidget);
+    await tester.enterText(find.widgetWithText(TextFormField, 'Dirección TCP (IP:puerto)'), '192.168.1.40:5050');
+    await tester.tap(find.widgetWithText(FilledButton, 'Vincular'));
     await tester.pumpAndSettle();
-    expect(find.text('TV simulada · Esperando sesión'), findsOneWidget);
-    expect(find.text('Demo activa'), findsNWidgets(2));
-    await tester.ensureVisible(find.text('Desvincular demo').first);
-    await tester.tap(find.text('Desvincular demo').first);
+    expect(find.text('TCP · 192.168.1.40:5050'), findsOneWidget);
+    expect(api.users.values.first.devices, hasLength(1));
+    await tester.tap(find.byTooltip('Desvincular'));
     await tester.pumpAndSettle();
-    expect(find.text('DATOS FICTICIOS'), findsNothing);
-    expect(find.text('Demo activa'), findsOneWidget);
+    await tester.tap(find.widgetWithText(FilledButton, 'Desvincular'));
+    await tester.pumpAndSettle();
+    expect(find.text('Sin dispositivos vinculados'), findsOneWidget);
+    expect(api.users.values.first.devices, isEmpty);
+    expect(find.textContaining('FICTICIOS'), findsNothing);
   });
 
   testWidgets('CP-12 REQ-DAT-01 espacios de dos cuentas permanecen aislados', (tester) async {
     await launch(tester);
-    await register(tester, 'Ana', 'ana@ceosmos.mx', 'clave1234');
+    api.addUser('ana@ceosmos.mx', 'Clave#2026', username: 'Ana');
+    api.addUser('beto@ceosmos.mx', 'Clave#5678', username: 'Beto');
+    await login(tester, 'ana@ceosmos.mx', 'Clave#2026');
     await tab(tester, Icons.explore_outlined);
     await tester.ensureVisible(find.byTooltip('Guardar Órbita tranquila'));
     await tester.tap(find.byTooltip('Guardar Órbita tranquila'));
     await tester.pumpAndSettle();
     await signOut(tester);
-    await register(tester, 'Beto', 'beto@ceosmos.mx', 'clave5678');
+    await login(tester, 'beto@ceosmos.mx', 'Clave#5678');
     await tab(tester, Icons.person_outline_rounded);
     expect(find.text('0 experiencias guardadas'), findsOneWidget);
     expect(find.text('0 sesiones'), findsOneWidget);
     await signOut(tester);
-    await login(tester, 'ana@ceosmos.mx', 'clave1234');
+    await login(tester, 'ana@ceosmos.mx', 'Clave#2026');
     await tab(tester, Icons.person_outline_rounded);
     expect(find.text('1 experiencias guardadas'), findsOneWidget);
   });
@@ -285,20 +303,14 @@ void main() {
     expect(find.text('1 sesiones'), findsOneWidget);
   });
 
-  testWidgets('CP-14 REQ-NAV-01 acceso privado se revoca al vencer', (tester) async {
-    var clock = DateTime(2026, 10, 23, 12);
-    final state = AppState(
-      auth: MemoryAuthRepository(now: () => clock),
-      now: () => clock,
-      startTicker: false,
-    );
-    await launch(tester, state: state);
+  testWidgets('CP-14 REQ-NAV-01 acceso privado se revoca cuando el servidor invalida la sesión', (tester) async {
+    final state = await launch(tester);
     await demo(tester);
-    clock = clock.add(const Duration(hours: 2));
-    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    api.revokeAll();
+    await state.loadWorkspace();
     await tester.pumpAndSettle();
     expect(find.text('Vuelve a tu centro.'), findsOneWidget);
-    expect(find.text('Tu sesión local expiró. Vuelve a entrar.'), findsOneWidget);
+    expect(find.textContaining('Tu sesión expiró'), findsOneWidget);
     expect(find.text('Explora tu cosmos'), findsNothing);
   });
 
@@ -308,7 +320,7 @@ void main() {
       tester.view.devicePixelRatio = 1;
       addTearDown(tester.view.resetPhysicalSize);
       addTearDown(tester.view.resetDevicePixelRatio);
-      final state = AppState(startTicker: false);
+      final state = api.appState()..status = AuthStatus.signedOut;
       addTearDown(state.dispose);
       addTearDown(() async {
         await tester.pumpWidget(const SizedBox());
@@ -317,7 +329,7 @@ void main() {
       await tester.pumpWidget(CeosmosApp(state: state));
       await demo(tester);
       expect(find.byType(NavigationBar), width < 920 ? findsOneWidget : findsNothing);
-      expect(find.byType(ListTile), width >= 920 ? findsAtLeastNWidgets(5) : findsNothing);
+      expect(find.byType(ListTile), width >= 920 ? findsAtLeastNWidgets(6) : findsNothing);
       await tab(tester, Icons.devices_other_outlined);
       expect(find.text('Tu ecosistema'), findsOneWidget);
       expect(tester.takeException(), isNull);
@@ -362,11 +374,7 @@ void main() {
 
   testWidgets('CP-18 REQ-DAT-02 sesión completa guarda 05:00 una sola vez', (tester) async {
     var clock = DateTime(2026, 10, 23, 12);
-    final state = AppState(
-      auth: MemoryAuthRepository(now: () => clock),
-      now: () => clock,
-      startTicker: false,
-    );
+    final state = api.appState(now: () => clock);
     await launch(tester, state: state);
     await demo(tester);
     await startOrbit(tester);

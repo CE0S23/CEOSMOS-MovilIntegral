@@ -128,7 +128,7 @@ class SessionScreen extends StatelessWidget {
                           builder: (context) => AlertDialog(
                             title: const Text('¿Terminar esta sesión?'),
                             content: const Text(
-                              'El tiempo que dedicaste se guardará en tu historial local.',
+                              'El tiempo que dedicaste se guardará en tu historial.',
                             ),
                             actions: [
                               TextButton(
@@ -184,7 +184,7 @@ class SessionScreen extends StatelessWidget {
                               style: TextStyle(fontWeight: FontWeight.w600),
                             ),
                             Text(
-                              'Audio local · Repetición continua',
+                              'Audio incluido · Sigue sonando en segundo plano',
                               style: TextStyle(
                                 color: Cosmos.muted,
                                 fontSize: 12,

@@ -1,50 +1,56 @@
-import 'package:ceosmos_movil_integral/app.dart';
+// Prueba E2E en dispositivo/emulador contra la API REAL de CEOSMOS.
+//
+//   flutter test integration_test/critical_flow_test.dart -d emulator-5554 \
+//     --dart-define=E2E_EMAIL=usuario@ceosmos.test \
+//     --dart-define=E2E_PASSWORD='Ceosmos#Dev2026'
+//
+// Requiere la API levantada (ver REPORTE_FINAL.md). Las credenciales no se
+// guardan en el código.
 import 'package:ceosmos_movil_integral/core/app_state.dart';
-import 'package:flutter/material.dart';
+import 'package:ceosmos_movil_integral/data/api_client.dart';
+import 'package:ceosmos_movil_integral/data/auth_repository.dart';
+import 'package:ceosmos_movil_integral/data/catalog.dart';
+import 'package:ceosmos_movil_integral/data/ceosmos_repository.dart';
+import 'package:ceosmos_movil_integral/core/config.dart';
+import 'package:ceosmos_movil_integral/data/token_store.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:integration_test/integration_test.dart';
+
+const _email = String.fromEnvironment('E2E_EMAIL');
+const _password = String.fromEnvironment('E2E_PASSWORD');
 
 void main() {
   IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-  testWidgets(
-    'E2E Android: demo, session completion, and history record',
-    (tester) async {
-      final state = AppState(startTicker: false);
-      addTearDown(state.dispose);
+  testWidgets('E2E: login real → favorito → sesión guardada en PostgreSQL → logout', (tester) async {
+    expect(_email, isNotEmpty, reason: 'Define E2E_EMAIL y E2E_PASSWORD con --dart-define');
+    final api = ApiClient(baseUrl: AppConfig.apiBaseUrl);
+    final state = AppState(
+      auth: AuthRepository(api, MemoryTokenStore()),
+      data: CeosmosRepository(api),
+      startTicker: false,
+    );
+    addTearDown(state.dispose);
 
-      await tester.pumpWidget(CeosmosApp(state: state));
-      await tester.pumpAndSettle();
-      expect(find.text('Vuelve a tu centro.'), findsOneWidget);
+    await state.acceptSession(await state.auth.login(_email, _password));
+    expect(state.status, AuthStatus.signedIn);
+    expect(state.dataError, isNull);
+    final antes = state.workspace.history.length;
 
-      await tester.ensureVisible(find.text('Explorar demo'));
-      await tester.tap(find.text('Explorar demo'));
-      await tester.pumpAndSettle();
-      expect(find.text('Hola, Explorador ✦'), findsOneWidget);
+    final eraFavorito = state.workspace.favorites.contains('ocean');
+    await state.toggleFavorite('ocean');
+    expect((await state.data.favorites()).contains('ocean'), !eraFavorito);
+    await state.toggleFavorite('ocean'); // deja el estado como estaba
 
-      await tester.tap(find.byIcon(Icons.explore_outlined).last);
-      await tester.pumpAndSettle();
-      await tester.ensureVisible(find.text('Órbita tranquila'));
-      await tester.tap(find.text('Órbita tranquila').last);
-      await tester.pumpAndSettle();
-      await tester.tap(find.text('5 min').last);
-      await tester.tap(find.text('Comenzar sesión'));
-      await tester.pumpAndSettle();
-      expect(find.text('Objetivo: 5 minutos'), findsOneWidget);
+    state.startSession(catalog.first, 5);
+    await state.finishSession();
+    final remoto = await state.data.focusSessions();
+    expect(remoto.length, antes + 1);
+    expect(remoto.first.contentKey, catalog.first.id);
+    expect(state.workspace.history.first.synced, isTrue);
 
-      await tester.ensureVisible(find.text('Terminar sesión'));
-      await tester.tap(find.text('Terminar sesión'));
-      await tester.pumpAndSettle();
-      await tester.tap(find.widgetWithText(FilledButton, 'Terminar'));
-      await tester.pumpAndSettle();
-      expect(state.workspace.history, hasLength(1));
-      expect(state.workspace.history.single.mediaId, 'orbit');
-
-      await tester.tap(find.byIcon(Icons.person_outline_rounded).last);
-      await tester.pumpAndSettle();
-      expect(find.text('Órbita tranquila'), findsOneWidget);
-      expect(find.text('1 sesiones'), findsOneWidget);
-      expect(find.text('Finalizada'), findsOneWidget);
-    },
-  );
+    await state.signOut();
+    expect(state.user, isNull);
+    await expectLater(state.data.favorites(), throwsA(isA<ApiException>()));
+  });
 }

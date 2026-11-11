@@ -399,3 +399,89 @@ class MediaCard extends StatelessWidget {
     ),
   );
 }
+
+/// Campo de un [FormDialog].
+class DialogField {
+  const DialogField(
+    this.label, {
+    this.initial = '',
+    this.hint,
+    this.validator,
+    this.keyboardType,
+    this.maxLength,
+  });
+  final String label;
+  final String initial;
+  final String? hint;
+  final FormFieldValidator<String>? validator;
+  final TextInputType? keyboardType;
+  final int? maxLength;
+}
+
+/// Diálogo con formulario que es dueño de sus controladores (se liberan al
+/// desmontarse, después de la animación de cierre). Devuelve los valores
+/// escritos o null si se cancela.
+class FormDialog extends StatefulWidget {
+  const FormDialog({
+    super.key,
+    required this.title,
+    required this.fields,
+    required this.confirmLabel,
+  });
+  final String title, confirmLabel;
+  final List<DialogField> fields;
+
+  @override
+  State<FormDialog> createState() => _FormDialogState();
+}
+
+class _FormDialogState extends State<FormDialog> {
+  final _form = GlobalKey<FormState>();
+  late final List<TextEditingController> _controllers = [
+    for (final f in widget.fields) TextEditingController(text: f.initial),
+  ];
+
+  @override
+  void dispose() {
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AlertDialog(
+    title: Text(widget.title),
+    content: Form(
+      key: _form,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          for (var i = 0; i < widget.fields.length; i++)
+            TextFormField(
+              controller: _controllers[i],
+              autofocus: i == 0,
+              keyboardType: widget.fields[i].keyboardType,
+              maxLength: widget.fields[i].maxLength,
+              validator: widget.fields[i].validator,
+              decoration: InputDecoration(
+                labelText: widget.fields[i].label,
+                hintText: widget.fields[i].hint,
+              ),
+            ),
+        ],
+      ),
+    ),
+    actions: [
+      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+      FilledButton(
+        onPressed: () {
+          if (_form.currentState!.validate()) {
+            Navigator.pop(context, [for (final c in _controllers) c.text.trim()]);
+          }
+        },
+        child: Text(widget.confirmLabel),
+      ),
+    ],
+  );
+}

@@ -3,6 +3,7 @@ import '../core/app_state.dart';
 import '../data/catalog.dart';
 import '../domain/models.dart';
 import 'theme.dart';
+import 'library_section.dart';
 import 'widgets.dart';
 
 class ExploreScreen extends StatefulWidget {
@@ -169,11 +170,13 @@ class _ExploreScreenState extends State<ExploreScreen> {
             );
           },
         ),
-        const SizedBox(height: 24),
+        const SizedBox(height: 18),
         const Text(
-          'Colección de demostración: paisajes dibujados en la app y audios sintéticos originales.',
+          'Colección incluida en la app: paisajes dibujados por CEOSMOS y audios originales, disponibles sin conexión.',
           style: TextStyle(color: Cosmos.muted, fontSize: 12),
         ),
+        const SizedBox(height: 30),
+        LibrarySection(state: widget.state),
       ],
     );
   }

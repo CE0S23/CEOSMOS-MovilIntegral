@@ -56,10 +56,10 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             const SizedBox(width: 8),
-            const Tag(
-              'Modo local',
-              color: Cosmos.mint,
-              icon: Icons.offline_bolt_outlined,
+            Tag(
+              state.dataError == null ? 'Sincronizado' : 'Sin conexión',
+              color: state.dataError == null ? Cosmos.mint : Cosmos.peach,
+              icon: state.dataError == null ? Icons.cloud_done_outlined : Icons.cloud_off_outlined,
             ),
           ],
         ),
