@@ -1,0 +1,29 @@
+
+┌─────────────────────────────────────────────────────────┐
+│ A new version of Flutter is available!                  │
+│                                                         │
+│ To update to the latest version, run "flutter upgrade". │
+└─────────────────────────────────────────────────────────┘
+00:00 +0: loading C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart
+00:00 +0: CP-01 REQ-VAL-01 nombre de un carácter se rechaza
+00:01 +1: CP-02 REQ-VAL-01 contraseña de siete caracteres se rechaza
+00:01 +2: CP-03 REQ-VAL-01 correo sin arroba se rechaza
+00:02 +3: CP-04 REQ-VAL-01 registro válido normaliza el correo
+00:02 +4: CP-05 REQ-VAL-02 correo duplicado se rechaza
+00:03 +5: CP-06 REQ-VAL-02 contraseña incorrecta no concede acceso
+00:04 +6: CP-07 REQ-OP-02 búsqueda normaliza acentos y muestra vacío
+00:04 +7: CP-08 REQ-OP-02 filtros de modo y tipo se combinan
+00:04 +8: CP-09 REQ-OP-03 favoritos se agregan y eliminan
+00:05 +9: CP-10 REQ-OP-01 sesión pausa, continúa y termina una vez
+00:06 +10: CP-11 REQ-OP-04 Band y TV se vinculan y desvinculan
+00:06 +11: CP-12 REQ-DAT-01 espacios de dos cuentas permanecen aislados
+00:07 +12: CP-13 REQ-DAT-02 historial conserva una finalización
+00:08 +13: CP-14 REQ-NAV-01 acceso privado se revoca al vencer
+00:08 +14: CP-15-320 REQ-NAV-02 navegación sin overflow a 320 px
+00:08 +15: CP-15-390 REQ-NAV-02 navegación sin overflow a 390 px
+00:08 +16: CP-15-768 REQ-NAV-02 navegación sin overflow a 768 px
+00:08 +17: CP-15-1440 REQ-NAV-02 navegación sin overflow a 1440 px
+00:08 +18: CP-16 REQ-ERR-01 fallo de audio muestra aviso y conserva sesión
+00:09 +19: CP-17 REQ-VAL-03 duración inválida se rechaza sin cambiar preferencia
+00:09 +20: CP-18 REQ-DAT-02 sesión completa guarda 05:00 una sola vez
+00:09 +21: All tests passed!

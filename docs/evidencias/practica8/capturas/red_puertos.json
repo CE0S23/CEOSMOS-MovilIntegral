@@ -1,0 +1,61 @@
+{
+  "CheckedAt": "2026-10-23 23:19:37 -06:00",
+  "Records": [
+    {
+      "Target": "127.0.0.1",
+      "Port": 8765,
+      "Check": "TCP",
+      "Result": "OPEN",
+      "Detail": "Conexion local establecida"
+    },
+    {
+      "Target": "http://127.0.0.1:8765/",
+      "Port": 8765,
+      "Check": "HTTP HEAD",
+      "Result": "200",
+      "Detail": ""
+    },
+    {
+      "Target": "http://127.0.0.1:8765/flutter_bootstrap.js",
+      "Port": 8765,
+      "Check": "HTTP HEAD",
+      "Result": "200",
+      "Detail": ""
+    },
+    {
+      "Target": "http://127.0.0.1:8765/canvaskit/canvaskit.wasm",
+      "Port": 8765,
+      "Check": "HTTP HEAD",
+      "Result": "200",
+      "Detail": ""
+    },
+    {
+      "Target": "http://127.0.0.1:8765/assets/assets/audio/orbit.mp3",
+      "Port": 8765,
+      "Check": "HTTP HEAD",
+      "Result": "200",
+      "Detail": ""
+    },
+    {
+      "Target": "https://fonts.gstatic.com/s/roboto/v32/KFOmCnqEu92Fr1Me4GZLCzYlKw.woff2",
+      "Port": 443,
+      "Check": "HTTP HEAD",
+      "Result": "200",
+      "Detail": ""
+    },
+    {
+      "Target": "https://pub.dev/api/packages/flutter_lints",
+      "Port": 443,
+      "Check": "HTTP HEAD",
+      "Result": "200",
+      "Detail": ""
+    },
+    {
+      "Target": "https://storage.googleapis.com/flutter_infra_release/releases/releases_windows.json",
+      "Port": 443,
+      "Check": "HTTP HEAD",
+      "Result": "200",
+      "Detail": ""
+    }
+  ]
+}

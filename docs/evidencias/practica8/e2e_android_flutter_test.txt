@@ -1,0 +1,14 @@
+Prueba E2E automatizada - CEOSMOS Móvil Integral
+Fecha: 29 de octubre de 2026
+Dispositivo Android: SM-X710, Android 16
+Comando: flutter test integration_test/critical_flow_test.dart -d R52W80BXQHP --reporter expanded
+Código de salida: 0
+
+Salida:
+00:00 +0: loading C:/CESAR10cuatri/CEOSMOS.MovilIntegral/integration_test/critical_flow_test.dart
+Running Gradle task 'assembleDebug'...                             42.2s
+√ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...          12.0s
+00:00 +0: E2E Android: demo, session completion, and history record
+00:05 +1: (tearDownAll)
+00:05 +1: All tests passed!
