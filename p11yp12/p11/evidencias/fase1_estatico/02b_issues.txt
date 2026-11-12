@@ -1,0 +1,83 @@
+warning - 'dead_code_on_catch_subtype' isn't a recognized lint rule - analysis_options.yaml:29:5 - undefined_lint
+   info - 'Future'-returning calls in a non-'async' function - lib/app.dart:30:38 - discarded_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/app.dart:419:52 - discarded_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/core/media_cache_io.dart:49:16 - discarded_futures
+   info - Use of an async 'dart:io' method - lib/core/media_cache_io.dart:56:15 - avoid_slow_async_io
+   info - Use of an async 'dart:io' method - lib/core/media_cache_io.dart:98:70 - avoid_slow_async_io
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/core/sound_controller.dart:33:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/core/sound_controller.dart:50:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/core/sound_controller.dart:62:7 - avoid_catches_without_on_clauses
+   info - 'Future'-returning calls in a non-'async' function - lib/core/sound_controller.dart:71:13 - discarded_futures
+   info - Unclosed instance of 'Sink' - lib/core/wearable_io.dart:46:13 - close_sinks
+warning - The generic type 'Map<dynamic, dynamic>' should have explicit type arguments but doesn't - lib/data/ceosmos_repository.dart:5:38 - strict_raw_type
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/bd_flutter/main.dart:48:5 - discarded_futures
+   info - Method invocation or property access on a 'dynamic' target - lib/practicas/eval2/core/network/api_client.dart:51:40 - avoid_dynamic_calls
+  error - The argument type 'dynamic' can't be assigned to the parameter type 'String'.  - lib/practicas/eval2/core/network/api_client.dart:51:40 - argument_type_not_assignable
+   info - Method invocation or property access on a 'dynamic' target - lib/practicas/eval2/core/network/api_client.dart:51:64 - avoid_dynamic_calls
+  error - The argument type 'dynamic' can't be assigned to the parameter type 'String'.  - lib/practicas/eval2/core/network/api_client.dart:51:64 - argument_type_not_assignable
+   info - Method invocation or property access on a 'dynamic' target - lib/practicas/eval2/core/network/api_client.dart:54:56 - avoid_dynamic_calls
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/eval2/core/network/api_client.dart:56:15 - avoid_catches_without_on_clauses
+  error - The type 'dynamic' used in the 'for' loop must implement 'Iterable' - lib/practicas/eval2/data/models/models.dart:59:23 - for_in_of_invalid_type
+  error - The argument type 'dynamic' can't be assigned to the parameter type 'String'.  - lib/practicas/eval2/data/models/models.dart:60:88 - argument_type_not_assignable
+  error - The argument type 'dynamic' can't be assigned to the parameter type 'String'.  - lib/practicas/eval2/data/models/models.dart:60:100 - argument_type_not_assignable
+  error - The argument type 'dynamic' can't be assigned to the parameter type 'String'.  - lib/practicas/eval2/data/repositories/repositories.dart:27:38 - argument_type_not_assignable
+  error - The argument type 'dynamic' can't be assigned to the parameter type 'String'.  - lib/practicas/eval2/data/repositories/repositories.dart:27:57 - argument_type_not_assignable
+   info - Method invocation or property access on a 'dynamic' target - lib/practicas/eval2/data/repositories/repositories.dart:28:19 - avoid_dynamic_calls
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/eval2/data/repositories/repositories.dart:35:7 - avoid_catches_without_on_clauses
+  error - The type 'dynamic' used in the 'for' loop must implement 'Iterable' - lib/practicas/eval2/data/repositories/repositories.dart:51:27 - for_in_of_invalid_type
+  error - The argument type 'dynamic' can't be assigned to the parameter type 'String'.  - lib/practicas/eval2/data/repositories/repositories.dart:52:55 - argument_type_not_assignable
+warning - The generic type 'Map<dynamic, dynamic>' should have explicit type arguments but doesn't - lib/practicas/eval2/data/repositories/repositories.dart:56:10 - strict_raw_type
+   info - Method invocation or property access on a 'dynamic' target - lib/practicas/eval2/data/repositories/repositories.dart:60:31 - avoid_dynamic_calls
+   info - Missing an 'await' for the 'Future' computed by this expression - lib/practicas/eval2/presentation/screens/screens.dart:32:29 - unawaited_futures
+   info - Missing an 'await' for the 'Future' computed by this expression - lib/practicas/eval2/presentation/screens/screens.dart:98:35 - unawaited_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/eval2/presentation/screens/screens.dart:134:5 - discarded_futures
+warning - The generic type 'Map<dynamic, dynamic>?' should have explicit type arguments but doesn't - lib/practicas/eval2/presentation/screens/screens.dart:217:3 - strict_raw_type
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/eval2/presentation/screens/screens.dart:225:79 - discarded_futures
+  error - The argument type 'dynamic' can't be assigned to the parameter type 'String'.  - lib/practicas/eval2/presentation/screens/screens.dart:263:53 - argument_type_not_assignable
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/eval2/presentation/screens/screens.dart:336:5 - discarded_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/examen1/main.dart:81:5 - discarded_futures
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/examen1/main.dart:109:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/examen1/main.dart:158:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/examen1/main.dart:179:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p03_04/consulta_web/consulta_web_page.dart:28:7 - avoid_catches_without_on_clauses
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p03_04/main.dart:48:18 - discarded_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p03_04/usuarios/usuarios_page.dart:31:5 - discarded_futures
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p03_04/usuarios/usuarios_page.dart:39:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p03_04/usuarios/usuarios_page.dart:72:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p06/chat_session.dart:172:46 - avoid_catches_without_on_clauses
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p06/mobile_connect_app.dart:152:17 - discarded_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p06/mobile_connect_app.dart:317:25 - discarded_futures
+   info - Don't throw instances of classes that don't extend either 'Exception' or 'Error' - lib/practicas/p07/firebase_p07.dart:42:15 - only_throw_errors
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p07/main.dart:37:5 - discarded_futures
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p07/main.dart:51:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p07/screens/chat_screen.dart:113:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p07/screens/chat_screen.dart:150:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p07/screens/chat_screen.dart:178:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p07/screens/chat_screen.dart:292:7 - avoid_catches_without_on_clauses
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p07/screens/chat_screen.dart:328:23 - discarded_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p07/screens/chat_screen.dart:329:19 - discarded_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p07/screens/chat_screen.dart:330:18 - discarded_futures
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p07/screens/dispositivos_screen.dart:27:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p07/screens/reporte_form_screen.dart:65:7 - avoid_catches_without_on_clauses
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p07/screens/reportes_screen.dart:47:7 - avoid_catches_without_on_clauses
+   info - Missing an 'await' for the 'Future' computed by this expression - lib/practicas/p07/screens/reportes_screen.dart:61:9 - unawaited_futures
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p07/screens/reportes_screen.dart:63:7 - avoid_catches_without_on_clauses
+   info - Missing an 'await' for the 'Future' computed by this expression - lib/practicas/p07/screens/reportes_screen.dart:98:7 - unawaited_futures
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p07/screens/rol_screen.dart:86:7 - avoid_catches_without_on_clauses
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p07/services/auth_service.dart:84:20 - discarded_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p07/services/auth_service.dart:91:27 - discarded_futures
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p07/services/auth_service.dart:107:7 - avoid_catches_without_on_clauses
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p07/services/auth_service.dart:116:7 - discarded_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p07/services/auth_service.dart:120:7 - discarded_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p07/services/auth_service.dart:128:20 - discarded_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p07/widgets/banner_conexion.dart:21:34 - discarded_futures
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/p07/widgets/banner_conexion.dart:33:20 - discarded_futures
+   info - Catch clause should use 'on' to specify the type of exception being caught - lib/practicas/p07/widgets/burbuja_mensaje.dart:53:21 - avoid_catches_without_on_clauses
+   info - 'Future'-returning calls in a non-'async' function - lib/practicas/practica_host.dart:86:22 - discarded_futures
+warning - The generic type 'Map<dynamic, dynamic>' should have explicit type arguments but doesn't - lib/ui/admin_screen.dart:160:77 - strict_raw_type
+   info - 'Future'-returning calls in a non-'async' function - lib/ui/session_screen.dart:115:51 - discarded_futures
+   info - Missing an 'await' for the 'Future' computed by this expression - lib/ui/session_screen.dart:147:33 - unawaited_futures
+   info - Method invocation or property access on a 'dynamic' target - test/practicas/examen1/widget_test.dart:100:14 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - test/practicas/examen1/widget_test.dart:101:14 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - test/practicas/examen1/widget_test.dart:102:31 - avoid_dynamic_calls
+   info - Method invocation or property access on a 'dynamic' target - test/practicas/examen1/widget_test.dart:131:14 - avoid_dynamic_calls

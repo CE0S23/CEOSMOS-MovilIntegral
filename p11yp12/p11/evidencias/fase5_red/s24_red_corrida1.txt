@@ -1,0 +1,36 @@
+00:00 +0: loading C:/CESAR10cuatri/CEOSMOS.MovilIntegral/integration_test/p11_red_test.dart
+Running Gradle task 'assembleDebug'...                          
+Warning: SDK processing. This version only understands SDK XML versions up to 3 but an SDK XML file of version 4 was encountered. This can happen if you use versions of Android Studio and the command-line tools that were released at different times.
+Running Gradle task 'assembleDebug'...                            169.3s
+✓ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...          12.3s
+00:00 +0: P11 red: latencia, transferencia e interrupción desde el S24
+P11_JSON {"tipo":"entorno","fecha":"2026-11-11T18:59:42.053654","so":"android","version_so":"BP4A.251205.006.S721BXXSEDZI1","api":"http://localhost:8080/api","app":"ceosmos_movil_integral 1.1.0+2 (debug, integration_test)"}
+P11_JSON {"tipo":"http_10","n":1,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":31.08,"bytes":65498,"items":50}
+P11_JSON {"tipo":"http_10","n":2,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":27.64,"bytes":65498,"items":50}
+P11_JSON {"tipo":"http_10","n":3,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":22.965,"bytes":65498,"items":50}
+P11_JSON {"tipo":"http_10","n":4,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":18.091,"bytes":65498,"items":50}
+P11_JSON {"tipo":"http_10","n":5,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":17.951,"bytes":65498,"items":50}
+P11_JSON {"tipo":"http_10","n":6,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":22.727,"bytes":65498,"items":50}
+P11_JSON {"tipo":"http_10","n":7,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":24.545,"bytes":65498,"items":50}
+P11_JSON {"tipo":"http_10","n":8,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":19.958,"bytes":65498,"items":50}
+P11_JSON {"tipo":"http_10","n":9,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":21.896,"bytes":65498,"items":50}
+P11_JSON {"tipo":"http_10","n":10,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":21.818,"bytes":65498,"items":50}
+P11_JSON {"tipo":"descarga","n":1,"origen":"API local (USB, adb reverse)","recurso":"GET /api/focus-sessions?limit=100","status":200,"bytes":131998,"s":0.031354,"mbps":33.67940294699241}
+P11_JSON {"tipo":"descarga","n":2,"origen":"API local (USB, adb reverse)","recurso":"GET /api/focus-sessions?limit=100","status":200,"bytes":131998,"s":0.033992,"mbps":31.065662508825604}
+P11_JSON {"tipo":"descarga","n":3,"origen":"API local (USB, adb reverse)","recurso":"GET /api/focus-sessions?limit=100","status":200,"bytes":131998,"s":0.029209,"mbps":36.15269266322024}
+P11_JSON {"tipo":"descarga","n":1,"origen":"Sitio web CEOSMOS (Vercel, Wi-Fi + Internet)","recurso":"main.e5355dbf8f1d3c6d.js","status":200,"bytes":637412,"s":0.637527,"mbps":7.998556923863617}
+P11_JSON {"tipo":"descarga","n":2,"origen":"Sitio web CEOSMOS (Vercel, Wi-Fi + Internet)","recurso":"main.e5355dbf8f1d3c6d.js","status":200,"bytes":637412,"s":0.412777,"mbps":12.353634044532521}
+P11_JSON {"tipo":"descarga","n":3,"origen":"Sitio web CEOSMOS (Vercel, Wi-Fi + Internet)","recurso":"main.e5355dbf8f1d3c6d.js","status":200,"bytes":637412,"s":0.463967,"mbps":10.99064373112743}
+P11_JSON {"tipo":"subida","n":1,"destino":"POST /api/focus-sessions (USB, adb reverse)","status":201,"bytes":30226,"s":0.104718,"mbps":2.3091350102179184}
+P11_JSON {"tipo":"subida","n":2,"destino":"POST /api/focus-sessions (USB, adb reverse)","status":201,"bytes":30226,"s":0.067451,"mbps":3.5849431439118766}
+P11_JSON {"tipo":"subida","n":3,"destino":"POST /api/focus-sessions (USB, adb reverse)","status":201,"bytes":30226,"s":0.061161,"mbps":3.9536305815797648}
+P11_JSON {"tipo":"subida_ids","ids":["df8225f0-691b-4545-9d24-373f419b7cf5","a63240ff-9e21-4381-808e-3cf7d937e8a6","d7efa704-fd4a-462e-957e-3c44abade2d8"]}
+P11_MARK CORTAR
+P11_JSON {"tipo":"interrupcion","detectado":true,"ms_hasta_error":35.777,"mostrada_como_guardada":false,"pendientes":1,"aviso":"La sesión se guardará cuando vuelva la conexión (No hay conexión con el servidor de CEOSMOS. Revisa tu red.)"}
+P11_JSON {"tipo":"reintento_sin_red","pendientes":1,"error":"No hay conexión con el servidor de CEOSMOS. Revisa tu red."}
+P11_MARK RECONECTAR
+P11_JSON {"tipo":"recuperacion","s_hasta_reconectar":5.438,"pendientes":0,"sesiones_antes":0,"sesiones_despues":1,"duplicados":0,"sincronizada":true}
+00:12 +1: (tearDownAll)
+00:13 +1: All tests passed!
+HOST flutter test terminó con código 0

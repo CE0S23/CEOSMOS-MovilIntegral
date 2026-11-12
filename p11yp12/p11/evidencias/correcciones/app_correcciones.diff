@@ -1,0 +1,183 @@
+diff --git a/analysis_options.yaml b/analysis_options.yaml
+index 8a4c5ca..bfca063 100644
+--- a/analysis_options.yaml
++++ b/analysis_options.yaml
+@@ -1,34 +1,36 @@
+-# This file configures the analyzer, which statically analyzes Dart code to
+-# check for errors, warnings, and lints.
+-#
+-# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
+-# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
+-# invoked from the command line by running `flutter analyze`.
+-
+-# The following line activates a set of recommended lints for Flutter apps,
+-# packages, and plugins designed to encourage good coding practices.
+-include: package:flutter_lints/flutter.yaml
+-
+-analyzer:
+-  exclude:
+-    # Entregables originales de las prácticas: se analizan en su propio proyecto.
+-    - "Practica para implementar en la app/**"
+-    - build/**
+-
+-linter:
+-  # The lint rules applied to this project can be customized in the
+-  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
+-  # included above or to enable additional rules. A list of all available lints
+-  # and their documentation is published at https://dart.dev/lints.
+-  #
+-  # Instead of disabling a lint rule for the entire project in the
+-  # section below, it can also be suppressed for a single line of code
+-  # or a specific dart file by using the `// ignore: name_of_lint` and
+-  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
+-  # producing the lint.
+-  rules:
+-    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
+-    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
+-
+-# Additional information about this file can be found at
+-# https://dart.dev/guides/language/analysis-options
++# This file configures the analyzer, which statically analyzes Dart code to
++# check for errors, warnings, and lints.
++#
++# The issues identified by the analyzer are surfaced in the UI of Dart-enabled
++# IDEs (https://dart.dev/tools#ides-and-editors). The analyzer can also be
++# invoked from the command line by running `flutter analyze`.
++
++# The following line activates a set of recommended lints for Flutter apps,
++# packages, and plugins designed to encourage good coding practices.
++include: package:flutter_lints/flutter.yaml
++
++analyzer:
++  exclude:
++    # Entregables originales de las prácticas: se analizan en su propio proyecto.
++    - "Practica para implementar en la app/**"
++    - build/**
++    # Copias de entrega de las pruebas de la Práctica 11 (los originales están en test/).
++    - "p11yp12/**"
++
++linter:
++  # The lint rules applied to this project can be customized in the
++  # section below to disable rules from the `package:flutter_lints/flutter.yaml`
++  # included above or to enable additional rules. A list of all available lints
++  # and their documentation is published at https://dart.dev/lints.
++  #
++  # Instead of disabling a lint rule for the entire project in the
++  # section below, it can also be suppressed for a single line of code
++  # or a specific dart file by using the `// ignore: name_of_lint` and
++  # `// ignore_for_file: name_of_lint` syntax on the line or in the file
++  # producing the lint.
++  rules:
++    # avoid_print: false  # Uncomment to disable the `avoid_print` rule
++    # prefer_single_quotes: true  # Uncomment to enable the `prefer_single_quotes` rule
++
++# Additional information about this file can be found at
++# https://dart.dev/guides/language/analysis-options
+diff --git a/lib/core/app_state.dart b/lib/core/app_state.dart
+index fb646a5..400b5ae 100644
+--- a/lib/core/app_state.dart
++++ b/lib/core/app_state.dart
+@@ -1,6 +1,7 @@
+ import 'dart:async';
+ 
+ import 'package:flutter/foundation.dart';
++import 'package:uuid/uuid.dart';
+ 
+ import '../data/api_client.dart';
+ import '../data/auth_repository.dart';
+@@ -288,6 +289,8 @@ class AppState extends ChangeNotifier {
+       completed: completed,
+       metadata: metadata,
+       synced: false,
++      // Se genera antes del primer envío y viaja igual en los reintentos (P11-D01).
++      clientId: const Uuid().v4(),
+     );
+     _descartarSesionActiva();
+     workspace.history.insert(0, local);
+diff --git a/lib/data/api_client.dart b/lib/data/api_client.dart
+index 62c463d..b58384a 100644
+--- a/lib/data/api_client.dart
++++ b/lib/data/api_client.dart
+@@ -109,6 +109,9 @@ String traducirError(int status, Object? body) {
+         ? 'Cuenta bloqueada temporalmente por intentos fallidos. Intenta más tarde.'
+         : 'Demasiados intentos. Espera un momento e inténtalo de nuevo.';
+   }
++  if (m.contains('already saved')) {
++    return 'Ese elemento ya está en tu biblioteca.'; // 409 de /media (P11-D05)
++  }
+   if (m.contains('already in use')) {
+     return 'Ese correo o nombre de usuario ya está registrado.';
+   }
+diff --git a/lib/domain/models.dart b/lib/domain/models.dart
+index a34489e..da7c55b 100644
+--- a/lib/domain/models.dart
++++ b/lib/domain/models.dart
+@@ -145,6 +145,7 @@ class FocusSession {
+     required this.completed,
+     this.metadata = const {},
+     this.synced = true,
++    this.clientId,
+   });
+ 
+   factory FocusSession.fromJson(Map<String, dynamic> json) => FocusSession(
+@@ -157,6 +158,7 @@ class FocusSession {
+     targetMinutes: (json['targetMinutes'] as num).toInt(),
+     completed: json['completed'] as bool? ?? false,
+     metadata: (json['metadata'] as Map?)?.cast<String, dynamic>() ?? const {},
++    clientId: json['clientId'] as String?,
+   );
+ 
+   final String id, contentKey;
+@@ -171,6 +173,10 @@ class FocusSession {
+   /// false mientras no la confirme el servidor.
+   final bool synced;
+ 
++  /// UUID v4 que la app genera UNA vez por sesión y repite en cada reintento; el
++  /// servidor lo usa para no duplicar la sesión si se perdió la respuesta (P11-D01).
++  final String? clientId;
++
+   Map<String, Object?> toJson() => {
+     'contentKey': contentKey,
+     'mode': mode.apiValue,
+@@ -180,6 +186,7 @@ class FocusSession {
+     'targetMinutes': targetMinutes,
+     'completed': completed,
+     if (metadata.isNotEmpty) 'metadata': metadata,
++    'clientId': ?clientId,
+   };
+ }
+ 
+diff --git a/test/support/fake_ceosmos_api.dart b/test/support/fake_ceosmos_api.dart
+index 8eb68fd..78da348 100644
+--- a/test/support/fake_ceosmos_api.dart
++++ b/test/support/fake_ceosmos_api.dart
+@@ -129,6 +129,9 @@ class FakeCeosmosApi {
+         final ordenadas = [...u.sessions]..sort((a, b) => '${b['startedAt']}'.compareTo('${a['startedAt']}'));
+         return _json(200, ordenadas);
+       case ('POST', '/focus-sessions'):
++        // Igual que la API corregida (P11-D01): mismo clientId → misma sesión.
++        final previa = u.sessions.where((x) => body['clientId'] != null && x['clientId'] == body['clientId']).firstOrNull;
++        if (previa != null) return _json(201, previa);
+         final s = {...body, 'id': 'fs-${++_seq}'};
+         u.sessions.add(s);
+         return _json(201, s);
+@@ -144,6 +147,10 @@ class FakeCeosmosApi {
+       case ('GET', '/media'):
+         return _json(200, u.media);
+       case ('POST', '/media'):
++        if (u.media.any((m) => (body['externalId'] != null && m['externalId'] == body['externalId']) ||
++            (body['url'] != null && m['url'] == body['url']))) {
++          return _error(409, 'This image URL is already saved');
++        }
+         final m = {...body, 'id': 'm-${++_seq}'};
+         u.media.insert(0, m);
+         return _json(201, m);
+@@ -167,7 +174,7 @@ class FakeCeosmosApi {
+     }
+     if (path.startsWith('/media/') && req.method == 'DELETE') {
+       u.media.removeWhere((m) => m['id'] == path.substring('/media/'.length));
+-      return _json(200, {'message': 'deleted'});
++      return _json(204, null);
+     }
+     return _error(404, 'Recurso no encontrado');
+   }

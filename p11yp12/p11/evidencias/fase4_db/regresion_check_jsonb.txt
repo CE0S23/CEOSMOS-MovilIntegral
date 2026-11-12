@@ -1,0 +1,6 @@
+Causa de la regresion (code 23514 en api_local_despues.log): el CHECK mide metadata::text, que agrega espacios.
+ bytes_json_compacto | bytes_jsonb_texto |        jsonb_texto         
+---------------------+-------------------+----------------------------
+                  21 |                26 | {"a": [1, 2, 3], "b": "x"}
+(1 fila)
+

@@ -1,0 +1,50 @@
+00:00 +0: loading C:/CESAR10cuatri/CEOSMOS.MovilIntegral/integration_test/p11_red_test.dart
+Running Gradle task 'assembleDebug'...                             49.8s
+✓ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...          13.3s
+00:00 +0: P11 red: latencia, transferencia e interrupción desde el S24
+P11_JSON {"tipo":"entorno","fecha":"2026-11-11T20:19:19.167617","so":"android","version_so":"BP4A.251205.006.S721BXXSEDZI1","api":"http://localhost:8080/api","app":"ceosmos_movil_integral 1.1.0+2 (debug, integration_test)"}
+P11_JSON {"tipo":"http_10","n":1,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":21.416,"bytes":28851,"items":50}
+P11_JSON {"tipo":"http_10","n":2,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":17.445,"bytes":28851,"items":50}
+P11_JSON {"tipo":"http_10","n":3,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":17.968,"bytes":28851,"items":50}
+P11_JSON {"tipo":"http_10","n":4,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":18.328,"bytes":28851,"items":50}
+P11_JSON {"tipo":"http_10","n":5,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":17.17,"bytes":28851,"items":50}
+P11_JSON {"tipo":"http_10","n":6,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":18.15,"bytes":28851,"items":50}
+P11_JSON {"tipo":"http_10","n":7,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":16.674,"bytes":28851,"items":50}
+P11_JSON {"tipo":"http_10","n":8,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":17.711,"bytes":28851,"items":50}
+P11_JSON {"tipo":"http_10","n":9,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":14.672,"bytes":28851,"items":50}
+P11_JSON {"tipo":"http_10","n":10,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":13.077,"bytes":28851,"items":50}
+P11_JSON {"tipo":"descarga","n":1,"origen":"API local (USB, adb reverse)","recurso":"GET /api/focus-sessions?limit=100","status":200,"bytes":28851,"s":0.012927,"mbps":17.854722673474125}
+P11_JSON {"tipo":"descarga","n":2,"origen":"API local (USB, adb reverse)","recurso":"GET /api/focus-sessions?limit=100","status":200,"bytes":28851,"s":0.013141,"mbps":17.563960124800243}
+P11_JSON {"tipo":"descarga","n":3,"origen":"API local (USB, adb reverse)","recurso":"GET /api/focus-sessions?limit=100","status":200,"bytes":28851,"s":0.013956,"mbps":16.538263112639726}
+P11_JSON {"tipo":"descarga","n":1,"origen":"Sitio web CEOSMOS (Vercel, Wi-Fi + Internet)","recurso":"main.e5355dbf8f1d3c6d.js","status":200,"bytes":637412,"s":0.502443,"mbps":10.1490039666191}
+P11_JSON {"tipo":"descarga","n":2,"origen":"Sitio web CEOSMOS (Vercel, Wi-Fi + Internet)","recurso":"main.e5355dbf8f1d3c6d.js","status":200,"bytes":637412,"s":0.497717,"mbps":10.245372370242526}
+P11_JSON {"tipo":"descarga","n":3,"origen":"Sitio web CEOSMOS (Vercel, Wi-Fi + Internet)","recurso":"main.e5355dbf8f1d3c6d.js","status":200,"bytes":637412,"s":0.400239,"mbps":12.740627475083638}
+P11_JSON {"tipo":"metadata_grande","bytes":90226,"status":400}
+P11_JSON {"tipo":"subida","n":1,"destino":"POST /api/focus-sessions (USB, adb reverse)","status":500,"bytes":3976,"s":0.024497,"mbps":1.298444707515206}
+══╡ EXCEPTION CAUGHT BY FLUTTER TEST FRAMEWORK ╞════════════════════════════════════════════════════
+The following TestFailure was thrown running a test:
+Expected: <201>
+  Actual: <500>
+
+When the exception was thrown, this was the stack:
+#4      main.<anonymous closure> (file:///C:/CESAR10cuatri/CEOSMOS.MovilIntegral/integration_test/p11_red_test.dart:136:7)
+<asynchronous suspension>
+#5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192:15)
+<asynchronous suspension>
+#6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682:5)
+<asynchronous suspension>
+<asynchronous suspension>
+(elided one frame from package:stack_trace)
+
+This was caught by the test expectation on the following line:
+  file:///C:/CESAR10cuatri/CEOSMOS.MovilIntegral/integration_test/p11_red_test.dart line 136
+The test description was:
+  P11 red: latencia, transferencia e interrupción desde el S24
+════════════════════════════════════════════════════════════════════════════════════════════════════
+00:03 +0 -1: P11 red: latencia, transferencia e interrupción desde el S24 [E]
+  Test failed. See exception logs above.
+  The test description was: P11 red: latencia, transferencia e interrupción desde el S24
+  
+00:03 +0 -1: (tearDownAll)
+00:03 +0 -1: Some tests failed.

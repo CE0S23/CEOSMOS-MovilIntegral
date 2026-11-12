@@ -1,0 +1,315 @@
+# npm audit report
+
+@nestjs/core  <=11.1.17 || 12.0.0-alpha.0 - 12.0.0-alpha.7
+Severity: high
+@nestjs/core Improperly Neutralizes Special Elements in Output Used by a Downstream Component ('Injection') - https://github.com/advisories/GHSA-36xv-jgw5-4q75
+Depends on vulnerable versions of path-to-regexp
+fix available via `npm audit fix`
+node_modules/@nestjs/core
+
+@simplewebauthn/server  <=13.3.1
+SimpleWebAuthn: Registration verification does not sufficiently ensure that attestation certificates chain to a trust anchor - https://github.com/advisories/GHSA-6hxq-p678-4hr2
+fix available via `npm audit fix`
+node_modules/@simplewebauthn/server
+
+baseline-browser-mapping  >=2.0.0 <2.11.0
+Severity: moderate
+baseline-browser-mapping process termination on invalid input causes denial of service - https://github.com/advisories/GHSA-w5vr-8v7q-w6rv
+fix available via `npm audit fix`
+node_modules/baseline-browser-mapping
+
+body-parser  2.0.0 - 2.3.0
+Severity: high
+body-parser vulnerable to denial of service when invalid limit value silently disables size enforcement - https://github.com/advisories/GHSA-v422-hmwv-36x6
+body-parser vulnerable to Denial of Service via trailing bytes after a compressed request body - https://github.com/advisories/GHSA-27r3-jxmh-p828
+fix available via `npm audit fix`
+node_modules/body-parser
+
+brace-expansion  2.0.0 - 2.1.6 || 3.0.0 - 5.0.11
+Severity: high
+brace-expansion: Zero-step sequence causes process hang and memory exhaustion - https://github.com/advisories/GHSA-f886-m6hf-6m8v
+brace-expansion: Large numeric range defeats documented `max` DoS protection - https://github.com/advisories/GHSA-jxxr-4gwj-5jf2
+brace-expansion: DoS via exponential-time expansion of consecutive non-expanding {} groups - https://github.com/advisories/GHSA-3jxr-9vmj-r5cp
+brace-expansion: DoS via exponential-time expansion of consecutive non-expanding {} groups - https://github.com/advisories/GHSA-3jxr-9vmj-r5cp
+brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash - https://github.com/advisories/GHSA-mh99-v99m-4gvg
+brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash - https://github.com/advisories/GHSA-mh99-v99m-4gvg
+brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation - https://github.com/advisories/GHSA-rgw5-rvv9-x895
+brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation - https://github.com/advisories/GHSA-rgw5-rvv9-x895
+brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service - https://github.com/advisories/GHSA-q2hr-2g5m-vwhr
+brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service - https://github.com/advisories/GHSA-q2hr-2g5m-vwhr
+brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion - https://github.com/advisories/GHSA-qhr7-859c-m2p7
+brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion - https://github.com/advisories/GHSA-qhr7-859c-m2p7
+brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion - https://github.com/advisories/GHSA-6j4f-fj2g-mc7p
+brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion - https://github.com/advisories/GHSA-6j4f-fj2g-mc7p
+fix available via `npm audit fix`
+node_modules/@nestjs-modules/mailer/node_modules/brace-expansion
+node_modules/mjml-cli/node_modules/brace-expansion
+
+browserslist  <=4.28.6
+Severity: high
+Browserslist: Unbounded memory growth (no cache eviction) via distinct query results, leading to eventual OOM - https://github.com/advisories/GHSA-c83g-rgw3-j3cx
+Browserslist: Uncaught crash / prototype write via untrusted browserslist-stats.json custom stats (normalizeStats) - https://github.com/advisories/GHSA-73wf-gq98-2v4g
+fix available via `npm audit fix`
+node_modules/browserslist
+
+colord  <2.9.4
+Severity: moderate
+Colord: Slow rejection of oversized malformed color strings - https://github.com/advisories/GHSA-2wm5-q62r-hmrv
+fix available via `npm audit fix`
+node_modules/colord
+
+deepmerge  >=4.2.0
+deepmerge mergeObject() allows prototype poisoning of returned objects - https://github.com/advisories/GHSA-gcqx-w48m-w2h4
+fix available via `npm audit fix`
+node_modules/deepmerge
+  html-to-text  6.0.0 - 9.0.5
+  Depends on vulnerable versions of deepmerge
+  node_modules/html-to-text
+    mailparser  2.1.0 - 3.9.10
+    Depends on vulnerable versions of html-to-text
+    Depends on vulnerable versions of linkify-it
+    Depends on vulnerable versions of nodemailer
+    node_modules/mailparser
+
+glob  9.0.0 - 14.0.1
+Severity: moderate
+Glob: AbortSignal cancellation bypass allows post-timeout filesystem traversal - https://github.com/advisories/GHSA-3g3m-2fjr-6pw4
+Depends on vulnerable versions of minimatch
+fix available via `npm audit fix --force`
+Will install @nestjs-modules/mailer@1.8.1, which is a breaking change
+node_modules/@nestjs-modules/mailer/node_modules/glob
+node_modules/mjml-cli/node_modules/glob
+  @nestjs-modules/mailer  >=1.9.1
+  Depends on vulnerable versions of glob
+  Depends on vulnerable versions of mjml
+  node_modules/@nestjs-modules/mailer
+  mjml-cli  >=4.15.0
+  Depends on vulnerable versions of glob
+  Depends on vulnerable versions of minimatch
+  node_modules/mjml-cli
+    mjml  >=4.15.0
+    Depends on vulnerable versions of mjml-cli
+    node_modules/mjml
+
+handlebars  3.0.0 - 4.7.9
+Severity: critical
+Handlebars.js has JavaScript Injection via AST Type Confusion by tampering @partial-block - https://github.com/advisories/GHSA-3mfm-83xf-c92r
+Handlebars.js has JavaScript Injection via AST Type Confusion - https://github.com/advisories/GHSA-2w6w-674q-4c4q
+Handlebars.js has Prototype Pollution Leading to XSS through Partial Template Injection - https://github.com/advisories/GHSA-2qvq-rjwj-gvw9
+Handlebars.js has a Prototype Method Access Control Gap via Missing __lookupSetter__ Blocklist Entry - https://github.com/advisories/GHSA-7rx3-28cr-v5wh
+Handlebars.js has a Property Access Validation Bypass in container.lookup - https://github.com/advisories/GHSA-442j-39wm-28r2
+Handlebars.js has JavaScript Injection via AST Type Confusion when passing an object as dynamic partial - https://github.com/advisories/GHSA-xhpv-hc6g-r9c6
+Handlebars.js has Denial of Service via Malformed Decorator Syntax in Template Compilation - https://github.com/advisories/GHSA-9cx6-37pm-9jff
+Handlebars.js has JavaScript Injection in CLI Precompiler via Unescaped Names and Options - https://github.com/advisories/GHSA-xjpj-3mr7-gcpf
+Handlebars: JavaScript Injection via Unsafe Inline Embedding of Precompiled Templates - https://github.com/advisories/GHSA-xw65-4hp5-5hc7
+Handlebars: JavaScript Injection via AST Type Confusion in compile (bypass of CVE-2026-33937) - https://github.com/advisories/GHSA-8r5x-fm3f-whwj
+Handlebars: JavaScript Injection via Own Property Check Bypass - https://github.com/advisories/GHSA-p8wg-vrv2-v86f
+fix available via `npm audit fix`
+node_modules/handlebars
+
+js-yaml  4.0.0 - 4.3.1
+Severity: high
+JS-YAML: Quadratic-complexity DoS in merge key handling via repeated aliases - https://github.com/advisories/GHSA-h67p-54hq-rp68
+js-yaml: YAML merge-key chains can force quadratic CPU consumption - https://github.com/advisories/GHSA-52cp-r559-cp3m
+JS-YAML: Quadratic CPU consumption in !!omap resolution (3.x and 4.x) — CVE-2026-59870 fix not backported - https://github.com/advisories/GHSA-5p4m-2wfm-xmqj
+js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources - https://github.com/advisories/GHSA-2883-xcg3-v3hh
+fix available via `npm audit fix`
+node_modules/js-yaml
+
+linkify-it  <=5.0.1
+Severity: high
+LinkifyIt#match scan loop has quadratic algorithmic complexity - https://github.com/advisories/GHSA-22p9-wv53-3rq4
+linkify-it: Quadratic-complexity DoS via the `mailto:` validator scan-loop on attacker text - https://github.com/advisories/GHSA-v245-v573-v5vm
+fix available via `npm audit fix`
+node_modules/linkify-it
+
+liquidjs  <=10.27.1
+Severity: critical
+LiquidJS: `renderFile()` / `parseFile()` bypass configured `root` and allow arbitrary file read - https://github.com/advisories/GHSA-v273-448j-v4qj
+LiquidJS: ownPropertyOnly bypass via sort_natural filter — prototype property information disclosure through sorting side-channel - https://github.com/advisories/GHSA-rv5g-f82m-qrvv
+LiquidJS Has Memory Limit Bypass via Quadratic Amplification in `replace` Filter - https://github.com/advisories/GHSA-mmg9-6m6j-jqqx
+LiquidJS: Root restriction bypass for partial and layout loading through symlinked templates - https://github.com/advisories/GHSA-56p5-8mhr-2fph
+liquidjs has a Denial of Service via circular block reference in layout - https://github.com/advisories/GHSA-4rc3-7j7w-m548
+LiquidJS is Vulnerable to Remote Code Execution - https://github.com/advisories/GHSA-gf2q-c269-pqgc
+LiquidJS Vulnerable to ReDoS via Quadratic Backtracking in `strip_html` Filter Regex - https://github.com/advisories/GHSA-r7g9-xpmj-5fcq
+LiquidJS: `pop` filter bypasses `memoryLimit` accounting that its array-filter siblings enforce - https://github.com/advisories/GHSA-g357-x5c3-c72p
+LiquidJS: Uncontrolled Resource Consumption in `join` filter allows template authors to bypass `memoryLimit` and crash the process - https://github.com/advisories/GHSA-4r6h-5v86-94p3
+LiquidJS: ownPropertyOnly bypass for inherited array indices in first/last/join/reverse/slice/compact, `.first`/`.last`, negative index, and for-loop iteration - https://github.com/advisories/GHSA-fwxr-j5w2-587m
+LiquidJS's `{% render %}` tag silently bypasses per-render `ownPropertyOnly:true` via `Context.spawn()` - https://github.com/advisories/GHSA-9x9p-qf8f-mvjg
+LiquidJS has a renderLimit DoS guard bypass via empty `{% for %}` body - https://github.com/advisories/GHSA-8xx9-69p8-7jp3
+LiquidJS's strip_html filter bypass via newline characters in HTML tags enables XSS - https://github.com/advisories/GHSA-2qv6-9wx5-cwv4
+LiquidJS has a memory and render limit bypass via unbounded width padding in `date` filter (strftime) - https://github.com/advisories/GHSA-hh27-hf48-9f5q
+fix available via `npm audit fix`
+node_modules/liquidjs
+
+lodash  4.0.0 - 4.17.23
+Severity: high
+lodash vulnerable to Code Injection via `_.template` imports key names - https://github.com/advisories/GHSA-r5fr-rjxr-66jc
+lodash vulnerable to prototype pollution via array-path bypass in `_.unset`, `_.omit`, and `_.pullAt - https://github.com/advisories/GHSA-f23m-r3pf-42rh
+fix available via `npm audit fix`
+node_modules/lodash
+  @nestjs/config  1.1.6 - 4.0.3
+  Depends on vulnerable versions of lodash
+  node_modules/@nestjs/config
+
+minimatch  7.0.0 - 11.0.0
+Severity: moderate
+minimatch has potential denial of service via globparts amplification - https://github.com/advisories/GHSA-g3hv-75wg-m249
+fix available via `npm audit fix --force`
+Will install @nestjs-modules/mailer@1.8.1, which is a breaking change
+node_modules/@nestjs-modules/mailer/node_modules/minimatch
+node_modules/mjml-cli/node_modules/minimatch
+
+multer  <=2.4.0
+Severity: high
+Multer vulnerable to Denial of Service via deeply nested field names - https://github.com/advisories/GHSA-72gw-mp4g-v24j
+Multer vulnerable to Denial of Service via incomplete cleanup of aborted uploads - https://github.com/advisories/GHSA-3p4h-7m6x-2hcm
+multer vulnerable to Denial of Service via crafted multipart field names - https://github.com/advisories/GHSA-wc9g-mqfw-jrwm
+multer vulnerable to file size limit bypass via async fileFilter race condition - https://github.com/advisories/GHSA-qvfw-j98x-7q72
+multer vulnerable to Denial of Service via oversized array index in field names - https://github.com/advisories/GHSA-535w-7cp7-47q4
+multer vulnerable to Denial of Service via a pending asynchronous fileFilter after request teardown - https://github.com/advisories/GHSA-q7qp-rjg7-q26m
+fix available via `npm audit fix`
+node_modules/multer
+  @nestjs/platform-express  <=11.1.27 || 12.0.0-alpha.0 - 12.0.0-alpha.7
+  Depends on vulnerable versions of multer
+  Depends on vulnerable versions of path-to-regexp
+  node_modules/@nestjs/platform-express
+
+nanoid  <=3.3.17
+Severity: high
+nanoid: non-secure generators can loop indefinitely with negative size - https://github.com/advisories/GHSA-28wg-ghj8-5hjv
+nanoid: custom generators can loop indefinitely when size is zero - https://github.com/advisories/GHSA-2v37-7h3g-55p8
+nanoid: Integer Overflow or Wraparound - https://github.com/advisories/GHSA-xwg4-73v4-xw9w
+fix available via `npm audit fix`
+node_modules/nanoid
+
+nodemailer  <=10.1.3
+Severity: high
+Nodemailer has SMTP command injection due to unsanitized `envelope.size` parameter - https://github.com/advisories/GHSA-c7w3-x93f-qmm8
+Nodemailer Vulnerable to SMTP Command Injection via CRLF in Transport name Option (EHLO/HELO)  - https://github.com/advisories/GHSA-vvjj-xcjg-gr5g
+Nodemailer: CRLF injection in Nodemailer List-* header comments allows arbitrary message header injection - https://github.com/advisories/GHSA-268h-hp4c-crq3
+Nodemailer jsonTransport bypasses disableFileAccess and disableUrlAccess during message normalization - https://github.com/advisories/GHSA-wqvq-jvpq-h66f
+Nodemailer: Message-level raw option bypasses disableFileAccess/disableUrlAccess, enabling arbitrary file read and full-response SSRF in the delivered message - https://github.com/advisories/GHSA-p6gq-j5cr-w38f
+Nodemailer: resolveContent() on a MailMessage bypasses disableFileAccess/disableUrlAccess when called with the legacy signature - https://github.com/advisories/GHSA-8m3c-c648-2xjj
+Nodemailer: IDN/Punycode domain allow-list bypass leads to email delivery to an attacker-controlled domain - https://github.com/advisories/GHSA-wmmp-3585-3rmp
+Nodemailer: Quadratic (O(n²)) time complexity in addressparser allows remote denial of service via a crafted address list - https://github.com/advisories/GHSA-2x7j-588g-ccc2
+Nodemailer: Recipient-domain validation bypass via RFC 5322 comment mis-parsing leads to email delivery to an attacker-controlled domain - https://github.com/advisories/GHSA-cc9r-2j5m-2m83
+Nodemailer: Process-global DNS cache reuses TLS `servername` across transports, enabling cross-tenant SMTP credential disclosure - https://github.com/advisories/GHSA-6vj9-mwq6-2f5v
+Nodemailer: Nested structured recipient arrays bypass the parser depth limit and cause stack exhaustion DoS - https://github.com/advisories/GHSA-8vvx-rff5-p5rq
+Nodemailer: Quadratic backtracking in the addressparser free-text fallback allows remote denial of service - https://github.com/advisories/GHSA-v53p-9fqp-m79j
+Nodemailer: Improper TLS Certificate Validation in OAuth2 Token Fetch Enables Credential Interception - https://github.com/advisories/GHSA-r7g4-qg5f-qqm2
+Nodemailer: Quadratic (O(n^2)) DKIM header unfolding lets a large folded header cause remote denial of service during signing - https://github.com/advisories/GHSA-39m8-27wv-hr27
+Nodemailer: A nested comment ends early in addressparser, releasing the rest of the comment as a recipient - https://github.com/advisories/GHSA-8c8m-p3m8-cjg8
+Nodemailer: A ";" inside a quoted string or comment ends an address group early in addressparser, turning display text into a recipient - https://github.com/advisories/GHSA-m943-m63m-w62w
+Nodemailer: A ">" inside a quoted local part ends an angle-addr early in addressparser, delivering to a domain the header does not name - https://github.com/advisories/GHSA-85x2-q946-cp5h
+Nodemailer: Quadratic backtracking in SMTP AUTH mechanism detection regexes allows pre-auth remote denial of service - https://github.com/advisories/GHSA-4ffr-jq9g-5ffx
+Nodemailer: RFC 5322 comment inside an angle-bracket address is never stripped - https://github.com/advisories/GHSA-g73g-hqqh-jr95
+Nodemailer: Quadratic (O(n^2)) SMTP client reply parsing lets a malicious server or MITM cause a pre-auth remote denial of service - https://github.com/advisories/GHSA-4g23-2xm8-66gc
+fix available via `npm audit fix --force`
+Will install nodemailer@10.5.0, which is a breaking change
+node_modules/mailparser/node_modules/nodemailer
+node_modules/nodemailer
+node_modules/preview-email/node_modules/nodemailer
+  preview-email  <=3.2.0
+  Depends on vulnerable versions of nodemailer
+  Depends on vulnerable versions of uuid
+  node_modules/preview-email
+
+path-to-regexp  8.0.0 - 8.3.0
+Severity: high
+path-to-regexp vulnerable to Denial of Service via sequential optional groups - https://github.com/advisories/GHSA-j3q9-mxjg-w52f
+path-to-regexp vulnerable to Regular Expression Denial of Service via multiple wildcards - https://github.com/advisories/GHSA-27v5-c462-wpq7
+fix available via `npm audit fix`
+node_modules/path-to-regexp
+
+postcss  <=8.5.22
+Severity: high
+PostCSS has XSS via Unescaped </style> in its CSS Stringify Output - https://github.com/advisories/GHSA-qx2v-qp2m-jg93
+PostCSS: Arbitrary file read and information disclosure via attacker-controlled sourceMappingURL in CSS comments - https://github.com/advisories/GHSA-6g55-p6wh-862q
+PostCSS: incomplete fix of GHSA-6g55-p6wh-862q — attacker-controlled sourceMappingURL reads arbitrary .map files when `from` is unset - https://github.com/advisories/GHSA-fxqj-rqcc-2cmp
+PostCSS: Path Traversal in Previous Source Map Auto-Loading (sourceMappingURL) leads to Arbitrary .map File Disclosure - https://github.com/advisories/GHSA-r28c-9q8g-f849
+fix available via `npm audit fix`
+node_modules/postcss
+
+postcss-selector-parser  7.0.0 - 7.1.5
+Severity: moderate
+postcss-selector-parser allows denial of service through uncontrolled AST recursion - https://github.com/advisories/GHSA-w9m9-85wc-3x92
+PostCSS: Quadratic complexity in flat selector parsing allows CPU exhaustion - https://github.com/advisories/GHSA-rj75-hqrm-r3gf
+fix available via `npm audit fix`
+node_modules/postcss-selector-parser
+
+proxy-addr  1.1.0 - 2.0.7
+Severity: critical
+proxy-addr vulnerable to IP spoofing via IPv4-mapped IPv6 trust subnet - https://github.com/advisories/GHSA-jqcg-44mw-7w3h
+fix available via `npm audit fix`
+node_modules/proxy-addr
+
+qs  2.2.5 - 6.16.0
+Severity: moderate
+qs has a remotely triggerable DoS: qs.stringify crashes with TypeError on null/undefined entries in comma-format arrays when encodeValuesOnly is set - https://github.com/advisories/GHSA-q8mj-m7cp-5q26
+qs array-limit bypass via bracket-key comma parsing - https://github.com/advisories/GHSA-x5fp-wj9c-mxmx
+qs: Denial of Service via Attacker Controlled isBuffer - https://github.com/advisories/GHSA-4mjr-xmp4-gh2g
+qs : qs.stringify with arrayFormat 'comma' throws an uncaught TypeError on array elements carrying a non-callable own toString (DoS) - https://github.com/advisories/GHSA-6pq8-jhm2-2vcw
+fix available via `npm audit fix`
+node_modules/qs
+
+source-map-js  1.0.0 - 1.2.1
+Severity: high
+source-map-js allows event-loop denial of service through indexed source-map section offsets - https://github.com/advisories/GHSA-68fv-2mgg-jv7q
+fix available via `npm audit fix`
+node_modules/source-map-js
+
+svgo  4.0.0 - 4.0.2
+Severity: high
+SVGO removeScripts plugin leaves some executable scripts intact - https://github.com/advisories/GHSA-2p49-hgcm-8545
+SVGO: removeScripts incompletely sanitizes executable HTML in SVG foreignObject elements - https://github.com/advisories/GHSA-4vpr-x523-8j87
+SVGO: removeScripts allows executable links through namespace and control-character bypasses - https://github.com/advisories/GHSA-w27v-7q3p-w38r
+fix available via `npm audit fix`
+node_modules/svgo
+
+undici  <=6.29.0
+Severity: high
+undici vulnerable to HTTP header injection via Set-Cookie percent-decoding - https://github.com/advisories/GHSA-p88m-4jfj-68fv
+undici vulnerable to Set-Cookie SameSite attribute downgrade via permissive substring matching - https://github.com/advisories/GHSA-g8m3-5g58-fq7m
+undici vulnerable to downstream response desynchronization via retry interceptor - https://github.com/advisories/GHSA-8xcm-r25x-g524
+undici vulnerable to CRLF Injection via blob-like body 'type' property - https://github.com/advisories/GHSA-m8rv-5g2x-5cg5
+undici vulnerable to cookie attribute injection via unsanitized domain and unparsed setCookie fields - https://github.com/advisories/GHSA-v3r7-h72x-cjcm
+undici vulnerable to HTTP response queue poisoning via keep-alive socket reuse - https://github.com/advisories/GHSA-35p6-xmwp-9g52
+undici vulnerable to downstream response splitting via retry interceptor - https://github.com/advisories/GHSA-r53p-7pc4-xj5r
+undici vulnerable to Denial of Service via unrequested WebSocket subprotocol - https://github.com/advisories/GHSA-rfgv-xxqx-mfg5
+undici vulnerable to Denial of Service via unbounded memory in the EventSource parser - https://github.com/advisories/GHSA-4qv8-2p9j-2685
+undici vulnerable to Denial of Service via unhandled error on excessive content-encodings - https://github.com/advisories/GHSA-xjj6-f33q-929c
+undici vulnerable to TLS certificate validation bypass via dropped tls options in Agent - https://github.com/advisories/GHSA-2m5v-pch6-74hx
+undici vulnerable to Denial of Service via TLS 1.2 certificate-changing renegotiation - https://github.com/advisories/GHSA-qrxm-fqhp-jwvm
+undici WebSocket client vulnerable to Denial of Service via unbounded automatic PONG buffering - https://github.com/advisories/GHSA-9fm3-97px-rjf6
+undici WebSocket client vulnerable to denial of service via fragment count bypass - https://github.com/advisories/GHSA-vxpw-j846-p89q
+fix available via `npm audit fix`
+node_modules/undici
+
+uuid  <11.1.1
+Severity: moderate
+uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided - https://github.com/advisories/GHSA-w5hq-g745-h8pq
+fix available via `npm audit fix`
+node_modules/svix/node_modules/uuid
+node_modules/uuid
+  svix  1.68.0 - 1.91.1
+  Depends on vulnerable versions of uuid
+  node_modules/svix
+    resend  6.2.0-canary.0 - 6.12.2
+    Depends on vulnerable versions of svix
+    node_modules/resend
+
+ws  8.0.0 - 8.20.1
+Severity: high
+ws: Uninitialized memory disclosure - https://github.com/advisories/GHSA-58qx-3vcg-4xpx
+ws: Memory exhaustion DoS from tiny fragments and data chunks - https://github.com/advisories/GHSA-96hv-2xvq-fx4p
+fix available via `npm audit fix`
+node_modules/ws
+
+38 vulnerabilities (3 low, 12 moderate, 20 high, 3 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force

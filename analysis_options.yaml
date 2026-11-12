@@ -14,6 +14,8 @@ analyzer:
     # Entregables originales de las prácticas: se analizan en su propio proyecto.
     - "Practica para implementar en la app/**"
     - build/**
+    # Copias de entrega de las pruebas de la Práctica 11 (los originales están en test/).
+    - "p11yp12/**"
 
 linter:
   # The lint rules applied to this project can be customized in the

@@ -1,0 +1,33 @@
+00:00 +0: loading C:/CESAR10cuatri/CEOSMOS.MovilIntegral/integration_test/p11_red_test.dart
+Running Gradle task 'assembleDebug'...                             61.6s
+✓ Built build\app\outputs\flutter-apk\app-debug.apk
+Installing build\app\outputs\flutter-apk\app-debug.apk...          12.4s
+00:00 +0: P11 red: latencia, transferencia e interrupción desde el S24
+P11_JSON {"tipo":"entorno","fecha":"2026-11-11T20:16:50.839924","so":"android","version_so":"BP4A.251205.006.S721BXXSEDZI1","api":"http://localhost:8080/api","app":"ceosmos_movil_integral 1.1.0+2 (debug, integration_test)"}
+P11_JSON {"tipo":"http_10","n":1,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":25.953,"bytes":1479,"items":4}
+P11_JSON {"tipo":"http_10","n":2,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":14.115,"bytes":1479,"items":4}
+P11_JSON {"tipo":"http_10","n":3,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":12.445,"bytes":1479,"items":4}
+P11_JSON {"tipo":"http_10","n":4,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":19.922,"bytes":1479,"items":4}
+P11_JSON {"tipo":"http_10","n":5,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":12.263,"bytes":1479,"items":4}
+P11_JSON {"tipo":"http_10","n":6,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":11.919,"bytes":1479,"items":4}
+P11_JSON {"tipo":"http_10","n":7,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":12.218,"bytes":1479,"items":4}
+P11_JSON {"tipo":"http_10","n":8,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":17.294,"bytes":1479,"items":4}
+P11_JSON {"tipo":"http_10","n":9,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":12.921,"bytes":1479,"items":4}
+P11_JSON {"tipo":"http_10","n":10,"endpoint":"GET /api/focus-sessions?limit=50","status":200,"ms":11.83,"bytes":1479,"items":4}
+P11_JSON {"tipo":"descarga","n":1,"origen":"API local (USB, adb reverse)","recurso":"GET /api/focus-sessions?limit=100","status":200,"bytes":1479,"s":0.011066,"mbps":1.0692210374118922}
+P11_JSON {"tipo":"descarga","n":2,"origen":"API local (USB, adb reverse)","recurso":"GET /api/focus-sessions?limit=100","status":200,"bytes":1479,"s":0.011109,"mbps":1.0650823656494735}
+P11_JSON {"tipo":"descarga","n":3,"origen":"API local (USB, adb reverse)","recurso":"GET /api/focus-sessions?limit=100","status":200,"bytes":1479,"s":0.010119,"mbps":1.169285502520012}
+P11_JSON {"tipo":"descarga","n":1,"origen":"Sitio web CEOSMOS (Vercel, Wi-Fi + Internet)","recurso":"main.e5355dbf8f1d3c6d.js","status":200,"bytes":637412,"s":0.451826,"mbps":11.285972918778468}
+P11_JSON {"tipo":"descarga","n":2,"origen":"Sitio web CEOSMOS (Vercel, Wi-Fi + Internet)","recurso":"main.e5355dbf8f1d3c6d.js","status":200,"bytes":637412,"s":0.341942,"mbps":14.912751285305694}
+P11_JSON {"tipo":"descarga","n":3,"origen":"Sitio web CEOSMOS (Vercel, Wi-Fi + Internet)","recurso":"main.e5355dbf8f1d3c6d.js","status":200,"bytes":637412,"s":0.376679,"mbps":13.537510718675584}
+P11_JSON {"tipo":"subida","n":1,"destino":"POST /api/focus-sessions (USB, adb reverse)","status":400,"bytes":100226,"s":0.067702,"mbps":11.843195178872115}
+P11_JSON {"tipo":"subida","n":2,"destino":"POST /api/focus-sessions (USB, adb reverse)","status":400,"bytes":100226,"s":0.031933,"mbps":25.109072119750728}
+P11_JSON {"tipo":"subida","n":3,"destino":"POST /api/focus-sessions (USB, adb reverse)","status":400,"bytes":100226,"s":0.032877,"mbps":24.388113270675547}
+P11_JSON {"tipo":"subida_ids","ids":[]}
+P11_MARK CORTAR
+P11_JSON {"tipo":"interrupcion","detectado":true,"ms_hasta_error":41.429,"mostrada_como_guardada":false,"pendientes":1,"aviso":"La sesión se guardará cuando vuelva la conexión (No hay conexión con el servidor de CEOSMOS. Revisa tu red.)"}
+P11_JSON {"tipo":"reintento_sin_red","pendientes":1,"error":"No hay conexión con el servidor de CEOSMOS. Revisa tu red."}
+P11_MARK RECONECTAR
+P11_JSON {"tipo":"recuperacion","s_hasta_reconectar":5.964,"pendientes":0,"sesiones_antes":0,"sesiones_despues":1,"duplicados":0,"sincronizada":true}
+00:12 +1: (tearDownAll)
+00:13 +1: All tests passed!

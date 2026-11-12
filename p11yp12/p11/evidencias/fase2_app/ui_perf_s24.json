@@ -1,0 +1,25 @@
+{
+  "cuadros": 752,
+  "duracion_s": 23.758,
+  "build": {
+    "promedio_ms": 1.8127925531914895,
+    "p50_ms": 0.422,
+    "p90_ms": 5.587,
+    "p99_ms": 11.124,
+    "max_ms": 87.529
+  },
+  "raster": {
+    "promedio_ms": 3.5701436170212784,
+    "p50_ms": 3.092,
+    "p90_ms": 5.844,
+    "p99_ms": 11.292,
+    "max_ms": 26.411
+  },
+  "presupuesto_ms_120hz": 8.333333333333334,
+  "cuadros_build_sobre_presupuesto": 34,
+  "cuadros_raster_sobre_presupuesto": 18,
+  "cuadros_build_sobre_16_7ms": 4,
+  "cuadros_raster_sobre_16_7ms": 5,
+  "carga_inicial_ms": 984,
+  "sesiones_en_historial": 50
+}

@@ -1,0 +1,31 @@
+# Práctica 11 · Fase 1: reglas adicionales para la revisión White Box.
+# Se aplican temporalmente sobre analysis_options.yaml (ver scripts/fase1_estatico.sh).
+include: package:flutter_lints/flutter.yaml
+analyzer:
+  exclude:
+    - "Practica para implementar en la app/**"
+    - build/**
+  language:
+    strict-casts: true
+    strict-raw-types: true
+linter:
+  rules:
+    # Recursos no liberados
+    cancel_subscriptions: true
+    close_sinks: true
+    # Futures sin esperar (excepciones no controladas / condiciones de carrera)
+    unawaited_futures: true
+    discarded_futures: true
+    # Manejo de excepciones
+    avoid_catches_without_on_clauses: true
+    avoid_catching_errors: true
+    only_throw_errors: true
+    # Llamadas dinámicas sin validar (datos de red sin tipar)
+    avoid_dynamic_calls: true
+    # E/S que bloquea el hilo de la UI
+    avoid_slow_async_io: true
+    avoid_print: true
+    # Código redundante / inaccesible
+    unnecessary_statements: true
+    no_adjacent_strings_in_list: true
+    use_build_context_synchronously: true

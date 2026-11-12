@@ -1,0 +1,31 @@
+-------------------------------|---------|----------|---------|---------|-------------------
+File                           | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s 
+-------------------------------|---------|----------|---------|---------|-------------------
+All files                      |   80.67 |    71.71 |   72.97 |   81.08 |                   
+ auth                          |   86.66 |    84.61 |   66.66 |   84.61 |                   
+  jwt-auth.guard.ts            |   77.77 |    83.33 |      50 |   71.42 | 14,23             
+  jwt-secret.ts                |     100 |    85.71 |     100 |     100 | 11                
+ common/filters                |   95.23 |     82.6 |     100 |     100 |                   
+  http-exception.filter.ts     |   95.23 |     82.6 |     100 |     100 | 30,42-55          
+ devices                       |     100 |    89.28 |     100 |     100 |                   
+  devices.controller.ts        |     100 |    89.28 |     100 |     100 | 31-42,66          
+ devices/dto                   |     100 |       50 |     100 |     100 |                   
+  devices.dto.ts               |     100 |       50 |     100 |     100 | 23-38             
+ favorites                     |     100 |       90 |     100 |     100 |                   
+  favorites.controller.ts      |     100 |       90 |     100 |     100 | 27                
+ focus-sessions                |      70 |    61.11 |   57.14 |   70.58 |                   
+  focus-sessions.controller.ts |       0 |        0 |       0 |       0 | 1-35              
+  focus-sessions.service.ts    |     100 |    91.66 |     100 |     100 | 8,66              
+ focus-sessions/dto            |     100 |    66.66 |     100 |     100 |                   
+  focus-sessions.dto.ts        |     100 |    66.66 |     100 |     100 | 64                
+ media                         |   58.82 |    53.57 |   55.55 |   58.62 |                   
+  media.controller.ts          |       0 |        0 |       0 |       0 | 1-44              
+  media.service.ts             |     100 |    93.75 |     100 |     100 | 14                
+ media/dto                     |       0 |      100 |       0 |       0 |                   
+  media.dto.ts                 |       0 |      100 |       0 |       0 | 1-36              
+-------------------------------|---------|----------|---------|---------|-------------------
+Test Suites: 5 passed, 5 total
+Tests:       64 passed, 64 total
+Snapshots:   0 total
+Time:        17.561 s
+Ran all test suites.

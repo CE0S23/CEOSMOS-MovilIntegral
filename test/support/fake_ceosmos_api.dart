@@ -129,6 +129,9 @@ class FakeCeosmosApi {
         final ordenadas = [...u.sessions]..sort((a, b) => '${b['startedAt']}'.compareTo('${a['startedAt']}'));
         return _json(200, ordenadas);
       case ('POST', '/focus-sessions'):
+        // Igual que la API corregida (P11-D01): mismo clientId → misma sesión.
+        final previa = u.sessions.where((x) => body['clientId'] != null && x['clientId'] == body['clientId']).firstOrNull;
+        if (previa != null) return _json(201, previa);
         final s = {...body, 'id': 'fs-${++_seq}'};
         u.sessions.add(s);
         return _json(201, s);
@@ -144,6 +147,10 @@ class FakeCeosmosApi {
       case ('GET', '/media'):
         return _json(200, u.media);
       case ('POST', '/media'):
+        if (u.media.any((m) => (body['externalId'] != null && m['externalId'] == body['externalId']) ||
+            (body['url'] != null && m['url'] == body['url']))) {
+          return _error(409, 'This image URL is already saved');
+        }
         final m = {...body, 'id': 'm-${++_seq}'};
         u.media.insert(0, m);
         return _json(201, m);
@@ -167,7 +174,7 @@ class FakeCeosmosApi {
     }
     if (path.startsWith('/media/') && req.method == 'DELETE') {
       u.media.removeWhere((m) => m['id'] == path.substring('/media/'.length));
-      return _json(200, {'message': 'deleted'});
+      return _json(204, null);
     }
     return _error(404, 'Recurso no encontrado');
   }

@@ -1,0 +1,43 @@
+== SesiÃ³n A: BEGIN; UPDATE (toma el bloqueo de fila); espera 3 s; COMMIT ==
+El despliegue de duración está activado.
+== SesiÃ³n B (0.7 s despuÃ©s): UPDATE de la misma fila ==
+El despliegue de duración está activado.
+BEGIN
+UPDATE 1
+ pg_sleep 
+----------
+ 
+(1 fila)
+
+COMMIT
+           inicio_b           
+------------------------------
+ 2026-11-11 18:52:58.63139-06
+(1 fila)
+
+UPDATE 1
+             fin_b             
+-------------------------------
+ 2026-11-11 18:53:00.862015-06
+(1 fila)
+
+Duración: 3013.997 ms (00:03.014)
+Duración: 2232.984 ms (00:02.233)
+== Valor final ==
+     name      
+---------------
+ Escrito por B
+(1 fila)
+
+== Con lock_timeout = 1 s, B no espera indefinidamente ==
+El despliegue de duración está activado.
+SET
+ERROR:  canceling statement due to lock timeout
+CONTEXTO:  while updating tuple (0,25) in relation "LinkedDevice"
+Duración: 1017.548 ms (00:01.018)
+ name 
+------
+ A2
+(1 fila)
+
+DELETE 1

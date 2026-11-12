@@ -1,0 +1,681 @@
+diff --git a/ceosmos-api/package.json b/ceosmos-api/package.json
+index 433ed07..2bc8cae 100644
+--- a/ceosmos-api/package.json
++++ b/ceosmos-api/package.json
+@@ -24,8 +24,7 @@
+   },
+   "dependencies": {
+     "@neondatabase/serverless": "^0.10.4",
+-    "@nestjs-modules/mailer": "^2.3.0",
+-    "@nestjs/common": "^11.0.1",
++    "@nestjs/common": "^11.2.9",
+     "@nestjs/config": "^4.0.3",
+     "@nestjs/core": "^11.0.1",
+     "@nestjs/jwt": "^11.0.2",
+@@ -35,14 +34,12 @@
+     "@prisma/adapter-neon": "^5.22.0",
+     "@prisma/client": "^5.22.0",
+     "@simplewebauthn/server": "^13.3.0",
+-    "@types/nodemailer": "^7.0.11",
+     "bcrypt": "^6.0.0",
+     "class-transformer": "^0.5.1",
+     "class-validator": "^0.15.1",
+     "cookie-parser": "^1.4.7",
+     "dotenv": "^17.3.1",
+     "helmet": "^8.1.0",
+-    "nodemailer": "^8.0.4",
+     "passport": "^0.7.0",
+     "passport-jwt": "^4.0.1",
+     "pg": "^8.22.0",
+@@ -57,7 +54,7 @@
+     "@eslint/js": "^9.18.0",
+     "@nestjs/cli": "^11.0.0",
+     "@nestjs/schematics": "^11.0.0",
+-    "@nestjs/testing": "^11.0.1",
++    "@nestjs/testing": "^11.2.9",
+     "@types/bcrypt": "^6.0.0",
+     "@types/express": "^5.0.0",
+     "@types/jest": "^30.0.0",
+diff --git a/ceosmos-api/prisma/schema.prisma b/ceosmos-api/prisma/schema.prisma
+index 728f797..e2d0b91 100644
+--- a/ceosmos-api/prisma/schema.prisma
++++ b/ceosmos-api/prisma/schema.prisma
+@@ -70,6 +70,9 @@ model Session {
+   createdAt DateTime @default(now())
+ 
+   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
++
++  // Login (borra las sesiones previas) y /users/me/sessions buscan por usuario (P11-D03).
++  @@index([userId])
+ }
+ 
+ model EmailToken {
+@@ -110,6 +113,9 @@ model MediaItem {
+   createdAt  DateTime  @default(now())
+ 
+   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
++
++  // Biblioteca por usuario ordenada por fecha (P11-D03).
++  @@index([userId, createdAt])
+ }
+ 
+ enum MediaType {
+@@ -193,11 +199,14 @@ model FocusSession {
+   completed       Boolean   @default(false)
+   /// Datos variables (p. ej. métricas del wearable durante la sesión).
+   metadata        Json?
++  /// UUID generado por la app antes del primer envío: hace idempotente el reintento (P11-D01).
++  clientId        String?
+   createdAt       DateTime  @default(now())
+ 
+   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+ 
+   @@index([userId, startedAt])
++  @@unique([userId, clientId])
+ }
+ 
+ model Favorite {
+diff --git a/ceosmos-api/src/app.module.ts b/ceosmos-api/src/app.module.ts
+index a8ffe21..c11ead4 100644
+--- a/ceosmos-api/src/app.module.ts
++++ b/ceosmos-api/src/app.module.ts
+@@ -27,7 +27,8 @@ import { DevicesModule } from './devices/devices.module';
+       // 10/min (AuthController); un cliente móvil hace varias lecturas al abrir.
+       {
+         ttl: 60000,
+-        limit: 120,
++        // THROTTLE_LIMIT solo se sube en el entorno local de pruebas de carga.
++        limit: Number(process.env.THROTTLE_LIMIT) || 120,
+       },
+     ]),
+     PrismaModule,
+diff --git a/ceosmos-api/src/auth/auth.module.ts b/ceosmos-api/src/auth/auth.module.ts
+index 7c1f2cc..c681169 100644
+--- a/ceosmos-api/src/auth/auth.module.ts
++++ b/ceosmos-api/src/auth/auth.module.ts
+@@ -7,13 +7,17 @@ import { JwtStrategy } from './jwt.strategy';
+ import { JwtAuthGuard } from './jwt-auth.guard';
+ import { MailModule } from '../mail/mail.module';
+ import { SessionsModule } from '../sessions/sessions.module';
++import { jwtSecret } from './jwt-secret';
+ 
+ @Module({
+   imports: [
+     PassportModule.register({ defaultStrategy: 'jwt' }),
+-    JwtModule.register({
+-      secret: process.env.JWT_SECRET ?? 'changeme',
+-      signOptions: { expiresIn: '7d' },
++    // registerAsync: el secreto se lee al crear el módulo, con el .env ya cargado (P11-D06).
++    JwtModule.registerAsync({
++      useFactory: () => ({
++        secret: jwtSecret(),
++        signOptions: { expiresIn: '7d' },
++      }),
+     }),
+     MailModule,
+     SessionsModule,
+diff --git a/ceosmos-api/src/auth/jwt-auth.guard.ts b/ceosmos-api/src/auth/jwt-auth.guard.ts
+index 9de873e..3214d90 100644
+--- a/ceosmos-api/src/auth/jwt-auth.guard.ts
++++ b/ceosmos-api/src/auth/jwt-auth.guard.ts
+@@ -1,4 +1,8 @@
+-import { Injectable, ExecutionContext, UnauthorizedException } from '@nestjs/common';
++import {
++  Injectable,
++  ExecutionContext,
++  UnauthorizedException,
++} from '@nestjs/common';
+ import { AuthGuard } from '@nestjs/passport';
+ import { Observable } from 'rxjs';
+ 
+@@ -10,9 +14,11 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
+     return super.canActivate(context);
+   }
+ 
+-  handleRequest<TUser = any>(err: any, user: TUser, info: any): TUser {
++  handleRequest<TUser = any>(err: any, user: TUser): TUser {
+     if (err || !user) {
+-      throw err ?? new UnauthorizedException(info?.message ?? 'Unauthorized');
++      // P11-D05: no se devuelve el mensaje interno de passport-jwt ("jwt malformed",
++      // "invalid signature", "jwt expired"); los errores propios (sesión revocada) sí.
++      throw err ?? new UnauthorizedException('Unauthorized');
+     }
+     return user;
+   }
+diff --git a/ceosmos-api/src/auth/jwt.strategy.ts b/ceosmos-api/src/auth/jwt.strategy.ts
+index 2e980cd..b0d8c38 100644
+--- a/ceosmos-api/src/auth/jwt.strategy.ts
++++ b/ceosmos-api/src/auth/jwt.strategy.ts
+@@ -4,6 +4,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
+ import { createHash } from 'crypto';
+ import { PrismaService } from '../prisma/prisma.service';
+ import { User } from '@prisma/client';
++import { jwtSecret } from './jwt-secret';
+ 
+ interface JwtPayload {
+   userId: string;
+@@ -19,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
+         (request: any) => request?.cookies?.Authentication ?? null,
+       ]),
+       ignoreExpiration: false,
+-      secretOrKey: process.env.JWT_SECRET ?? 'changeme',
++      secretOrKey: jwtSecret(), // falla al arrancar si no hay secreto válido (P11-D06)
+     });
+   }
+ 
+diff --git a/ceosmos-api/src/common/filters/http-exception.filter.ts b/ceosmos-api/src/common/filters/http-exception.filter.ts
+index eb1f0da..7500274 100644
+--- a/ceosmos-api/src/common/filters/http-exception.filter.ts
++++ b/ceosmos-api/src/common/filters/http-exception.filter.ts
+@@ -4,21 +4,44 @@ import {
+   ArgumentsHost,
+   HttpException,
+   HttpStatus,
++  Logger,
+ } from '@nestjs/common';
+ import type { Response } from 'express';
+ 
+-@Catch(HttpException)
++/**
++ * Formato único de error: { statusCode, message, error } (P11-D05).
++ * Antes solo se capturaba HttpException; los errores de body-parser (413, JSON
++ * inválido) y los no controlados salían con otro formato. Ahora todo pasa por aquí
++ * y los errores inesperados se registran en el log sin exponer detalles al cliente.
++ */
++@Catch()
+ export class HttpExceptionFilter implements ExceptionFilter {
+-  catch(exception: HttpException, host: ArgumentsHost) {
+-    const ctx = host.switchToHttp();
+-    const response = ctx.getResponse<Response>();
+-    const status = exception.getStatus();
+-    const exceptionResponse = exception.getResponse();
++  private readonly logger = new Logger('Errores');
+ 
+-    const message =
+-      typeof exceptionResponse === 'object' && 'message' in exceptionResponse
+-        ? (exceptionResponse as any).message
+-        : exception.message;
++  catch(exception: unknown, host: ArgumentsHost) {
++    const response = host.switchToHttp().getResponse<Response>();
++    let status: number = HttpStatus.INTERNAL_SERVER_ERROR;
++    let message: unknown = 'Internal server error';
++
++    if (exception instanceof HttpException) {
++      status = exception.getStatus();
++      const r = exception.getResponse();
++      message =
++        typeof r === 'object' && r !== null && 'message' in r
++          ? r.message
++          : exception.message;
++    } else if (esErrorDeCuerpo(exception)) {
++      // body-parser: 413 entity.too.large, 400 entity.parse.failed, etc.
++      status = exception.status;
++      message =
++        exception.status === 413
++          ? 'Request body too large'
++          : 'Invalid request body';
++    } else {
++      this.logger.error(
++        exception instanceof Error ? exception.stack : String(exception),
++      );
++    }
+ 
+     response.status(status).json({
+       statusCode: status,
+@@ -27,3 +50,14 @@ export class HttpExceptionFilter implements ExceptionFilter {
+     });
+   }
+ }
++
++function esErrorDeCuerpo(e: unknown): e is { status: number; type: string } {
++  if (typeof e !== 'object' || e === null) return false;
++  const { type, status } = e as { type?: unknown; status?: unknown };
++  return (
++    typeof type === 'string' &&
++    typeof status === 'number' &&
++    status >= 400 &&
++    status < 500
++  );
++}
+diff --git a/ceosmos-api/src/favorites/favorites.controller.ts b/ceosmos-api/src/favorites/favorites.controller.ts
+index 2528c3f..64e144c 100644
+--- a/ceosmos-api/src/favorites/favorites.controller.ts
++++ b/ceosmos-api/src/favorites/favorites.controller.ts
+@@ -10,6 +10,7 @@ import {
+   Req,
+   UseGuards,
+ } from '@nestjs/common';
++import { Prisma } from '@prisma/client';
+ import type { Request } from 'express';
+ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+ import { PrismaService } from '../prisma/prisma.service';
+@@ -26,7 +27,8 @@ export class FavoritesController {
+   constructor(private readonly prisma: PrismaService) {}
+ 
+   private key(value: string) {
+-    if (!CONTENT_KEY.test(value)) throw new BadRequestException('contentKey inválido');
++    if (!CONTENT_KEY.test(value))
++      throw new BadRequestException('contentKey inválido');
+     return value;
+   }
+ 
+@@ -40,22 +42,47 @@ export class FavoritesController {
+     return rows;
+   }
+ 
+-  /** Idempotente: marcar dos veces deja un solo favorito. */
++  /**
++   * Idempotente: marcar dos veces deja un solo favorito. El upsert de Prisma hace
++   * SELECT y luego INSERT; con peticiones simultáneas dos pueden intentar el INSERT
++   * y la perdedora recibe P2002. Antes eso salía como 500 (P11-D02); ahora se
++   * devuelve el favorito que ganó.
++   */
+   @Put(':contentKey')
+-  async add(@Req() req: RequestWithUser, @Param('contentKey') contentKey: string) {
++  async add(
++    @Req() req: RequestWithUser,
++    @Param('contentKey') contentKey: string,
++  ) {
+     const key = this.key(contentKey);
+-    return this.prisma.favorite.upsert({
+-      where: { userId_contentKey: { userId: req.user.id, contentKey: key } },
+-      create: { userId: req.user.id, contentKey: key },
+-      update: {},
+-      select: { contentKey: true, createdAt: true },
+-    });
++    const where = {
++      userId_contentKey: { userId: req.user.id, contentKey: key },
++    };
++    const select = { contentKey: true, createdAt: true };
++    try {
++      return await this.prisma.favorite.upsert({
++        where,
++        create: { userId: req.user.id, contentKey: key },
++        update: {},
++        select,
++      });
++    } catch (e) {
++      if (
++        e instanceof Prisma.PrismaClientKnownRequestError &&
++        e.code === 'P2002'
++      ) {
++        return this.prisma.favorite.findUniqueOrThrow({ where, select });
++      }
++      throw e;
++    }
+   }
+ 
+   /** Idempotente: quitar uno que no existe responde igual. */
+   @Delete(':contentKey')
+   @HttpCode(HttpStatus.NO_CONTENT)
+-  async remove(@Req() req: RequestWithUser, @Param('contentKey') contentKey: string) {
++  async remove(
++    @Req() req: RequestWithUser,
++    @Param('contentKey') contentKey: string,
++  ) {
+     await this.prisma.favorite.deleteMany({
+       where: { userId: req.user.id, contentKey: this.key(contentKey) },
+     });
+diff --git a/ceosmos-api/src/focus-sessions/dto/focus-sessions.dto.ts b/ceosmos-api/src/focus-sessions/dto/focus-sessions.dto.ts
+index 0e20d1c..07a0a30 100644
+--- a/ceosmos-api/src/focus-sessions/dto/focus-sessions.dto.ts
++++ b/ceosmos-api/src/focus-sessions/dto/focus-sessions.dto.ts
+@@ -6,13 +6,33 @@ import {
+   IsISO8601,
+   IsObject,
+   IsOptional,
++  IsUUID,
+   Matches,
+   Max,
+   Min,
++  ValidateBy,
++  ValidationOptions,
+ } from 'class-validator';
+ 
+ export const CONTENT_KEY = /^[A-Za-z0-9:_-]{1,80}$/;
+ 
++/** Tamaño máximo de metadata serializada (P11-D04). La app envía ~300 bytes. */
++export const METADATA_MAX_BYTES = 4096;
++
++export function MaxJsonBytes(max: number, options?: ValidationOptions) {
++  return ValidateBy(
++    {
++      name: 'maxJsonBytes',
++      validator: {
++        validate: (v: unknown) =>
++          v == null || Buffer.byteLength(JSON.stringify(v)) <= max,
++        defaultMessage: () => `metadata no puede superar ${max} bytes`,
++      },
++    },
++    options,
++  );
++}
++
+ export class CreateFocusSessionDto {
+   @Matches(CONTENT_KEY, { message: 'contentKey inválido' })
+   contentKey: string;
+@@ -40,7 +60,13 @@ export class CreateFocusSessionDto {
+ 
+   @IsOptional()
+   @IsObject()
++  @MaxJsonBytes(METADATA_MAX_BYTES)
+   metadata?: Record<string, unknown>;
++
++  /** UUID v4 que genera la app una sola vez por sesión: los reintentos no duplican (P11-D01). */
++  @IsOptional()
++  @IsUUID('4', { message: 'clientId debe ser un UUID v4' })
++  clientId?: string;
+ }
+ 
+ export class ListFocusSessionsQueryDto {
+diff --git a/ceosmos-api/src/focus-sessions/focus-sessions.controller.ts b/ceosmos-api/src/focus-sessions/focus-sessions.controller.ts
+index 2196af1..2831824 100644
+--- a/ceosmos-api/src/focus-sessions/focus-sessions.controller.ts
++++ b/ceosmos-api/src/focus-sessions/focus-sessions.controller.ts
+@@ -1,8 +1,19 @@
+-import { Body, Controller, Get, Post, Query, Req, UseGuards } from '@nestjs/common';
++import {
++  Body,
++  Controller,
++  Get,
++  Post,
++  Query,
++  Req,
++  UseGuards,
++} from '@nestjs/common';
+ import type { Request } from 'express';
+ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+ import { FocusSessionsService } from './focus-sessions.service';
+-import { CreateFocusSessionDto, ListFocusSessionsQueryDto } from './dto/focus-sessions.dto';
++import {
++  CreateFocusSessionDto,
++  ListFocusSessionsQueryDto,
++} from './dto/focus-sessions.dto';
+ 
+ interface RequestWithUser extends Request {
+   user: { id: string };
+diff --git a/ceosmos-api/src/focus-sessions/focus-sessions.service.ts b/ceosmos-api/src/focus-sessions/focus-sessions.service.ts
+index 7b9f143..eda422a 100644
+--- a/ceosmos-api/src/focus-sessions/focus-sessions.service.ts
++++ b/ceosmos-api/src/focus-sessions/focus-sessions.service.ts
+@@ -15,6 +15,12 @@ export class FocusSessionsService {
+     });
+   }
+ 
++  /**
++   * Crea la sesión. Si trae clientId y ya existe una con el mismo (userId, clientId),
++   * devuelve la existente en lugar de duplicarla (P11-D01: reintento tras perder la
++   * respuesta). La carrera entre dos reintentos simultáneos la resuelve el índice
++   * UNIQUE: el que pierde recibe P2002 y devuelve la fila ganadora.
++   */
+   async create(userId: string, dto: CreateFocusSessionDto) {
+     const startedAt = new Date(dto.startedAt);
+     const endedAt = new Date(dto.endedAt);
+@@ -25,20 +31,47 @@ export class FocusSessionsService {
+       throw new BadRequestException('endedAt no puede estar en el futuro');
+     }
+     if (dto.durationSeconds > dto.targetMinutes * 60) {
+-      throw new BadRequestException('durationSeconds supera la duración objetivo');
++      throw new BadRequestException(
++        'durationSeconds supera la duración objetivo',
++      );
+     }
+-    return this.prisma.focusSession.create({
+-      data: {
+-        userId,
+-        contentKey: dto.contentKey,
+-        mode: dto.mode,
+-        startedAt,
+-        endedAt,
+-        durationSeconds: dto.durationSeconds,
+-        targetMinutes: dto.targetMinutes,
+-        completed: dto.completed,
+-        metadata: (dto.metadata ?? undefined) as Prisma.InputJsonValue | undefined,
+-      },
++    if (dto.clientId) {
++      const previa = await this.existente(userId, dto.clientId);
++      if (previa) return previa;
++    }
++    try {
++      return await this.prisma.focusSession.create({
++        data: {
++          userId,
++          clientId: dto.clientId,
++          contentKey: dto.contentKey,
++          mode: dto.mode,
++          startedAt,
++          endedAt,
++          durationSeconds: dto.durationSeconds,
++          targetMinutes: dto.targetMinutes,
++          completed: dto.completed,
++          metadata: (dto.metadata ?? undefined) as
++            | Prisma.InputJsonValue
++            | undefined,
++        },
++      });
++    } catch (e) {
++      if (
++        dto.clientId &&
++        e instanceof Prisma.PrismaClientKnownRequestError &&
++        e.code === 'P2002'
++      ) {
++        const ganadora = await this.existente(userId, dto.clientId);
++        if (ganadora) return ganadora;
++      }
++      throw e;
++    }
++  }
++
++  private existente(userId: string, clientId: string) {
++    return this.prisma.focusSession.findUnique({
++      where: { userId_clientId: { userId, clientId } },
+     });
+   }
+ }
+diff --git a/ceosmos-api/src/media/media.controller.ts b/ceosmos-api/src/media/media.controller.ts
+index a8fc89e..7e40d1d 100644
+--- a/ceosmos-api/src/media/media.controller.ts
++++ b/ceosmos-api/src/media/media.controller.ts
+@@ -8,6 +8,8 @@ import {
+   Query,
+   UseGuards,
+   Req,
++  HttpCode,
++  HttpStatus,
+ } from '@nestjs/common';
+ import type { Request } from 'express';
+ import { MediaService } from './media.service';
+@@ -32,18 +34,13 @@ export class MediaController {
+   }
+ 
+   @Post()
+-  async addMedia(
+-    @Req() req: RequestWithUser,
+-    @Body() data: CreateMediaDto,
+-  ) {
++  async addMedia(@Req() req: RequestWithUser, @Body() data: CreateMediaDto) {
+     return this.mediaService.addMedia(req.user.id, data);
+   }
+ 
+   @Delete(':id')
+-  async deleteMedia(
+-    @Req() req: RequestWithUser,
+-    @Param('id') id: string,
+-  ) {
++  @HttpCode(HttpStatus.NO_CONTENT) // igual que /devices (P11-D05)
++  async deleteMedia(@Req() req: RequestWithUser, @Param('id') id: string) {
+     return this.mediaService.deleteMedia(req.user.id, id);
+   }
+ }
+diff --git a/ceosmos-api/src/media/media.service.ts b/ceosmos-api/src/media/media.service.ts
+index 14713e9..65d2b0d 100644
+--- a/ceosmos-api/src/media/media.service.ts
++++ b/ceosmos-api/src/media/media.service.ts
+@@ -1,12 +1,14 @@
+ import {
+   Injectable,
+-  ForbiddenException,
+   NotFoundException,
+   BadRequestException,
++  ConflictException,
+ } from '@nestjs/common';
+ import { PrismaService } from '../prisma/prisma.service';
+ import { CreateMediaDto, GetMediaQueryDto } from './dto/media.dto';
+ 
++export const MEDIA_MAX_POR_USUARIO = 100;
++
+ @Injectable()
+ export class MediaService {
+   constructor(private readonly prisma: PrismaService) {}
+@@ -21,60 +23,59 @@ export class MediaService {
+     });
+   }
+ 
++  /**
++   * P11-D07: el límite de 100 y la verificación de duplicados eran "leer y luego
++   * escribir" sin protección. Ahora todo ocurre en una transacción que toma un
++   * bloqueo por usuario (pg_advisory_xact_lock), así dos altas simultáneas del
++   * mismo usuario se ejecutan una después de la otra. Consulta parametrizada.
++   * P11-D05: un duplicado es un conflicto → 409.
++   */
+   async addMedia(userId: string, data: CreateMediaDto) {
+-    const totalItems = await this.prisma.mediaItem.count({
+-      where: { userId },
+-    });
++    return this.prisma.$transaction(async (tx) => {
++      await tx.$queryRaw`SELECT pg_advisory_xact_lock(hashtext(${userId}))::text`;
+ 
+-    if (totalItems >= 100) {
+-      throw new BadRequestException('Maximum limit of 100 media items reached');
+-    }
+-
+-    if (data.type === 'YOUTUBE') {
+-      const existing = await this.prisma.mediaItem.findFirst({
+-        where: { userId, externalId: data.externalId },
+-      });
+-      if (existing) {
+-        throw new BadRequestException('This YouTube video is already saved');
++      const totalItems = await tx.mediaItem.count({ where: { userId } });
++      if (totalItems >= MEDIA_MAX_POR_USUARIO) {
++        throw new BadRequestException(
++          'Maximum limit of 100 media items reached',
++        );
+       }
+-    } else if (data.type === 'IMAGE') {
+-      const existing = await this.prisma.mediaItem.findFirst({
+-        where: { userId, url: data.url },
++
++      const existing = await tx.mediaItem.findFirst({
++        where:
++          data.type === 'YOUTUBE'
++            ? { userId, externalId: data.externalId }
++            : { userId, url: data.url },
+       });
+       if (existing) {
+-        throw new BadRequestException('This image URL is already saved');
++        throw new ConflictException(
++          data.type === 'YOUTUBE'
++            ? 'This YouTube video is already saved'
++            : 'This image URL is already saved',
++        );
+       }
+-    }
+ 
+-    return this.prisma.mediaItem.create({
+-      data: {
+-        userId,
+-        type: data.type,
+-        externalId: data.externalId,
+-        url: data.url,
+-        title: data.title,
+-        thumbnail: data.thumbnail,
+-      },
++      return tx.mediaItem.create({
++        data: {
++          userId,
++          type: data.type,
++          externalId: data.externalId,
++          url: data.url,
++          title: data.title,
++          thumbnail: data.thumbnail,
++        },
++      });
+     });
+   }
+ 
+-  async deleteMedia(userId: string, mediaId: string) {
+-    const item = await this.prisma.mediaItem.findUnique({
+-      where: { id: mediaId },
+-    });
+-    
+-    if (!item) {
+-      throw new NotFoundException('Media item not found');
+-    }
+-
+-    if (item.userId !== userId) {
+-      throw new ForbiddenException('Cannot delete a media item that does not belong to you');
+-    }
+-
+-    await this.prisma.mediaItem.delete({
+-      where: { id: mediaId },
++  /**
++   * Borra filtrando por dueño en la misma consulta. Un elemento ajeno responde 404
++   * (igual que /devices) para no revelar que existe (P11-D05).
++   */
++  async deleteMedia(userId: string, mediaId: string): Promise<void> {
++    const { count } = await this.prisma.mediaItem.deleteMany({
++      where: { id: mediaId, userId },
+     });
+-
+-    return { message: 'Media item deleted successfully' };
++    if (count === 0) throw new NotFoundException('Media item not found');
+   }
+ }
+
+===== ARCHIVO NUEVO: src/auth/jwt-secret.ts =====
+/**
+ * Secreto para firmar y verificar los JWT (P11-D06).
+ *
+ * Antes se usaba `process.env.JWT_SECRET ?? 'changeme'`: si la variable faltaba, la
+ * API arrancaba y firmaba con un valor público. Además `JwtModule.register` leía la
+ * variable al importar el módulo, antes de que ConfigModule cargara el `.env`.
+ * Ahora se lee en tiempo de ejecución y la API no arranca sin un secreto válido.
+ */
+export const JWT_SECRET_MIN = 32;
+
+export function jwtSecret(env: NodeJS.ProcessEnv = process.env): string {
+  const secret = env.JWT_SECRET?.trim() ?? '';
+  if (secret.length < JWT_SECRET_MIN || secret === 'changeme') {
+    throw new Error(
+      `JWT_SECRET no está definido o tiene menos de ${JWT_SECRET_MIN} caracteres; la API no puede arrancar.`,
+    );
+  }
+  return secret;
+}
+
+===== ARCHIVO NUEVO: prisma/migrations/20261112090000_p11_correcciones/migration.sql =====
+-- Práctica 11 · Correcciones de los hallazgos White Box. Migración ADITIVA:
+-- no modifica ni borra datos existentes.
+
+-- P11-D01: idempotencia de las sesiones de enfoque (reintentos sin duplicados).
+ALTER TABLE "FocusSession" ADD COLUMN "clientId" TEXT;
+CREATE UNIQUE INDEX "FocusSession_userId_clientId_key" ON "FocusSession"("userId", "clientId");
+
+-- P11-D04: tope de 4 KB para los metadatos JSONB (solo filas nuevas: NOT VALID).
+ALTER TABLE "FocusSession" ADD CONSTRAINT "FocusSession_metadata_tamano_check"
+  CHECK ("metadata" IS NULL OR octet_length("metadata"::text) <= 4096) NOT VALID;
+
+-- P11-D03: índices por usuario para la biblioteca y las sesiones de autenticación.
+CREATE INDEX "MediaItem_userId_createdAt_idx" ON "MediaItem"("userId", "createdAt");
+CREATE INDEX "Session_userId_idx" ON "Session"("userId");
+
+===== ARCHIVO NUEVO: prisma/migrations/20261112093000_p11_metadata_check/migration.sql =====
+-- Práctica 11 · Corrección de la regresión detectada al verificar P11-D04 en el S24.
+-- La API limita metadata a 4096 bytes de JSON compacto, pero el CHECK anterior medía
+-- metadata::text, que PostgreSQL escribe con un espacio tras cada ',' y ':'; un cuerpo
+-- válido para la API (3.8 KB) violaba el CHECK y respondía 500.
+-- El límite de negocio queda en la API; la BD conserva una red de seguridad de 8 KB
+-- (la forma de texto de JSONB nunca supera el doble del JSON compacto).
+ALTER TABLE "FocusSession" DROP CONSTRAINT "FocusSession_metadata_tamano_check";
+ALTER TABLE "FocusSession" ADD CONSTRAINT "FocusSession_metadata_tamano_check"
+  CHECK ("metadata" IS NULL OR octet_length("metadata"::text) <= 8192) NOT VALID;

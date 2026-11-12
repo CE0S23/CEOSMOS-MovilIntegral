@@ -1,0 +1,14 @@
+CC | archivo:línea | función
+12 | \common\csrf\csrf.middleware.ts:26 | Function 'csrfMiddleware'
+12 | \tasks\tasks.service.ts:38 | Async method 'updateTask'
+11 | \admin\admin.service.ts:235 | Async method 'getAuditLogs'
+11 | \auth\auth.service.ts:104 | Async method 'login'
+9 | \admin\admin.service.ts:109 | Async method 'updateUser'
+9 | \auth\auth.service.ts:343 | Async method 'verifyWebAuthnRegister'
+9 | \common\audit\audit-log.service.ts:61 | Async method 'query'
+9 | \common\audit\audit.interceptor.ts:37 | Arrow function
+9 | \users\users.service.ts:160 | Async method 'updateUserById'
+6 | \auth\jwt-auth.guard.ts:13 | Method 'handleRequest'
+6 | \common\audit\audit-log.service.ts:31 | Method 'getClientIp'
+6 | \devices\devices.controller.ts:62 | Async method 'update'
+6 | \media\media.service.ts:24 | Async method 'addMedia'

@@ -1,0 +1,30 @@
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": PostgreSQL database "ceosmos_dev", schema "public" at "127.0.0.1:5433"
+
+5 migrations found in prisma/migrations
+
+Applying migration `20261112090000_p11_correcciones`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261112090000_p11_correcciones/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Environment variables loaded from .env
+Prisma schema loaded from prisma\schema.prisma
+Datasource "db": PostgreSQL database "ceosmos_dev", schema "public" at "127.0.0.1:5433"
+
+6 migrations found in prisma/migrations
+
+Applying migration `20261112093000_p11_metadata_check`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20261112093000_p11_metadata_check/
+    └─ migration.sql
+      
+All migrations have been successfully applied.

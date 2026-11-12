@@ -1,0 +1,20 @@
+flowchart TD
+  A["A · l.49<br/>m = muestras"] --> C1{"C1 · l.50<br/>m.isEmpty"}
+  C1 -- V --> R["R · l.50<br/>return {}"]
+  C1 -- F --> C2{"C2 · l.50<br/>deviceId == null"}
+  C2 -- V --> R
+  C2 -- F --> B["B · l.51<br/>promedio = suma / n"]
+  B --> MIN{"C3 · l.58 reduce<br/>a &lt; b"}
+  MIN -- V --> MA["conserva a"]
+  MIN -- F --> MB["conserva b"]
+  MA --> MAX{"C4 · l.59 reduce<br/>a &gt; b"}
+  MB --> MAX
+  MAX -- V --> XA["conserva a"]
+  MAX -- F --> XB["conserva b"]
+  XA --> C5{"C5 · l.60<br/>ultima?.steps != null"}
+  XB --> C5
+  C5 -- V --> S["agrega lastSteps"]
+  C5 -- F --> RET["RET · l.52-62<br/>return {'wearable': {...}}"]
+  S --> RET
+  R --> FIN(("fin"))
+  RET --> FIN

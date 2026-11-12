@@ -1,0 +1,119 @@
+El despliegue de duración está activado.
+=== Fecha y servidor ===
+             fecha             |                           version                           
+-------------------------------+-------------------------------------------------------------
+ 2026-11-11 18:51:47.806291-06 | PostgreSQL 16.11, compiled by Visual C++ build 1944, 64-bit
+(1 fila)
+
+Duración: 0.499 ms
+=== DB-01 InserciÃ³n vÃ¡lida (FocusSession) ===
+     id      |                userId                | durationSeconds | hr_promedio 
+-------------+--------------------------------------+-----------------+-------------
+ p11-fs-0001 | be81a8bc-d1e4-4615-828d-a679dfdb7791 |             300 | 71.3
+(1 fila)
+
+INSERT 0 1
+Duración: 6.677 ms
+=== DB-02 Integridad: inserciones incompletas o invÃ¡lidas (deben FALLAR) ===
+-- NOT NULL: contentKey nulo
+psql:p11yp12/p11/scripts/fase4_crud.sql:19: ERROR:  null value in column "contentKey" of relation "FocusSession" violates not-null constraint
+DETALLE:  Failing row contains (p11-fs-bad1, be81a8bc-d1e4-4615-828d-a679dfdb7791, null, FOCUS, 2026-11-11 18:51:47.814, 2026-11-11 18:51:47.814, 0, 5, f, null, 2026-11-11 18:51:47.814).
+Duración: 0.652 ms
+-- CHECK: durationSeconds > targetMinutes*60
+psql:p11yp12/p11/scripts/fase4_crud.sql:22: ERROR:  new row for relation "FocusSession" violates check constraint "FocusSession_valores_check"
+DETALLE:  Failing row contains (p11-fs-bad2, be81a8bc-d1e4-4615-828d-a679dfdb7791, orbit, FOCUS, 2026-11-11 17:51:47.815, 2026-11-11 18:51:47.815, 3601, 60, f, null, 2026-11-11 18:51:47.815).
+Duración: 0.497 ms
+-- CHECK: endedAt < startedAt
+psql:p11yp12/p11/scripts/fase4_crud.sql:25: ERROR:  new row for relation "FocusSession" violates check constraint "FocusSession_valores_check"
+DETALLE:  Failing row contains (p11-fs-bad3, be81a8bc-d1e4-4615-828d-a679dfdb7791, orbit, FOCUS, 2026-11-11 18:51:47.815, 2026-11-11 18:50:47.815, 10, 5, f, null, 2026-11-11 18:51:47.815).
+Duración: 0.450 ms
+-- ENUM: modo inexistente
+psql:p11yp12/p11/scripts/fase4_crud.sql:28: ERROR:  invalid input value for enum "FocusMode": "SLEEP"
+LÍNEA 2: ... 'be81a8bc-d1e4-4615-828d-a679dfdb7791', 'orbit', 'SLEEP', n...
+                                                             ^
+Duración: 0.426 ms
+-- FOREIGN KEY: usuario inexistente
+psql:p11yp12/p11/scripts/fase4_crud.sql:31: ERROR:  insert or update on table "FocusSession" violates foreign key constraint "FocusSession_userId_fkey"
+DETALLE:  Key (userId)=(00000000-0000-0000-0000-000000000000) is not present in table "User".
+Duración: 1.029 ms
+-- UNIQUE: favorito repetido (userId, contentKey)
+INSERT 0 1
+Duración: 1.750 ms
+psql:p11yp12/p11/scripts/fase4_crud.sql:34: ERROR:  duplicate key value violates unique constraint "Favorite_userId_contentKey_key"
+DETALLE:  Key ("userId", "contentKey")=(be81a8bc-d1e4-4615-828d-a679dfdb7791, p11:aurora) already exists.
+Duración: 0.556 ms
+-- CHECK: contentKey de 81 caracteres
+psql:p11yp12/p11/scripts/fase4_crud.sql:36: ERROR:  new row for relation "Favorite" violates check constraint "Favorite_contentKey_check"
+DETALLE:  Failing row contains (p11-fav-3, be81a8bc-d1e4-4615-828d-a679dfdb7791, kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk..., 2026-11-11 18:51:47.82).
+Duración: 0.491 ms
+-- UNIQUE: dispositivo con la misma direcciÃ³n
+INSERT 0 1
+Duración: 1.793 ms
+psql:p11yp12/p11/scripts/fase4_crud.sql:39: ERROR:  duplicate key value violates unique constraint "LinkedDevice_userId_type_address_key"
+DETALLE:  Key ("userId", type, address)=(be81a8bc-d1e4-4615-828d-a679dfdb7791, WEARABLE, 10.0.2.2:5050) already exists.
+Duración: 0.609 ms
+=== TransacciÃ³n: la segunda inserciÃ³n falla â†’ ROLLBACK, no queda nada a medias ===
+BEGIN
+Duración: 0.097 ms
+INSERT 0 1
+Duración: 0.297 ms
+psql:p11yp12/p11/scripts/fase4_crud.sql:44: ERROR:  duplicate key value violates unique constraint "Favorite_userId_contentKey_key"
+DETALLE:  Key ("userId", "contentKey")=(be81a8bc-d1e4-4615-828d-a679dfdb7791, p11:aurora) already exists.
+Duración: 0.481 ms
+ROLLBACK
+Duración: 0.089 ms
+ filas_de_la_transaccion 
+-------------------------
+                       0
+(1 fila)
+
+Duración: 2.364 ms
+=== DB-03 Consulta por id existente / inexistente ===
+     id      | contentKey | mode  | durationSeconds 
+-------------+------------+-------+-----------------
+ p11-fs-0001 | orbit      | FOCUS |             300
+(1 fila)
+
+Duración: 2.555 ms
+ id 
+----
+(0 filas)
+
+Duración: 0.257 ms
+=== DB-04 ActualizaciÃ³n (LinkedDevice.lastSeenAt, como PATCH /devices/:id) ===
+    id     | visto 
+-----------+-------
+ p11-dev-1 | t
+(1 fila)
+
+UPDATE 1
+Duración: 3.046 ms
+-- Intento de actualizar el dispositivo con OTRO usuario (filtro userId): 0 filas
+UPDATE 0
+Duración: 0.290 ms
+=== DB-05 EliminaciÃ³n y verificaciÃ³n de persistencia ===
+DELETE 1
+Duración: 0.376 ms
+ dispositivo_tras_borrar 
+-------------------------
+                       0
+(1 fila)
+
+Duración: 0.362 ms
+DELETE 1
+Duración: 0.387 ms
+DELETE 1
+Duración: 0.343 ms
+ sesiones_p11 | favoritos_p11 
+--------------+---------------
+            0 |             0
+(1 fila)
+
+Duración: 0.758 ms
+=== Riesgo de inyecciÃ³n SQL: Prisma usa consultas parametrizadas; bÃºsqueda de SQL crudo ===
+                 nota                  
+---------------------------------------
+ ver evidencias/fase4_db/sql_crudo.txt
+(1 fila)
+
+Duración: 0.167 ms

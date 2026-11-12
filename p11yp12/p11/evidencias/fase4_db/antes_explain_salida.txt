@@ -1,0 +1,272 @@
+El despliegue de duraciÛn est· activado.
+=== Tama√±o actual de las tablas ===
+    tabla     | filas 
+--------------+-------
+ Favorite     |     0
+ FocusSession |     1
+ LinkedDevice |     0
+ MediaItem    |     0
+ Session      |     0
+ User         |    12
+(6 filas)
+
+DuraciÛn: 22.936 ms
+##### (A) Datos actuales #####
+--- Q1 GET /focus-sessions (historial) ---
+                                                                       QUERY PLAN                                                                       
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=9.51..9.52 rows=2 width=165) (actual time=0.042..0.043 rows=0 loops=1)
+   Buffers: shared hit=5
+   ->  Sort  (cost=9.51..9.52 rows=2 width=165) (actual time=0.041..0.042 rows=0 loops=1)
+         Sort Key: "startedAt" DESC
+         Sort Method: quicksort  Memory: 25kB
+         Buffers: shared hit=5
+         ->  Bitmap Heap Scan on "FocusSession"  (cost=4.16..9.50 rows=2 width=165) (actual time=0.024..0.024 rows=0 loops=1)
+               Recheck Cond: ("userId" = 'be81a8bc-d1e4-4615-828d-a679dfdb7791'::text)
+               Heap Blocks: exact=1
+               Buffers: shared hit=2
+               ->  Bitmap Index Scan on "FocusSession_userId_startedAt_idx"  (cost=0.00..4.16 rows=2 width=0) (actual time=0.016..0.016 rows=2 loops=1)
+                     Index Cond: ("userId" = 'be81a8bc-d1e4-4615-828d-a679dfdb7791'::text)
+                     Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=91
+ Planning Time: 3.152 ms
+ Execution Time: 0.088 ms
+(17 filas)
+
+DuraciÛn: 5.906 ms
+--- Q2 GET /media (biblioteca) ---
+                                                  QUERY PLAN                                                  
+--------------------------------------------------------------------------------------------------------------
+ Sort  (cost=14.38..14.39 rows=2 width=204) (actual time=0.022..0.023 rows=0 loops=1)
+   Sort Key: "createdAt" DESC
+   Sort Method: quicksort  Memory: 25kB
+   Buffers: shared hit=1
+   ->  Seq Scan on "MediaItem"  (cost=0.00..14.38 rows=2 width=204) (actual time=0.018..0.018 rows=0 loops=1)
+         Filter: ("userId" = 'be81a8bc-d1e4-4615-828d-a679dfdb7791'::text)
+         Rows Removed by Filter: 1
+         Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=35
+ Planning Time: 2.262 ms
+ Execution Time: 0.039 ms
+(12 filas)
+
+DuraciÛn: 2.763 ms
+--- Q3 JwtStrategy.validate: sesi√≥n por token (en CADA petici√≥n) ---
+                                                           QUERY PLAN                                                            
+---------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using "Session_token_key" on "Session"  (cost=0.15..8.17 rows=1 width=176) (actual time=0.012..0.012 rows=0 loops=1)
+   Index Cond: (token = 'no-existe'::text)
+   Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=43
+ Planning Time: 2.635 ms
+ Execution Time: 0.026 ms
+(7 filas)
+
+DuraciÛn: 3.019 ms
+--- Q4 GET /users/me/sessions y borrado de sesiones al iniciar sesi√≥n (por userId) ---
+                                                   QUERY PLAN                                                    
+-----------------------------------------------------------------------------------------------------------------
+ Limit  (cost=15.01..15.02 rows=2 width=72) (actual time=0.022..0.022 rows=0 loops=1)
+   Buffers: shared hit=1
+   ->  Sort  (cost=15.01..15.02 rows=2 width=72) (actual time=0.021..0.021 rows=0 loops=1)
+         Sort Key: "createdAt" DESC
+         Sort Method: quicksort  Memory: 25kB
+         Buffers: shared hit=1
+         ->  Seq Scan on "Session"  (cost=0.00..15.00 rows=2 width=72) (actual time=0.017..0.017 rows=0 loops=1)
+               Filter: ("userId" = 'be81a8bc-d1e4-4615-828d-a679dfdb7791'::text)
+               Rows Removed by Filter: 1
+               Buffers: shared hit=1
+ Planning Time: 0.063 ms
+ Execution Time: 0.034 ms
+(12 filas)
+
+DuraciÛn: 0.334 ms
+--- Q5 GET /favorites ---
+                                                                  QUERY PLAN                                                                   
+-----------------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=11.31..11.31 rows=3 width=40) (actual time=0.029..0.029 rows=0 loops=1)
+   Sort Key: "createdAt" DESC
+   Sort Method: quicksort  Memory: 25kB
+   Buffers: shared hit=2
+   ->  Bitmap Heap Scan on "Favorite"  (cost=4.17..11.28 rows=3 width=40) (actual time=0.021..0.021 rows=0 loops=1)
+         Recheck Cond: ("userId" = 'be81a8bc-d1e4-4615-828d-a679dfdb7791'::text)
+         Heap Blocks: exact=1
+         Buffers: shared hit=2
+         ->  Bitmap Index Scan on "Favorite_userId_contentKey_key"  (cost=0.00..4.17 rows=3 width=0) (actual time=0.012..0.012 rows=2 loops=1)
+               Index Cond: ("userId" = 'be81a8bc-d1e4-4615-828d-a679dfdb7791'::text)
+               Buffers: shared hit=1
+ Planning:
+   Buffers: shared hit=39
+ Planning Time: 2.538 ms
+ Execution Time: 0.066 ms
+(15 filas)
+
+DuraciÛn: 2.963 ms
+##### (B) Volumen sint√©tico: 2 000 usuarios ficticios (transacci√≥n revertida) #####
+BEGIN
+DuraciÛn: 0.118 ms
+INSERT 0 2000
+DuraciÛn: 45.540 ms
+INSERT 0 100000
+DuraciÛn: 2342.758 ms (00:02.343)
+INSERT 0 100000
+DuraciÛn: 1668.818 ms (00:01.669)
+INSERT 0 20000
+DuraciÛn: 417.287 ms
+ANALYZE
+DuraciÛn: 120.049 ms
+ANALYZE
+DuraciÛn: 103.735 ms
+ANALYZE
+DuraciÛn: 67.721 ms
+--- Q1 con 100 000 sesiones de enfoque ---
+                                                                        QUERY PLAN                                                                        
+----------------------------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=178.26..178.38 rows=50 width=348) (actual time=0.144..0.178 rows=50 loops=1)
+   Buffers: shared hit=53
+   ->  Sort  (cost=178.26..178.38 rows=50 width=348) (actual time=0.142..0.171 rows=50 loops=1)
+         Sort Key: "startedAt" DESC
+         Sort Method: quicksort  Memory: 31kB
+         Buffers: shared hit=53
+         ->  Bitmap Heap Scan on "FocusSession"  (cost=4.81..176.85 rows=50 width=348) (actual time=0.056..0.121 rows=50 loops=1)
+               Recheck Cond: ("userId" = 'p11-u-7'::text)
+               Heap Blocks: exact=50
+               Buffers: shared hit=53
+               ->  Bitmap Index Scan on "FocusSession_userId_startedAt_idx"  (cost=0.00..4.79 rows=50 width=0) (actual time=0.029..0.029 rows=50 loops=1)
+                     Index Cond: ("userId" = 'p11-u-7'::text)
+                     Buffers: shared hit=3
+ Planning:
+   Buffers: shared hit=51
+ Planning Time: 3.474 ms
+ Execution Time: 0.257 ms
+(17 filas)
+
+DuraciÛn: 4.292 ms
+--- Q2 con 100 000 elementos de biblioteca (sin √≠ndice en userId) ---
+                                                    QUERY PLAN                                                     
+-------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=2388.42..2388.55 rows=50 width=155) (actual time=11.771..11.774 rows=50 loops=1)
+   Sort Key: "createdAt" DESC
+   Sort Method: quicksort  Memory: 29kB
+   Buffers: shared hit=1137
+   ->  Seq Scan on "MediaItem"  (cost=0.00..2387.01 rows=50 width=155) (actual time=0.026..11.745 rows=50 loops=1)
+         Filter: ("userId" = 'p11-u-7'::text)
+         Rows Removed by Filter: 99951
+         Buffers: shared hit=1137
+ Planning:
+   Buffers: shared hit=35
+ Planning Time: 2.734 ms
+ Execution Time: 11.798 ms
+(12 filas)
+
+DuraciÛn: 14.971 ms
+--- Q2b addMedia: count(*) del usuario antes de insertar ---
+                                                   QUERY PLAN                                                    
+-----------------------------------------------------------------------------------------------------------------
+ Aggregate  (cost=2387.14..2387.15 rows=1 width=8) (actual time=15.041..15.042 rows=1 loops=1)
+   Buffers: shared hit=1137
+   ->  Seq Scan on "MediaItem"  (cost=0.00..2387.01 rows=50 width=0) (actual time=0.013..15.017 rows=50 loops=1)
+         Filter: ("userId" = 'p11-u-7'::text)
+         Rows Removed by Filter: 99951
+         Buffers: shared hit=1137
+ Planning:
+   Buffers: shared hit=3
+ Planning Time: 0.083 ms
+ Execution Time: 15.065 ms
+(10 filas)
+
+DuraciÛn: 15.964 ms
+--- Q3 con 20 000 sesiones: b√∫squeda por token (√≠ndice UNIQUE) ---
+                                                           QUERY PLAN                                                            
+---------------------------------------------------------------------------------------------------------------------------------
+ Index Scan using "Session_token_key" on "Session"  (cost=0.41..8.43 rows=1 width=100) (actual time=0.011..0.011 rows=1 loops=1)
+   Index Cond: (token = '7a1d685f0317bd3dfa603fd150ff8719'::text)
+   Buffers: shared hit=4
+ Planning:
+   Buffers: shared hit=42
+ Planning Time: 2.688 ms
+ Execution Time: 0.025 ms
+(7 filas)
+
+DuraciÛn: 3.127 ms
+--- Q4 con 20 000 sesiones: por userId (sin √≠ndice) ---
+                                                     QUERY PLAN                                                     
+--------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=498.18..498.20 rows=10 width=29) (actual time=2.318..2.320 rows=10 loops=1)
+   Buffers: shared hit=248
+   ->  Sort  (cost=498.18..498.20 rows=10 width=29) (actual time=2.317..2.318 rows=10 loops=1)
+         Sort Key: "createdAt" DESC
+         Sort Method: quicksort  Memory: 25kB
+         Buffers: shared hit=248
+         ->  Seq Scan on "Session"  (cost=0.00..498.01 rows=10 width=29) (actual time=0.022..2.308 rows=10 loops=1)
+               Filter: ("userId" = 'p11-u-7'::text)
+               Rows Removed by Filter: 19991
+               Buffers: shared hit=248
+ Planning Time: 0.069 ms
+ Execution Time: 2.333 ms
+(12 filas)
+
+DuraciÛn: 2.650 ms
+--- Propuesta: √≠ndice en MediaItem(userId, createdAt) y Session(userId) (misma transacci√≥n) ---
+CREATE INDEX
+DuraciÛn: 244.465 ms
+CREATE INDEX
+DuraciÛn: 24.423 ms
+ANALYZE
+DuraciÛn: 98.871 ms
+ANALYZE
+DuraciÛn: 51.599 ms
+                                                              QUERY PLAN                                                               
+---------------------------------------------------------------------------------------------------------------------------------------
+ Sort  (cost=172.32..172.45 rows=50 width=128) (actual time=0.172..0.176 rows=50 loops=1)
+   Sort Key: "createdAt" DESC
+   Sort Method: quicksort  Memory: 29kB
+   Buffers: shared hit=50 read=3
+   ->  Bitmap Heap Scan on "MediaItem"  (cost=4.81..170.91 rows=50 width=128) (actual time=0.085..0.148 rows=50 loops=1)
+         Recheck Cond: ("userId" = 'p11-u-7'::text)
+         Heap Blocks: exact=50
+         Buffers: shared hit=50 read=3
+         ->  Bitmap Index Scan on p11_media_user_created  (cost=0.00..4.79 rows=50 width=0) (actual time=0.073..0.073 rows=50 loops=1)
+               Index Cond: ("userId" = 'p11-u-7'::text)
+               Buffers: shared read=3
+ Planning:
+   Buffers: shared hit=31 read=1
+ Planning Time: 0.294 ms
+ Execution Time: 0.211 ms
+(15 filas)
+
+DuraciÛn: 0.877 ms
+                                                              QUERY PLAN                                                               
+---------------------------------------------------------------------------------------------------------------------------------------
+ Limit  (cost=38.63..38.66 rows=10 width=29) (actual time=0.052..0.053 rows=10 loops=1)
+   Buffers: shared hit=10 read=2
+   ->  Sort  (cost=38.63..38.66 rows=10 width=29) (actual time=0.051..0.052 rows=10 loops=1)
+         Sort Key: "createdAt" DESC
+         Sort Method: quicksort  Memory: 25kB
+         Buffers: shared hit=10 read=2
+         ->  Bitmap Heap Scan on "Session"  (cost=4.37..38.47 rows=10 width=29) (actual time=0.036..0.046 rows=10 loops=1)
+               Recheck Cond: ("userId" = 'p11-u-7'::text)
+               Heap Blocks: exact=10
+               Buffers: shared hit=10 read=2
+               ->  Bitmap Index Scan on p11_session_user  (cost=0.00..4.36 rows=10 width=0) (actual time=0.032..0.032 rows=10 loops=1)
+                     Index Cond: ("userId" = 'p11-u-7'::text)
+                     Buffers: shared read=2
+ Planning:
+   Buffers: shared hit=18 read=1
+ Planning Time: 0.140 ms
+ Execution Time: 0.073 ms
+(17 filas)
+
+DuraciÛn: 0.449 ms
+ROLLBACK
+DuraciÛn: 11.204 ms
+=== Verificaci√≥n: no qued√≥ ning√∫n dato sint√©tico ===
+ usuarios_p11 | media_p11 
+--------------+-----------
+            0 |         0
+(1 fila)
+
+DuraciÛn: 18.986 ms

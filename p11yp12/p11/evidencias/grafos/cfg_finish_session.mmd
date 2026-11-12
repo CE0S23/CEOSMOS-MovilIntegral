@@ -1,0 +1,18 @@
+flowchart TD
+  A["A · l.273<br/>media = currentMedia"] --> C1{"C1 · l.274<br/>media == null"}
+  C1 -- V --> R0["return (sin sesión)"]
+  C1 -- F --> C2{"C2 · l.274<br/>user == null"}
+  C2 -- V --> R0
+  C2 -- F --> B["B · l.275-294<br/>metadata + resumenSesion()<br/>FocusSession local (synced=false)<br/>history.insert(0, local)"]
+  B --> T{"T · l.295-296<br/>await saveFocusSession()"}
+  T -- éxito --> C3{"C3 · l.298<br/>i &gt;= 0"}
+  C3 -- V --> S["reemplaza por la guardada"]
+  C3 -- F --> N["N · l.304 _changed()"]
+  S --> N
+  T -- ApiException --> C4{"C4 · l.300<br/>e.unauthorized"}
+  C4 -- V --> R1["return (sesión vencida)"]
+  C4 -- F --> P["P · l.301-302<br/>_pendientes.add + aviso"]
+  P --> N
+  R0 --> FIN(("fin"))
+  R1 --> FIN
+  N --> FIN

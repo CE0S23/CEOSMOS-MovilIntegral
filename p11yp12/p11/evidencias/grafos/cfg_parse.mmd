@@ -1,0 +1,17 @@
+flowchart TD
+  N1["N1 · l.17-18<br/>hr = json['hr']; steps = json['steps']"] --> C1{"C1 · l.19<br/>hr is! num"}
+  C1 -- V --> R0["R0 · l.19<br/>return null"]
+  C1 -- F --> C2{"C2 · l.19<br/>hr &lt; 30"}
+  C2 -- V --> R0
+  C2 -- F --> C3{"C3 · l.19<br/>hr &gt; 230"}
+  C3 -- V --> R0
+  C3 -- F --> C4{"C4 · l.20<br/>steps != null"}
+  C4 -- F --> N5["N5 · l.21-25<br/>return WearableLectura(hr.round(), steps?.round())"]
+  C4 -- V --> C5{"C5 · l.20<br/>steps is! num"}
+  C5 -- V --> R1["R1 · l.20<br/>return null"]
+  C5 -- F --> C6{"C6 · l.20<br/>steps &lt; 0"}
+  C6 -- V --> R1
+  C6 -- F --> N5
+  R0 --> FIN(("fin"))
+  R1 --> FIN
+  N5 --> FIN

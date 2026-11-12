@@ -1,0 +1,7 @@
+== Búsqueda de SQL crudo en el backend (src/) ==
+src/common/audit/audit-log.service.ts:61:  async query(filters: {
+
+== SQL crudo en la app Flutter (sqflite de la Práctica 3-4) ==
+/c/CESAR10cuatri/CEOSMOS.MovilIntegral/lib/practicas/p03_04/usuarios/app_database.g.dart:74:        await database.execute('PRAGMA foreign_keys = ON');
+/c/CESAR10cuatri/CEOSMOS.MovilIntegral/lib/practicas/p03_04/usuarios/app_database.g.dart:87:        await database.execute(
+/c/CESAR10cuatri/CEOSMOS.MovilIntegral/lib/practicas/p03_04/usuarios/usuario_dao.dart:7:  @Query('SELECT * FROM usuarios ORDER BY id')

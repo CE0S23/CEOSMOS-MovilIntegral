@@ -1,0 +1,25 @@
+Fecha: 2026-11-11 19:02:14  Dispositivo: Samsung Galaxy S24 SM-S721B, Android 16, Wi-Fi inet 10.13.40.246/18
+
+### adb shell ping -c 20 -i 0.5 10.13.40.197
+
+--- 10.13.40.197 ping statistics ---
+20 packets transmitted, 20 received, 0% packet loss, time 9527ms
+rtt min/avg/max/mdev = 23.185/54.928/125.044/26.804 ms
+
+### adb shell ping -c 20 -i 0.5 8.8.8.8
+
+--- 8.8.8.8 ping statistics ---
+20 packets transmitted, 20 received, 0% packet loss, time 9540ms
+rtt min/avg/max/mdev = 16.798/35.103/97.630/18.001 ms
+
+### adb shell ping -c 20 -i 0.5 ceosmos-t8ee.vercel.app
+
+--- ceosmos-t8ee.vercel.app ping statistics ---
+20 packets transmitted, 20 received, 0% packet loss, time 9534ms
+rtt min/avg/max/mdev = 76.192/87.310/97.811/6.204 ms
+
+### adb shell ping -c 20 -i 0.5 <host-neon>.neon.tech
+
+--- c-6.us-east-1.aws.neon.tech ping statistics ---
+20 packets transmitted, 0 received, 100% packet loss, time 9743ms
+

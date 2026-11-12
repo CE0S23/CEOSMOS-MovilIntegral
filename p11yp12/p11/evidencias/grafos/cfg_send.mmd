@@ -1,0 +1,25 @@
+flowchart TD
+  N1["N1 · l.48-50<br/>uri, Request, Accept: json"] --> D1{"D1 · l.51<br/>token != null"}
+  D1 -- V --> N2["N2 · Authorization: Bearer"]
+  D1 -- F --> D2{"D2 · l.52<br/>body != null"}
+  N2 --> D2
+  D2 -- V --> N3["N3 · l.53-54<br/>Content-Type + jsonEncode"]
+  D2 -- F --> T{"T · l.57-60<br/>send().timeout()"}
+  N3 --> T
+  T -- TimeoutException --> E1["E1 · l.62<br/>throw ApiException(tiempo)"]
+  T -- ClientException --> E2["E2 · l.67<br/>throw ApiException(sin conexión)"]
+  T -- respuesta --> N4["N4 · l.72<br/>decoded = _decode(body)"]
+  N4 --> C3a{"C3a · l.73<br/>status &gt;= 200"}
+  C3a -- V --> C3b{"C3b · l.73<br/>status &lt; 300"}
+  C3b -- V --> RET["RET · return decoded"]
+  C3a -- F --> C4a{"C4a · l.74<br/>status == 401"}
+  C3b -- F --> C4a
+  C4a -- V --> C4b{"C4b · l.74<br/>token != null"}
+  C4b -- V --> N5["N5 · onUnauthorized()"]
+  C4b -- F --> THR["THR · l.75<br/>throw ApiException(traducirError)"]
+  C4a -- F --> THR
+  N5 --> THR
+  E1 --> FIN(("fin"))
+  E2 --> FIN
+  RET --> FIN
+  THR --> FIN

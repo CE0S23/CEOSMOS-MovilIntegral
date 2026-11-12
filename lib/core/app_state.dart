@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:uuid/uuid.dart';
 
 import '../data/api_client.dart';
 import '../data/auth_repository.dart';
@@ -288,6 +289,8 @@ class AppState extends ChangeNotifier {
       completed: completed,
       metadata: metadata,
       synced: false,
+      // Se genera antes del primer envío y viaja igual en los reintentos (P11-D01).
+      clientId: const Uuid().v4(),
     );
     _descartarSesionActiva();
     workspace.history.insert(0, local);

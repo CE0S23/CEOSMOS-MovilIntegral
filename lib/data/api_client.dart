@@ -109,6 +109,9 @@ String traducirError(int status, Object? body) {
         ? 'Cuenta bloqueada temporalmente por intentos fallidos. Intenta más tarde.'
         : 'Demasiados intentos. Espera un momento e inténtalo de nuevo.';
   }
+  if (m.contains('already saved')) {
+    return 'Ese elemento ya está en tu biblioteca.'; // 409 de /media (P11-D05)
+  }
   if (m.contains('already in use')) {
     return 'Ese correo o nombre de usuario ya está registrado.';
   }

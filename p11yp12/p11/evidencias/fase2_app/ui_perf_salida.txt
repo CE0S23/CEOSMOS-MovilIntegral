@@ -1,0 +1,38 @@
+Running Gradle task 'assembleProfile'...                           87.1s
+✓ Built build\app\outputs\flutter-apk\app-profile.apk (48.6MB)
+Installing build\app\outputs\flutter-apk\app-profile.apk...         8.3s
+VMServiceFlutterDriver: Connecting to Flutter application at http://127.0.0.1:13797/2qi8hDCSKLE=/
+D/ProfileInstaller( 6000): Installing profile for com.ceosmos.ceosmos_movil_integral
+VMServiceFlutterDriver: Isolate found with number: 3826837030288671
+VMServiceFlutterDriver: Isolate 3826837030288671 is runnable.
+VMServiceFlutterDriver: Isolate is paused at start.
+VMServiceFlutterDriver: Attempting to resume isolate
+I/flutter ( 6000): 00:00 +0: WB-06: navegación y desplazamiento con datos reales
+VMServiceFlutterDriver: Connected to Flutter application.
+I/BLASTBufferQueue( 6000): [eb4acf7 SurfaceView[com.ceosmos.ceosmos_movil_integral/com.ceosmos.ceosmos_movil_integral.MainActivity]@0#1](f:0,a:0,s:0) onFrameAvailable the first frame is available
+I/SurfaceView( 6000): 246721783 finishedDrawing
+D/VRI[MainActivity]@ac8d256( 6000): Setup new sync=wmsSync-VRI[MainActivity]@ac8d256#1
+I/VRI[MainActivity]@ac8d256( 6000): Creating new active sync group VRI[MainActivity]@ac8d256#2
+D/VRI[MainActivity]@ac8d256( 6000): Draw frame after cancel
+D/VRI[MainActivity]@ac8d256( 6000): registerCallbacksForSync syncBuffer=false
+D/SurfaceView( 6000): 246721783 updateSurfacePosition RenderWorker, frameNr = 1, position = [0, 0, 1080, 2340] surfaceSize = 1080x2340
+I/SV[246721783 MainActivity]( 6000): uSP: rtp = Rect(0, 0 - 1080, 2340) rtsw = 1080 rtsh = 2340
+I/SV[246721783 MainActivity]( 6000): onSSPAndSRT: pl = 0 pt = 0 sx = 1.0 sy = 1.0
+I/SV[246721783 MainActivity]( 6000): aOrMT: VRI[MainActivity]@ac8d256 t = android.view.SurfaceControl$Transaction@5ebce97 fN = 1 android.view.SurfaceView.-$$Nest$mapplyOrMergeTransaction:0 android.view.SurfaceView$SurfaceViewPositionUpdateListener.positionChanged:2029 android.graphics.RenderNode$CompositePositionUpdateListener.positionChanged:401 
+I/VRI[MainActivity]@ac8d256( 6000): mWNT: t=0xb400006fb28fc7c0 mBlastBufferQueue=0xb400006ef29c1e90 fn= 1 HdrRenderState mRenderHdrSdrRatio=1.0 caller= android.view.SurfaceView.applyOrMergeTransaction:1960 android.view.SurfaceView.-$$Nest$mapplyOrMergeTransaction:0 android.view.SurfaceView$SurfaceViewPositionUpdateListener.positionChanged:2029 
+D/VRI[MainActivity]@ac8d256( 6000): Received frameDrawingCallback syncResult=0 frameNum=1.
+I/VRI[MainActivity]@ac8d256( 6000): mWNT: t=0xb400006fb2918d00 mBlastBufferQueue=0xb400006ef29c1e90 fn= 1 HdrRenderState mRenderHdrSdrRatio=1.0 caller= android.view.ViewRootImpl$12.onFrameDraw:15561 android.view.ThreadedRenderer$1.onFrameDraw:751 <bottom of call stack> 
+I/VRI[MainActivity]@ac8d256( 6000): Setting up sync and frameCommitCallback
+I/BLASTBufferQueue( 6000): [VRI[MainActivity]@ac8d256#0](f:0,a:0,s:0) onFrameAvailable the first frame is available
+I/VRI[MainActivity]@ac8d256( 6000): Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true
+D/HWUI    ( 6000): CFMS:: SetUp Pid : 6000    Tid : 6073
+D/VRI[MainActivity]@ac8d256( 6000): reportDrawFinished seqId=0
+D/VRI[MainActivity]@ac8d256( 6000): mThreadedRenderer.initializeIfNeeded()#2 mSurface={isValid=true 0xb400006f528f8050}
+D/InputMethodManagerUtils( 6000): startInputInner - Id : 0
+I/InputMethodManager( 6000): startInputInner - IInputMethodManagerGlobalInvoker.startInputOrWindowGainedFocus
+D/InsetsController( 6000): hide(ime())
+I/ImeTracker( 6000): com.ceosmos.ceosmos_movil_integral:bd610ac9: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+D/InputTransport( 6000): Input channel constructed: 'ClientS', fd=167
+I/flutter ( 6000): 00:25 +1: (tearDownAll)
+I/flutter ( 6000): 00:25 +2: All tests passed!
+All tests passed.

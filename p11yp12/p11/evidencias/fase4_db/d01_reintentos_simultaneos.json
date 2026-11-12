@@ -1,0 +1,9 @@
+{
+  "escenario": "POST /focus-sessions x10 simultáneas con el mismo clientId (P11-D01)",
+  "clientId": "ded50f8e-5f68-4353-adf0-20816362d2ec",
+  "codigos": {
+    "201": 10
+  },
+  "ids_distintos": 1,
+  "filas_en_bd": 1
+}

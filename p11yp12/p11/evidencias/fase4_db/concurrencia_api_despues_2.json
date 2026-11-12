@@ -1,0 +1,46 @@
+{
+  "fecha": "2026-11-12T02:14:29.597Z",
+  "usuario": "be81a8bc-d1e4-4615-828d-a679dfdb7791",
+  "concurrencia": 10,
+  "escenarios": [
+    {
+      "id": "C1",
+      "operacion": "POST /media (misma url) x10 simultáneas",
+      "codigos": {
+        "201": 1,
+        "409": 9
+      },
+      "filas_en_bd": 1,
+      "esperado": 1
+    },
+    {
+      "id": "C2",
+      "operacion": "PUT /favorites/p11:conc-mwcx02ji x10 simultáneas",
+      "codigos": {
+        "200": 10
+      },
+      "filas_en_bd": 1,
+      "esperado": 1,
+      "cuerpos500": []
+    },
+    {
+      "id": "C3",
+      "operacion": "POST /devices (misma dirección) x10 simultáneas",
+      "codigos": {
+        "201": 1,
+        "409": 9
+      },
+      "filas_en_bd": 1,
+      "esperado": 1
+    },
+    {
+      "id": "C4",
+      "operacion": "PATCH /devices/:id (name) x10 simultáneas",
+      "codigos": {
+        "200": 10
+      },
+      "valor_final": "Nombre-9",
+      "esperado": "un único valor de los enviados, sin error"
+    }
+  ]
+}

@@ -1,0 +1,101 @@
+Running Gradle task 'assembleProfile'...                        
+Note: C:\Users\cesar\AppData\Local\Pub\Cache\hosted\pub.dev\cloud_firestore-6.10.2\android\src\main\java\io\flutter\plugins\firebase\firestore\utils\PipelineStageHandlers.java uses unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+Running Gradle task 'assembleProfile'...                          372.7s
+✓ Built build\app\outputs\flutter-apk\app-profile.apk (48.6MB)
+Installing build\app\outputs\flutter-apk\app-profile.apk...         7.8s
+D/ProfileInstaller(31983): Installing profile for com.ceosmos.ceosmos_movil_integral
+VMServiceFlutterDriver: Connecting to Flutter application at http://127.0.0.1:53357/qKfD4Pxvj1I=/
+VMServiceFlutterDriver: Isolate found with number: 4007110761567683
+VMServiceFlutterDriver: Isolate 4007110761567683 is runnable.
+VMServiceFlutterDriver: Isolate is paused at start.
+VMServiceFlutterDriver: Attempting to resume isolate
+I/flutter (31983): 00:00 +0: WB-06: navegación y desplazamiento con datos reales
+I/BLASTBufferQueue(31983): [dab1764 SurfaceView[com.ceosmos.ceosmos_movil_integral/com.ceosmos.ceosmos_movil_integral.MainActivity]@0#1](f:0,a:0,s:0) onFrameAvailable the first frame is available
+I/SurfaceView(31983): 229316452 finishedDrawing
+D/VRI[MainActivity]@c1bf2d7(31983): Setup new sync=wmsSync-VRI[MainActivity]@c1bf2d7#1
+I/VRI[MainActivity]@c1bf2d7(31983): Creating new active sync group VRI[MainActivity]@c1bf2d7#2
+D/VRI[MainActivity]@c1bf2d7(31983): Draw frame after cancel
+D/VRI[MainActivity]@c1bf2d7(31983): registerCallbacksForSync syncBuffer=false
+D/SurfaceView(31983): 229316452 updateSurfacePosition RenderWorker, frameNr = 1, position = [0, 0, 1080, 2340] surfaceSize = 1080x2340
+I/SV[229316452 MainActivity](31983): uSP: rtp = Rect(0, 0 - 1080, 2340) rtsw = 1080 rtsh = 2340
+I/SV[229316452 MainActivity](31983): onSSPAndSRT: pl = 0 pt = 0 sx = 1.0 sy = 1.0
+VMServiceFlutterDriver: Connected to Flutter application.
+I/SV[229316452 MainActivity](31983): aOrMT: VRI[MainActivity]@c1bf2d7 t = android.view.SurfaceControl$Transaction@e232884 fN = 1 android.view.SurfaceView.-$$Nest$mapplyOrMergeTransaction:0 android.view.SurfaceView$SurfaceViewPositionUpdateListener.positionChanged:2029 android.graphics.RenderNode$CompositePositionUpdateListener.positionChanged:401 
+I/VRI[MainActivity]@c1bf2d7(31983): mWNT: t=0xb400006fb28fb0a0 mBlastBufferQueue=0xb400006ef29c8f00 fn= 1 HdrRenderState mRenderHdrSdrRatio=1.0 caller= android.view.SurfaceView.applyOrMergeTransaction:1960 android.view.SurfaceView.-$$Nest$mapplyOrMergeTransaction:0 android.view.SurfaceView$SurfaceViewPositionUpdateListener.positionChanged:2029 
+D/VRI[MainActivity]@c1bf2d7(31983): Received frameDrawingCallback syncResult=0 frameNum=1.
+I/VRI[MainActivity]@c1bf2d7(31983): mWNT: t=0xb400006fb29150e0 mBlastBufferQueue=0xb400006ef29c8f00 fn= 1 HdrRenderState mRenderHdrSdrRatio=1.0 caller= android.view.ViewRootImpl$12.onFrameDraw:15561 android.view.ThreadedRenderer$1.onFrameDraw:751 <bottom of call stack> 
+I/VRI[MainActivity]@c1bf2d7(31983): Setting up sync and frameCommitCallback
+I/BLASTBufferQueue(31983): [VRI[MainActivity]@c1bf2d7#0](f:0,a:0,s:0) onFrameAvailable the first frame is available
+I/VRI[MainActivity]@c1bf2d7(31983): Received frameCommittedCallback lastAttemptedDrawFrameNum=1 didProduceBuffer=true
+D/HWUI    (31983): CFMS:: SetUp Pid : 31983    Tid : 32059
+D/VRI[MainActivity]@c1bf2d7(31983): reportDrawFinished seqId=0
+D/VRI[MainActivity]@c1bf2d7(31983): mThreadedRenderer.initializeIfNeeded()#2 mSurface={isValid=true 0xb400006f528fe0e0}
+D/InputMethodManagerUtils(31983): startInputInner - Id : 0
+I/InputMethodManager(31983): startInputInner - IInputMethodManagerGlobalInvoker.startInputOrWindowGainedFocus
+D/InsetsController(31983): hide(ime())
+I/ImeTracker(31983): com.ceosmos.ceosmos_movil_integral:ebd76589: onCancelled at PHASE_CLIENT_ALREADY_HIDDEN
+D/InputTransport(31983): Input channel constructed: 'ClientS', fd=167
+I/flutter (31983): Bad state: Failed to connect to VM Service at ws://localhost:53357/qKfD4Pxvj1I=/ws.
+I/flutter (31983): This may happen if DDS is enabled. If this test was launched via `flutter drive`, try adding `--no-dds`.
+I/flutter (31983): The original exception was:
+I/flutter (31983): SocketException: Connection refused (OS Error: Connection refused, errno = 111), address = localhost, port = 42894
+I/flutter (31983): #0      _NativeSocket.startConnect (dart:io-patch/socket_patch.dart:817)
+I/flutter (31983): #1      _RawSocket.startConnect (dart:io-patch/socket_patch.dart:2281)
+I/flutter (31983): #2      RawSocket.startConnect (dart:io-patch/socket_patch.dart:41)
+I/flutter (31983): #3      Socket._startConnect (dart:io-patch/socket_patch.dart:2542)
+I/flutter (31983): #4      Socket.startConnect (dart:io/socket.dart:897)
+I/flutter (31983): #5      _ConnectionTarget.connect (dart:_http/http_impl.dart:2699)
+I/flutter (31983): #6      _HttpClient._getConnection.connect (dart:_http/http_impl.dart:3193)
+I/flutter (31983): #7      _HttpClient._getConnection (dart:_http/http_impl.dart:3198)
+I/flutter (31983): #8      _HttpClient._openUrl (dart:_http/http_impl.dart:3021)
+I/flutter (31983): #9      _HttpClient.openUrl (dart:_http/http_impl.dart:2863)
+I/flutter (31983): #10     _WebSocketImpl.connect (dart:_http/websocket_impl.dart:1093)
+I/flutter (31983): #11     WebSocket.connect (dart:_http/websocket.dart:332)
+I/flutter (31983): #12     _vmServiceConnectUri (package:integration_test/integration_test.dart:467)
+I/flutter (31983): #13     IntegrationTestWidgetsFlutterBinding.enableTimeline (package:integration_test/integration_test.dart:264)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #14     IntegrationTestWidgetsFlutterBinding.traceTimeline (package:integration_test/integration_test.dart:296)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #15     IntegrationTestWidgetsFlutterBinding._runAndGetGCInfo (package:integration_test/integration_test.dart:371)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #16     IntegrationTestWidgetsFlutterBinding.watchPerformance (package:integration_test/integration_test.dart:420)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #17     main.<anonymous closure> (file:///C:/CESAR10cuatri/CEOSMOS.MovilIntegral/integration_test/p11_ui_perf_test.dart:46)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #18     testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #19     TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #20     TestWidgetsFlutterBinding._createTestCompletionHandler.<anonymous closure> (package:flutter_test/src/binding.dart:1437)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): 
+I/flutter (31983): #0      IntegrationTestWidgetsFlutterBinding.enableTimeline (package:integration_test/integration_test.dart:266)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #1      IntegrationTestWidgetsFlutterBinding.traceTimeline (package:integration_test/integration_test.dart:296)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #2      IntegrationTestWidgetsFlutterBinding._runAndGetGCInfo (package:integration_test/integration_test.dart:371)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #3      IntegrationTestWidgetsFlutterBinding.watchPerformance (package:integration_test/integration_test.dart:420)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #4      main.<anonymous closure> (file:///C:/CESAR10cuatri/CEOSMOS.MovilIntegral/integration_test/p11_ui_perf_test.dart:46)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #5      testWidgets.<anonymous closure>.<anonymous closure> (package:flutter_test/src/widget_tester.dart:192)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #6      TestWidgetsFlutterBinding._runTestBody (package:flutter_test/src/binding.dart:1682)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): #7      TestWidgetsFlutterBinding._createTestCompletionHandler.<anonymous closure> (package:flutter_test/src/binding.dart:1437)
+I/flutter (31983): <asynchronous suspension>
+I/flutter (31983): 00:03 +0: WB-06: navegación y desplazamiento con datos reales [E]
+I/flutter (31983):   Test failed. See exception logs above.
+I/flutter (31983):   The test description was: WB-06: navegación y desplazamiento con datos reales
+I/flutter (31983):   
+I/flutter (31983): 00:03 +0 -1: (tearDownAll)
+I/flutter (31983): 00:03 +1 -1: Some tests failed.
+Failure Details:
+Failure in method: WB-06: navegación y desplazamiento con datos reales
+Instance of 'FlutterErrorDetails'
+end of failure 1
+
+
+

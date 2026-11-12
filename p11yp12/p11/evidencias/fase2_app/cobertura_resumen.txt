@@ -1,0 +1,27 @@
+== Cobertura por archivo del núcleo (lib/core, lib/data, lib/domain) ==
+archivo | instrucciones (líneas) | % | ramas | %
+lib/core/app_state.dart | 168/217 | 77.4 | 54/75 | 72.0
+lib/core/config.dart | 0/3 | 0.0 | 0/2 | 0.0
+lib/core/media_cache.dart | 2/4 | 50.0 | 2/3 | 66.7
+lib/core/media_cache_io.dart | 49/59 | 83.1 | 22/30 | 73.3
+lib/core/sound_controller.dart | 24/36 | 66.7 | 10/18 | 55.6
+lib/core/wearable.dart | 23/23 | 100.0 | 11/11 | 100.0
+lib/core/wearable_io.dart | 69/72 | 95.8 | 25/27 | 92.6
+lib/data/api_client.dart | 56/58 | 96.6 | 38/39 | 97.4
+lib/data/auth_repository.dart | 46/55 | 83.6 | 25/32 | 78.1
+lib/data/catalog.dart | 14/14 | 100.0 | 5/5 | 100.0
+lib/data/ceosmos_repository.dart | 29/54 | 53.7 | 15/27 | 55.6
+lib/data/token_store.dart | 6/12 | 50.0 | 3/6 | 50.0
+lib/domain/models.dart | 48/72 | 66.7 | 15/22 | 68.2
+TOTAL núcleo | 534/679 | 78.6 | 225/297 | 75.8
+TOTAL app (lib/, incluye UI y prácticas) | 1891/4565 | 41.4 | 597/1779 | 33.6
+
+== Cobertura por método crítico ==
+tipo | método | líneas del código | instrucciones | % | ramas | % | líneas sin ejecutar
+Validación | WearableLectura.parse | 16-26 | 8/8 | 100.0 | 3/3 | 100.0 | —
+Validación | WearableClientImpl._alRecibir | 72-86 | 10/10 | 100.0 | 7/7 | 100.0 | —
+Validación | AuthRepository.validarContrasenaNueva | 23-30 | 4/4 | 100.0 | 3/3 | 100.0 | —
+Cálculo | WearableClient.resumenSesion | 48-63 | 13/13 | 100.0 | 6/6 | 100.0 | —
+Cálculo | traducirError | 94-137 | 23/23 | 100.0 | 17/17 | 100.0 | —
+Comunicación | ApiClient._send | 42-79 | 18/18 | 100.0 | 8/8 | 100.0 | —
+Comunicación | AppState.finishSession | 272-308 | 27/27 | 100.0 | 6/6 | 100.0 | —

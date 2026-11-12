@@ -1,0 +1,23 @@
+[Nest] 4704  - 11/11/2026, 6:52:29 p.m.   ERROR [ExceptionsHandler] PrismaClientKnownRequestError: 
+Invalid `this.prisma.favorite.upsert()` invocation in
+C:\Users\cesar\OneDrive\Escritorio\8°\DesarrolloWEB\WEBANGULAR\ceosmos-api\dist\favorites\favorites.controller.js:40:37
+
+  37 }
+  38 async add(req, contentKey) {
+  39     const key = this.key(contentKey);
+→ 40     return this.prisma.favorite.upsert(
+Unique constraint failed on the fields: (`userId`,`contentKey`)
+    at $n.handleRequestError (C:\Users\cesar\OneDrive\Escritorio\8°\DesarrolloWEB\WEBANGULAR\ceosmos-api\node_modules\@prisma\client\runtime\library.js:121:7315)
+    at $n.handleAndLogRequestError (C:\Users\cesar\OneDrive\Escritorio\8°\DesarrolloWEB\WEBANGULAR\ceosmos-api\node_modules\@prisma\client\runtime\library.js:121:6623)
+    at $n.request (C:\Users\cesar\OneDrive\Escritorio\8°\DesarrolloWEB\WEBANGULAR\ceosmos-api\node_modules\@prisma\client\runtime\library.js:121:6307)
+    at async l (C:\Users\cesar\OneDrive\Escritorio\8°\DesarrolloWEB\WEBANGULAR\ceosmos-api\node_modules\@prisma\client\runtime\library.js:130:9633) {
+  code: 'P2002',
+  clientVersion: '5.22.0',
+  meta: {
+    modelName: 'Favorite',
+    target: [
+      'userId',
+      'contentKey'
+    ]
+  }
+}

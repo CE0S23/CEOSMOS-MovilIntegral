@@ -1,0 +1,12 @@
+flowchart TD
+  A["A · l.19-20<br/>startedAt, endedAt = new Date()"] --> D1{"D1 · l.21<br/>endedAt &lt; startedAt"}
+  D1 -- V --> E1["400 · endedAt debe ser posterior"]
+  D1 -- F --> D2{"D2 · l.24<br/>endedAt &gt; ahora + 5 min"}
+  D2 -- V --> E2["400 · no puede estar en el futuro"]
+  D2 -- F --> D3{"D3 · l.27<br/>durationSeconds &gt; targetMinutes·60"}
+  D3 -- V --> E3["400 · supera la duración objetivo"]
+  D3 -- F --> C["C · l.30<br/>prisma.focusSession.create()"]
+  E1 --> FIN(("fin"))
+  E2 --> FIN
+  E3 --> FIN
+  C --> FIN

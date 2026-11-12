@@ -145,6 +145,7 @@ class FocusSession {
     required this.completed,
     this.metadata = const {},
     this.synced = true,
+    this.clientId,
   });
 
   factory FocusSession.fromJson(Map<String, dynamic> json) => FocusSession(
@@ -157,6 +158,7 @@ class FocusSession {
     targetMinutes: (json['targetMinutes'] as num).toInt(),
     completed: json['completed'] as bool? ?? false,
     metadata: (json['metadata'] as Map?)?.cast<String, dynamic>() ?? const {},
+    clientId: json['clientId'] as String?,
   );
 
   final String id, contentKey;
@@ -171,6 +173,10 @@ class FocusSession {
   /// false mientras no la confirme el servidor.
   final bool synced;
 
+  /// UUID v4 que la app genera UNA vez por sesión y repite en cada reintento; el
+  /// servidor lo usa para no duplicar la sesión si se perdió la respuesta (P11-D01).
+  final String? clientId;
+
   Map<String, Object?> toJson() => {
     'contentKey': contentKey,
     'mode': mode.apiValue,
@@ -180,6 +186,7 @@ class FocusSession {
     'targetMinutes': targetMinutes,
     'completed': completed,
     if (metadata.isNotEmpty) 'metadata': metadata,
+    'clientId': ?clientId,
   };
 }
 
