@@ -31,3 +31,5 @@ actualizado: 2026-11-18
 - [x] Tarea 7 · Reporte Word actualizado (P7 marcada «no aplicado por completo» hasta terminarla).
 - [ ] Cerrar P7 → [[08 - Pendientes]].
 
+---
+Navegación: [[00 - Índice CEOSMOS]] · [[08 - Pendientes]] · [[09 - Decisiones técnicas]]

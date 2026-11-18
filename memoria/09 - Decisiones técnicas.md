@@ -20,3 +20,6 @@ actualizado: 2026-11-18
 | 18/11 | La dirección BLE guardada en la API es `CE:05:<id>` | La MAC del periférico rota (privacidad) |
 | 18/11 | Prácticas Flutter informan `onNavigationNotification` a favor de CEOSMOS | En Android 14+ (atrás predictivo) el `MaterialApp` interno cerraba la app al pulsar Atrás |
 | 18/11 | Escaneo BLE en serie y reautenticación al recibir «sin autorización» | Defectos encontrados en hardware (ver [[06 - BLE Wearable y TV]]) |
+
+---
+Navegación: [[00 - Índice CEOSMOS]] · [[03 - Arquitectura y stack]] · [[06 - BLE Wearable y TV]] · [[10 - Bitácora]]

@@ -22,3 +22,6 @@ Dispositivo central: smartphone Android (Samsung Galaxy S24). Periféricos: **CE
 - [x] Reloj y TV por BLE real S24 ↔ tablet (ver [[06 - BLE Wearable y TV]]).
 - [x] `flutter analyze` sin observaciones · 188 pruebas Flutter + 9 Kotlin en verde (ver [[07 - Pruebas (Black, White, Red Box)]]).
 - [ ] Pendientes en [[08 - Pendientes]].
+
+---
+Navegación: [[00 - Índice CEOSMOS]] · [[02 - Requerimientos]] · [[03 - Arquitectura y stack]] · [[08 - Pendientes]]

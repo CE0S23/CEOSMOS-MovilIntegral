@@ -10,6 +10,19 @@ Memoria única del proyecto **CEOSMOS Móvil Integral** (Flutter + API NestJS + 
 con Reloj y TV compañeros por BLE). Revisión completa del 2026-11-18: lo marcado `- [x]` se comprobó
 en el código, en las pruebas automatizadas o en los dispositivos (Samsung S24 y Galaxy Tab S9).
 
+## Estado de un vistazo (18/11/2026)
+**Funciona y está verificado**
+- [x] App real contra la API de producción y Neon (S24) → [[01 - Visión general]] · [[04 - Módulos de la app]]
+- [x] Requerimientos de los 3 parciales (salvo passkeys) → [[02 - Requerimientos]]
+- [x] Reloj y TV por BLE, probados en S24 + Tab S9 → [[06 - BLE Wearable y TV]]
+- [x] Prácticas 3–6, 8–12, Examen 1, BD Firestore y Evaluación 2 → sección Prácticas
+- [x] Black/White/Red Box: 188 + 9 pruebas, Red Box 13/13 → [[07 - Pruebas (Black, White, Red Box)]]
+- [x] Reporte de avances (Word) actualizado; memoria reestructurada con respaldo
+
+**Falta** (detalle en [[08 - Pendientes]])
+- [ ] Cerrar la P7 (documento de rol de 4 cuentas + recorrido con roles)
+- [ ] Tareas que requieren al usuario y mejoras opcionales
+
 ## Notas
 - [[01 - Visión general]] — qué es CEOSMOS y en qué estado está.
 - [[02 - Requerimientos]] — requisitos del reporte de avances (3 parciales) y su estado.

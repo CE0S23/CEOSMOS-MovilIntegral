@@ -36,3 +36,6 @@ Fuente: *Reporte de avances* (3 parciales) y memorias anteriores. Estado comprob
 
 ## Prácticas con BD propia
 - [x] Cada práctica usa su almacenamiento: SQLite `p03_04_usuarios.db`, SharedPreferences `examen1.*`, `p09_local`, `p10_local`, apps Firebase con nombre (`practica7`, `bd_flutter`, `bd_nativo`, `p09`, `p10`), API propia de MediConnect y almacén seguro separado. CEOSMOS no crea la app Firebase `[DEFAULT]`.
+
+---
+Navegación: [[00 - Índice CEOSMOS]] · [[01 - Visión general]] · [[04 - Módulos de la app]] · [[06 - BLE Wearable y TV]] · [[08 - Pendientes]]

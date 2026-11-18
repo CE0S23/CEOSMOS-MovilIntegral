@@ -38,3 +38,6 @@ flowchart LR
 - Cada push a `movil-integral` redespliega en Vercel y corre `prisma migrate deploy` contra Neon.
 - El aviso de FlutterSecureStorage «Falling back to custom ciphers» es normal.
 - Huawei HiSuite instala un adb viejo (`hwtransport.exe`, 1.0.39) que pelea con el de Android SDK: se desinstaló el 18/11.
+
+---
+Navegación: [[00 - Índice CEOSMOS]] · [[04 - Módulos de la app]] · [[06 - BLE Wearable y TV]] · [[09 - Decisiones técnicas]]

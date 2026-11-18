@@ -35,7 +35,10 @@ actualizado: 2026-11-18
 
 ## Riesgos que quedan (con mitigación)
 - [ ] APK firmado con llave de depuración → crear keystore propio (ver [[08 - Pendientes]]).
-- [ ] Credencial de práctica `alumno/ClaveDemo2026` en Kotlin (P5, simulada por diseño de la práctica).
-- [ ] Claves de cliente Firebase en el código de las prácticas (públicas por diseño; las protegen las reglas).
-- [ ] Limitador de la API en memoria por instancia de Vercel → Upstash Redis.
-- [ ] P10 «cesión»: A puede crear una incidencia a nombre de B si registra `cedidoPor` → exigir aceptación de B.
+- Riesgo aceptado: credencial de práctica `alumno/ClaveDemo2026` en Kotlin (P5, simulada por diseño de la práctica).
+- Riesgo aceptado: claves de cliente Firebase en el código de las prácticas (públicas por diseño; las protegen las reglas).
+- [ ] Limitador de la API en memoria por instancia de Vercel → Upstash Redis (ver [[08 - Pendientes]]).
+- [ ] P10 «cesión»: A puede crear una incidencia a nombre de B si registra `cedidoPor` → exigir aceptación de B (ver [[08 - Pendientes]]).
+
+---
+Navegación: [[00 - Índice CEOSMOS]] · [[Práctica 08 - Pruebas de caja negra]] · [[Práctica 11 - Pruebas White Box]] · [[Práctica 12 - Optimización, estrés y resiliencia]] · [[08 - Pendientes]]

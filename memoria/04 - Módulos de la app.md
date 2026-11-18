@@ -18,3 +18,6 @@ actualizado: 2026-11-18
 
 - [x] Botón Atrás dentro de una práctica vuelve a «Prácticas» en Android 16/17 (antes cerraba la app; corregido el 18/11, ver [[09 - Decisiones técnicas]]).
 - [x] Pausa/fin/cambio de ambiente pedidos desde el Reloj o la TV también detienen el audio.
+
+---
+Navegación: [[00 - Índice CEOSMOS]] · [[02 - Requerimientos]] · [[03 - Arquitectura y stack]] · [[06 - BLE Wearable y TV]]

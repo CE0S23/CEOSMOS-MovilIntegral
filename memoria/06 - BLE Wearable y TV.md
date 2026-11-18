@@ -39,3 +39,6 @@ En la API se guarda como `CE:05:` + id (la MAC del periférico rota por privacid
 - [x] App TV cerrada y reabierta → reautenticación automática (defecto encontrado y corregido).
 - [x] Bluetooth apagado → «Reconectando…»; al encender, ambos roles reconectan solos (defecto de escaneo simultáneo encontrado y corregido).
 - [x] Permiso denegado → mensaje y apertura de Ajustes. CEOSMOS en segundo plano sigue proyectando.
+
+---
+Navegación: [[00 - Índice CEOSMOS]] · [[03 - Arquitectura y stack]] · [[07 - Pruebas (Black, White, Red Box)]] · [[09 - Decisiones técnicas]] · [[08 - Pendientes]]

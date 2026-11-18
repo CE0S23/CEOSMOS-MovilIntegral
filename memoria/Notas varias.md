@@ -12,3 +12,6 @@ actualizado: 2026-11-18
 - Para no depender del cable se puede usar adb por Wi-Fi en la tablet (`adb tcpip 5555` + `adb connect <ip>:5555`); se desactivó al terminar el 18/11 (`adb usb`).
 - Guion de demostración de la primera revisión (08/10): acceso, Inicio, Explorar («orbita» sin tilde), sesión, perfil, dispositivos. Hoy ya no hay «Explorar demo».
 - Huella de la integración: adaptaciones de cada práctica marcadas con `[CEOSMOS]` en el código.
+
+---
+Navegación: [[00 - Índice CEOSMOS]] · [[03 - Arquitectura y stack]] · [[08 - Pendientes]]
