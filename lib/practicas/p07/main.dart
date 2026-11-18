@@ -1,3 +1,4 @@
+import '../atras_ceosmos.dart'; // [CEOSMOS]
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -71,6 +72,7 @@ class _Practica7EntradaState extends State<Practica7Entrada> {
       );
     }
     return MaterialApp(
+      onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: Center(
@@ -102,6 +104,7 @@ class Practica7App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
+      onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
     title: 'Práctica 7',
     theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
     home: Consumer<AuthService>(

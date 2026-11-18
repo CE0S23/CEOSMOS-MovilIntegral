@@ -1,3 +1,4 @@
+import '../atras_ceosmos.dart'; // [CEOSMOS]
 import 'package:flutter/material.dart';
 
 import 'consulta_web/consulta_web_page.dart';
@@ -15,6 +16,7 @@ class ConsultaWebApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
       title: 'ConsultaWeb',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

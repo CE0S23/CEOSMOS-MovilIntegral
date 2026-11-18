@@ -1,3 +1,4 @@
+import '../atras_ceosmos.dart'; // [CEOSMOS]
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -8,6 +9,7 @@ class AccesoSeguroApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
+      onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
         title: 'AccesoSeguro',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

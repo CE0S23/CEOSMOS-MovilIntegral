@@ -1,3 +1,4 @@
+import '../atras_ceosmos.dart'; // [CEOSMOS]
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
@@ -42,6 +43,7 @@ class IncidenciasApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
       title: 'Incidencias de Soporte',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

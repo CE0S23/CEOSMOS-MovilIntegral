@@ -1,3 +1,4 @@
+import '../atras_ceosmos.dart'; // [CEOSMOS]
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ class ReportesApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
+      onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
     title: 'Reportes Firestore',
     debugShowCheckedModeBanner: false,
     theme: ThemeData(

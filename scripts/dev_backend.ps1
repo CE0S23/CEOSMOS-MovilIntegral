@@ -1,4 +1,4 @@
-<#
+﻿<#
   Levanta el entorno de desarrollo de CEOSMOS para probar en el emulador:
     1. PostgreSQL local de desarrollo (puerto 5433, datos en .devdb\data).
     2. API NestJS de CEOSMOS (puerto 8080) apuntando a esa base.

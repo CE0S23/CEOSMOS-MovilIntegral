@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- El PIN y el id del compañero no se copian a la nube ni a otro equipo. -->
+<data-extraction-rules>
+    <cloud-backup><exclude domain="sharedpref" path="." /></cloud-backup>
+    <device-transfer><exclude domain="sharedpref" path="." /></device-transfer>
+</data-extraction-rules>

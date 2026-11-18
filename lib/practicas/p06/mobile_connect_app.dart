@@ -1,3 +1,4 @@
+import '../atras_ceosmos.dart'; // [CEOSMOS]
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -11,6 +12,7 @@ class MobileConnectApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => MaterialApp(
+      onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
         title: 'MobileConnect',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(

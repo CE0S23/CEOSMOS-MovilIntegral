@@ -1,3 +1,4 @@
+import '../atras_ceosmos.dart'; // [CEOSMOS]
 import 'package:flutter/material.dart';
 
 import 'presentation/screens/screens.dart';
@@ -10,6 +11,7 @@ class MediConnectApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
       title: 'MediConnect',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(

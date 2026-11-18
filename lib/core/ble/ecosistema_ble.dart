@@ -60,9 +60,8 @@ class AlmacenPinMemoria implements AlmacenPinBle {
 }
 
 class _Enlace {
-  _Enlace(this.conexion, this.servicios, this.idCompanero);
+  _Enlace(this.conexion, this.servicios);
   final ConexionBle conexion;
-  final String? idCompanero;
   final Set<String> servicios;
   final roles = <RolBle>{};
   final subs = <RolBle, StreamSubscription<List<int>>>{};
@@ -184,42 +183,42 @@ class EcosistemaBle extends ChangeNotifier {
     _Enlace? enlace;
     String? id = idCompanero ?? e.idCompanero;
     try {
-      // 1. Un enlace ya abierto con el mismo equipo físico que también expone este servicio.
-      enlace = _activos.values.where((a) => a.servicios.contains(rol.servicio)).firstOrNull;
+      // 1. Siempre se escanea el servicio del rol: el anuncio trae el id del compañero
+      //    (Reloj y TV pueden ser apps distintas en la misma tablet, con PIN e id propios).
+      e.estado = EstadoEnlace.buscando;
+      _cambio();
+      HallazgoBle? elegido;
+      await for (final h in transporte.escanear(rol.servicio, duracionEscaneo)) {
+        final hid = leerIdCompanero(h.datosFabricante, rol);
+        if (id == null || hid == id) {
+          elegido = h;
+          break;
+        }
+      }
+      await transporte.detenerEscaneo();
+      if (elegido == null) {
+        e.error = 'No se encontró el ${rol.nombre} CEOSMOS. Ábrelo en la tablet y revisa que anuncie.';
+        return ResultadoConexion.noEncontrado;
+      }
+      id = leerIdCompanero(elegido.datosFabricante, rol) ?? id;
+      // 2. Reutiliza el enlace físico si ya hay uno con ese equipo (Android rota la MAC de
+      //    cada anuncio, así que también vale un enlace abierto que exponga el servicio).
+      enlace = _activos[elegido.remoteId] ??
+          _activos.values.where((a) => a.servicios.contains(rol.servicio)).firstOrNull;
       if (enlace == null) {
-        e.estado = EstadoEnlace.buscando;
+        e.estado = EstadoEnlace.conectando;
         _cambio();
-        HallazgoBle? elegido;
-        await for (final h in transporte.escanear(rol.servicio, duracionEscaneo)) {
-          final hid = leerIdCompanero(h.datosFabricante, rol);
-          if (id == null || hid == id) {
-            elegido = h;
-            break;
-          }
-        }
-        await transporte.detenerEscaneo();
-        if (elegido == null) {
-          e.error = 'No se encontró el ${rol.nombre} CEOSMOS. Ábrelo en la tablet y revisa que anuncie.';
-          return ResultadoConexion.noEncontrado;
-        }
-        id = leerIdCompanero(elegido.datosFabricante, rol) ?? id;
-        enlace = _activos[elegido.remoteId];
-        if (enlace == null) {
-          e.estado = EstadoEnlace.conectando;
-          _cambio();
-          final c = await transporte.conectar(elegido.remoteId);
-          final servicios = await c.servicios();
-          enlace = _Enlace(c, servicios, id);
-          _activos[c.remoteId] = enlace;
-          unawaited(c.perdida.then((_) => _alPerder(c.remoteId)));
-        }
+        final c = await transporte.conectar(elegido.remoteId);
+        final servicios = await c.servicios();
+        enlace = _Enlace(c, servicios);
+        _activos[c.remoteId] = enlace;
+        unawaited(c.perdida.then((_) => _alPerder(c.remoteId)));
       }
       if (!enlace.servicios.contains(rol.servicio)) {
         e.error = 'El dispositivo no expone el servicio de ${rol.nombre}.';
         await _soltar(enlace, rol);
         return ResultadoConexion.fallo;
       }
-      id ??= enlace.idCompanero; // enlace compartido con el otro rol
       e.idCompanero = id;
       e.remoteId = enlace.conexion.remoteId;
       final clave = pin ?? (id == null ? null : await pines.leer(id));
