@@ -25,6 +25,7 @@ class PerifericoFalso {
   final _retos = <RolBle, List<int>>{};
   final notificadores = <RolBle, StreamController<List<int>>>{};
   int fallos = 0;
+  bool authRota = false; // la escritura del reto falla por otra causa (no PIN)
   bool anunciando = true;
   ConexionFalsa? conexion;
 
@@ -46,6 +47,7 @@ class TransporteFalso implements BleTransporte {
   final _adaptador = StreamController<AdaptadorBle>.broadcast();
   AdaptadorBle estado = AdaptadorBle.encendido;
   bool permisoDenegado = false;
+  bool falloAlConectar = false, falloAlEncender = false;
   int escaneos = 0, conexiones = 0;
 
   void cambiarAdaptador(AdaptadorBle a) {
@@ -63,7 +65,10 @@ class TransporteFalso implements BleTransporte {
   @override
   Stream<AdaptadorBle> get adaptador => _adaptador.stream;
   @override
-  Future<void> encender() async => cambiarAdaptador(AdaptadorBle.encendido);
+  Future<void> encender() async {
+    if (falloAlEncender) throw const FalloBle('El usuario rechazó encender el Bluetooth');
+    cambiarAdaptador(AdaptadorBle.encendido);
+  }
 
   @override
   Stream<HallazgoBle> escanear(String servicio, Duration duracion) async* {
@@ -83,7 +88,7 @@ class TransporteFalso implements BleTransporte {
   @override
   Future<ConexionBle> conectar(String remoteId) async {
     final p = perifericos.firstWhere((p) => p.remoteId == remoteId);
-    if (!p.anunciando) throw const FalloBle('timeout');
+    if (!p.anunciando || falloAlConectar) throw const FalloBle('timeout');
     conexiones++;
     p.autenticados.clear();
     final c = ConexionFalsa(p);
@@ -128,6 +133,7 @@ class ConexionFalsa implements ConexionBle {
     if (cerrada) throw const FalloBle('desconectado');
     final rol = _rol(servicio);
     if (caracteristica == rol.auth) {
+      if (p.authRota) throw const FalloBle('GATT_ERROR 133');
       final reto = p._retos.remove(rol);
       if (reto != null && const ListEquality<int>().equals(datos, respuestaReto(p.pin, reto, rol))) {
         p.autenticados.add(rol);

@@ -59,7 +59,7 @@ void main() {
     await ble.conectar(RolBle.reloj, pin: '123456');
     expect(await ble.conectar(RolBle.tv, pin: '123456'), ResultadoConexion.conectado);
     expect(radio.conexiones, 1);
-    expect(radio.escaneos, 1, reason: 'la TV se encontró en el enlace ya abierto');
+    expect(radio.escaneos, 2, reason: 'cada rol lee su id del anuncio, pero el enlace es uno');
     await ble.desconectar(RolBle.reloj);
     expect(tablet.conexion!.cerrada, isFalse, reason: 'la TV sigue usando el enlace');
     await ble.desconectar(RolBle.tv);
@@ -200,5 +200,52 @@ void main() {
     expect(await b, ResultadoConexion.fallo);
     expect(await a, ResultadoConexion.conectado);
     unawaited(Future<void>.value());
+  });
+
+  test('errores GATT al conectar o autenticar → fallo controlado sin enlace abierto', () async {
+    radio.falloAlConectar = true;
+    expect(await ble.conectar(RolBle.reloj, pin: '123456'), ResultadoConexion.fallo);
+    expect(ble[RolBle.reloj].error, contains('timeout'));
+    radio.falloAlConectar = false;
+    tablet.authRota = true;
+    expect(await ble.conectar(RolBle.reloj, pin: '123456'), ResultadoConexion.fallo);
+    expect(tablet.conexion!.cerrada, isTrue);
+    expect(pines.valores, isEmpty, reason: 'un error de radio no guarda ni borra PIN');
+  });
+
+  test('saludo del periférico, mensaje imposible de codificar y encendido rechazado', () async {
+    await ble.conectar(RolBle.tv, pin: '123456');
+    tablet.enviar(RolBle.tv, {'t': 'hello', 'name': 'Tablet sala'});
+    await esperar();
+    expect(ble[RolBle.tv].nombreRemoto, 'Tablet sala');
+    expect(await ble.enviar(RolBle.tv, {'t': 'x', 'data': 'z' * 400}), isFalse);
+    expect(await ble.enviar(RolBle.reloj, {'t': 'notif', 'msg': 'a'}), isFalse, reason: 'rol sin conectar');
+    radio
+      ..falloAlEncender = true
+      ..estado = AdaptadorBle.apagado;
+    await ble.encenderBluetooth(); // no lanza: se registra y la UI sigue mostrando «apagado»
+    expect(radio.estado, AdaptadorBle.apagado);
+  });
+
+  test('al reconectar con un PIN que cambió en el periférico, deja de reintentar', () async {
+    await ble.conectar(RolBle.reloj, pin: '123456');
+    tablet.pin = '777777'; // «Nuevo PIN» en el reloj revoca el acceso
+    tablet.conexion!.cortar();
+    await esperar(200);
+    expect(ble[RolBle.reloj].estado, EstadoEnlace.error);
+    expect(pines.valores, isEmpty);
+    expect(radio.conexiones, 2, reason: 'un solo intento: con PIN rechazado no se insiste');
+  });
+
+  test('desconectar durante la reconexión la cancela', () async {
+    await ble.conectar(RolBle.reloj, pin: '123456');
+    tablet.anunciando = false;
+    tablet.conexion!.cortar();
+    await esperar(2);
+    await ble.desconectar(RolBle.reloj);
+    tablet.anunciando = true;
+    await esperar(300);
+    expect(ble[RolBle.reloj].estado, EstadoEnlace.desconectado);
+    expect(radio.conexiones, 1);
   });
 }
