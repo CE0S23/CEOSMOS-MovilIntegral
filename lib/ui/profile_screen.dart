@@ -213,7 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: state.loadWorkspace,
                 icon: const Icon(Icons.refresh, size: 20),
               ),
-            Text('${workspace.history.length} sesiones', style: const TextStyle(color: Cosmos.muted, fontSize: 12)),
+            Text('${state.totalSessions} sesiones', style: const TextStyle(color: Cosmos.muted, fontSize: 12)),
           ],
         ),
         const SizedBox(height: 14),
@@ -229,6 +229,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
             message: 'Cuando termines una sesión, encontrarás aquí tu tiempo y tu ambiente.',
           ),
         ...workspace.history.map((session) => _SesionTile(state: state, session: session)),
+        // P12-O1: el historial llega por páginas de 20.
+        if (state.historyHasMore)
+          Center(
+            child: state.loadingMoreHistory
+                ? const Padding(padding: EdgeInsets.all(8), child: CircularProgressIndicator(strokeWidth: 2))
+                : TextButton.icon(
+                    onPressed: state.loadMoreHistory,
+                    icon: const Icon(Icons.expand_more_rounded),
+                    label: const Text('Ver más sesiones'),
+                  ),
+          ),
         const SizedBox(height: 28),
         Text('Sesiones de acceso activas', style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 12),

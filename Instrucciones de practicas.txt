@@ -1,0 +1,1010 @@
+Práctica 4: Almacenamiento estructurado en una aplicación móvil
+
+Desarrollar una aplicación móvil que permita registrar, consultar, modificar y eliminar información almacenada de manera estructurada en el dispositivo móvil, utilizando una base de datos SQLite mediante Room (Pueden usar la base de datos de su repositorio de proyecto). 
+
+La aplicación deberá permitir:
+Registrar usuarios.
+Consultar usuarios registrados.
+Modificar información.
+Eliminar usuarios.
+La tabla usuarios deberá contener:
+| Campo   | Tipo   | Descripción           |
+
+| id      | Int    | Identificador         |
+| nombre  | String | Nombre del usuario |
+| edad    | Int    | Edad                  |
+| profesion | String | Carrera               |
+
+METODO DE CONSULTA:
+Al presionar:
+
+VER usuarios
+
+la aplicación deberá ejecutar:
+dao.obtenerTodos()
+y mostrar los registros.
+
+El alumno deberá realizar las operaciones:
+
+Caso 1 — Insertar
+Registrar tres estudiantes.
+
+Caso 2 — Consultar
+Mostrar todos los estudiantes almacenados.
+
+Caso 3 — Actualizar
+Modificar la carrera de uno de los estudiantes.
+
+Caso 4 - Crear nuevo campo (correo)
+El alumno deberá modificar:
+Entity.
+Base de datos.
+Interfaz.
+Inserción.
+Consulta.
+Actualización.
+Esto permitirá observar que cuando cambia la estructura de una base de datos, también deben modificarse las diferentes partes de la aplicación.
+
+El alumno deberá responder:
+¿Qué es almacenamiento estructurado?
+¿Qué diferencia existe entre almacenamiento estructurado y almacenamiento de texto?
+¿Qué es SQLite?
+¿Qué función cumple Room?
+¿Qué es una entidad?
+¿Qué función cumple un DAO?
+¿Qué significa CRUD?
+¿Qué diferencia existe entre INSERT, SELECT, UPDATE y DELETE?
+¿Qué sucede con los datos cuando se cierra la aplicación?
+¿Qué ventajas tiene utilizar una base de datos local en una aplicación móvil?
+
+PRACTICA 5: Prácticas de código seguro en aplicaciones móviles
+
+Objetivo de la práctica: Implementar y comprobar medidas básicas de seguridad en una aplicación móvil Android, mediante la validación de entradas, el manejo seguro de credenciales y la prevención de la exposición de información sensible en registros y mensajes de error.
+
+Una empresa está desarrollando una aplicación móvil para que sus usuarios inicien sesión en un sistema interno. Durante una revisión de código se detectó que la aplicación acepta entradas sin validar, muestra información sensible en el registro de ejecución y utiliza mensajes de error que revelan detalles técnicos.
+El estudiante deberá desarrollar una versión mejorada de la aplicación, denominada AccesoSeguro, utilizando Kotlin y Android Studio.
+
+La aplicación deberá cumplir con las siguientes características:
+1. Mostrar campos para usuario y contraseña.
+2. Validar que ambos campos contengan información.
+3. Rechazar entradas que superen una longitud definida.
+4. Ocultar los caracteres de la contraseña.
+5. Mostrar mensajes de error genéricos, sin revelar datos sensibles.
+6. Evitar imprimir contraseñas u otros datos confidenciales en Logcat.
+7. Mostrar un mensaje de acceso simulado cuando los datos de prueba sean válidos.
+
+Evitar que se acepte un usuario que contenga únicamente espacios y comprobar que la contraseña tenga al menos ocho caracteres.
+
+ENTREGABLES:
+Proyecto funcional de Android Studio.
+Archivo MainActivity.kt con comentarios que expliquen las validaciones.
+Captura de la interfaz en el emulador.
+Captura de una prueba con entradas inválidas.
+Captura de Logcat donde se compruebe que no se registran credenciales.
+Respuestas breves a estas preguntas:
+¿Por qué no deben registrarse contraseñas en Logcat?
+¿Qué diferencia existe entre ocultar una contraseña y cifrarla?
+¿Por qué la validación del lado del cliente no es suficiente para autenticar a un usuario?
+
+PRACTICA 6: Interacción entre dispositivos
+
+Desarrollar una aplicación móvil en Android Studio que permita comprender cómo dos dispositivos intercambian información mediante una conexión inalámbrica, utilizando envíos de mensajes entre dos instancias de una aplicación.
+
+Una empresa necesita desarrollar una aplicación llamada MobileConnect, que permita a dos usuarios intercambiar mensajes breves desde sus teléfonos.
+Para esta práctica, el estudiante construirá una interfaz: Dispositivo A y Dispositivo B será de otro estudiante. Los mensajes enviados desde uno aparecerán en la conversación del otro, utilizando un canal de comunicación dentro de la aplicación.
+La práctica se centrará en la interacción y el intercambio de información.
+
+La aplicación deberá:
+1. Mostrar los nombres de los dos dispositivos simulados.
+2. Permitir seleccionar el dispositivo emisor.
+3. Contar con un campo de texto para redactar mensajes.
+4. Permitir enviar mensajes al otro dispositivo.
+5. Mostrar el mensaje y su emisor en una lista de conversación.
+6. Evitar el envío de mensajes vacíos.
+7. Mostrar una notificación visual cuando se envíe un mensaje.
+
+AGREGAR:
+Agregar la hora de envío a cada mensaje.
+Mostrar un contador de mensajes enviados por cada dispositivo.
+Agregar un botón para limpiar el historial.
+
+El alumno deberá responder brevemente:
+1. ¿Qué significa la interacción entre dispositivos móviles?
+2. ¿Qué tecnologías permiten intercambiar información entre dispositivos?
+3. ¿Qué diferencia existe entre una simulación local y una comunicación real?
+4. ¿Qué función cumple el estado de la aplicación en Jetpack Compose?
+5. ¿Por qué es importante validar los mensajes antes de enviarlos?
+6. ¿Qué cambios serían necesarios para implementar comunicación real mediante Bluetooth o Wi-Fi?
+7. ¿Qué ventajas tendría utilizar un servidor intermediario para intercambiar mensajes?
+
+ENTREGABLES:
+El estudiante deberá entregar:
+1. Proyecto Android Studio denominado MobileConnect.
+2. Archivo MainActivity.kt comentado.
+3. Captura de la interfaz ejecutada en el emulador.
+4. Capturas de mensajes enviados desde ambos dispositivos simulados.
+5. Evidencia de la validación de mensajes vacíos.
+6. Respuestas a las preguntas de análisis.
+
+PRACTICA 7: Asignación de roles masivos e interacción de situaciones
+
+Objetivo: Realizar un proceso de mensajería y envío de archivos así como asignación de roles basados en URL preasignadas entre 4 dispositivos diferentes.
+Se asignaran roles basados en administrador, agente de atención y 2 usuarios según corresponda.
+Asigne casos basados en el proyecto de su elección (reporte de fallas, procesos de atención, solución de accesos perdidos)
+El intercambio de roles se basa en la desconexión y la asignación del agente a los problemas que el administrador deba atender, así como solicitudes directas al administrador
+La aplicación deberá:
+1. Mostrar los nombres de los dos dispositivos conectados.
+2. Permitir seleccionar el dispositivo emisor (administrador).
+3. Contar con un campo de texto para redactar mensajes.
+4. Permitir enviar mensajes al otro dispositivo.
+5. Mostrar el mensaje y su emisor en una lista de conversación.
+6. Evitar el envío de mensajes vacíos.
+7. Mostrar una notificación visual cuando se envíe un mensaje.
+
+AGREGAR:
+Agregar la hora de envío a cada mensaje.
+Mostrar un contador de mensajes enviados por cada dispositivo.
+Agregar un botón para limpiar el historial.
+
+
+Matriz de pruebas basadas en casos a solucionar, comprobación en tiempo real solo para el administrador y el agente
+
+TC01 - Alta válida
+Acción: Registrar un reporte con todos los campos correctos.
+Esperado: El documento se almacena y puede consultarse.
+Resultado: Sin registrar
+Observaciones: Sin observaciones
+
+TC02 - Campos vacíos
+Acción: Intentar guardar un reporte sin equipo ni descripción.
+Esperado: La aplicación rechaza los datos y muestra una validación.
+Resultado: Sin registrar
+Observaciones: Sin observaciones
+
+TC03 - Identificador repetido
+Acción: Guardar dos veces el reporte con ID REP001.
+Esperado: La aplicación evita sobrescribir información accidentalmente o aplica una política explícita.
+Resultado: Sin registrar
+Observaciones: Sin observaciones
+
+TC04 - Actualización
+Acción: Cambiar la prioridad de un reporte de Media a Alta.
+Esperado: El cambio se conserva al volver a consultar el documento.
+Resultado: Sin registrar
+Observaciones: Sin observaciones
+
+TC05 - Eliminación
+Acción: Eliminar un reporte existente y consultarlo nuevamente.
+Esperado: El documento ya no aparece como registro activo.
+Resultado: Sin registrar
+Observaciones: Sin observaciones
+
+TC06 - Documento inexistente
+Acción: Consultar el ID REP999.
+Esperado: La aplicación maneja el resultado vacío sin bloquearse.
+Resultado: Sin registrar
+Observaciones: Sin observaciones
+
+TC07 - Pérdida de conexión
+Acción: Desactivar la conexión durante una operación de escritura.
+Esperado: La app informa el estado de la operación y gestiona la sincronización o el error.
+Resultado: Sin registrar
+Observaciones: Sin observaciones
+
+TC08 - Persistencia
+Acción: Cerrar y abrir la app; consultar un reporte guardado.
+Esperado: El dato persiste en Firestore y vuelve a mostrarse.
+Resultado: Sin registrar
+Observaciones: Sin observaciones
+
+PRACTICA 8: Evaluación de calidad de software mediante pruebas de caja negra (Black Box Testing)
+
+Sobre el proyecto personal asignado a cada estudiante, presente evidencia y describa los casos presentados:
+Si las funciones implementadas corresponden a los requisitos establecidos.
+Si las operaciones principales producen resultados correctos.
+Si el sistema rechaza entradas inválidas de manera apropiada.
+Si existen defectos en la navegación, los formularios o los mensajes mostrados.
+Si los datos registrados, consultados, modificados y eliminados conservan su consistencia.
+Si los permisos de usuario se aplican correctamente.
+Si el sistema responde adecuadamente ante errores, interrupciones o condiciones inesperadas.
+Si existen defectos que puedan impedir la liberación del producto.
+Si las evidencias obtenidas son suficientes para justificar la aceptación o el rechazo de la entrega.
+Se recomienda evaluar un proyecto que incluya al menos:
+- Un módulo de autenticación o control de acceso.
+- Formularios para registrar información.
+- Consulta, búsqueda o filtrado de datos.
+- Modificación y eliminación de registros.
+- Reglas de negocio verificables.
+- Diferentes pantallas, módulos o roles.
+- Persistencia de información.
+- Mensajes de confirmación y manejo de errores.
+
+Instrucciones
+1. Revisa el inventario de funcionalidades.
+2. Identifica las entradas que recibe cada función.
+3. Determina las restricciones que deben cumplir esas entradas.
+4. Identifica las salidas, mensajes o cambios de estado esperados.
+5. Define los errores que el sistema debe manejar.
+6. Asigna un identificador único a cada requisito.
+7. Establece un criterio de aceptación medible.
+8. Identifica los requisitos que todavía no pueden verificarse por falta de información.
+
+El alumno deberá documentar al menos 12 requisitos verificables, siempre que el proyecto disponga de suficientes funcionalidades. Estos deberán incluir:
+- Cuatro requisitos de operaciones principales.
+- Tres requisitos relacionados con validaciones.
+- Dos requisitos de persistencia o consistencia de datos.
+- Dos requisitos de navegación, roles o permisos, cuando correspondan.
+- Un requisito de manejo de errores.
+
+PRACTICA 9: Conexiones y pruebas de base de datos entre dispositivos con la misma aplicación
+
+Una empresa de desarrollo de software está construyendo una aplicación móvil para administrar incidencias técnicas. Los empleados utilizan la misma aplicación desde diferentes dispositivos para registrar, consultar y actualizar incidencias en tiempo real.
+Actualmente, cada dispositivo puede mostrar información distinta. Por ejemplo, un empleado registra una incidencia desde su teléfono, pero otro empleado no puede verla desde su dispositivo. En otros casos, dos usuarios modifican simultáneamente un mismo registro y la información final no corresponde a lo esperado.
+La empresa necesita comprobar que la aplicación se conecte correctamente a una base de datos compartida, que los cambios realizados desde un dispositivo puedan consultarse desde otro y que las operaciones de escritura, actualización y eliminación se comporten de manera consistente.
+El equipo de estudiantes asumirá el papel de ingenieros de software responsables de validar la conectividad, persistencia y sincronización de datos entre dispositivos móviles.
+La práctica se realizará utilizando la misma aplicación instalada o ejecutada en dos dispositivos Android. Ambos deberán acceder al mismo proyecto de base de datos, no a dos bases independientes.
+
+OBJETIVO
+Implementar y validar la conexión de dos dispositivos móviles a una base de datos compartida mediante una misma aplicación, ejecutando pruebas funcionales y de consistencia para verificar la creación, consulta, actualización, eliminación y sincronización de datos, así como el manejo de conflictos y de interrupciones de conectividad.
+
+Configurar una aplicación móvil para conectarse a una base de datos remota.
+Diferenciar entre almacenamiento local y almacenamiento compartido en la nube.
+Verificar que varios dispositivos consulten la misma colección de datos.
+Comprobar la propagación de cambios entre dispositivos.
+Identificar problemas de sincronización y actualización de información.
+Evaluar el comportamiento de la aplicación cuando dos dispositivos modifican un mismo registro.
+Probar la persistencia de datos después de cerrar y abrir la aplicación.
+Documentar resultados, defectos y evidencias de las pruebas.
+Fase 1. Verificación de conectividad
+1. Ejecuta la aplicación en el dispositivo A.
+2. Ejecuta la misma aplicación en el dispositivo B.
+3. Comprueba que ambos puedan acceder a la pantalla de incidencias.
+4. Verifica que los dos dispositivos estén conectados al mismo proyecto de Firebase.
+5. Consulta la colección incidencias desde Firebase Console.
+6. Registra el estado inicial de la colección.
+
+Fase 2. Prueba de escritura y lectura cruzada 
+1. Desde el dispositivo A, registra una incidencia con título PRUEBA_A_001.
+2. Confirma que la aplicación muestre el resultado de la operación de guardado.
+3. Verifica que el documento exista en Firestore.
+4. Desde el dispositivo B, consulta la lista de incidencias.
+5. Localiza PRUEBA_A_001.
+6. Registra si apareció automáticamente o si fue necesario actualizar la consulta.
+7. Repite el procedimiento creando PRUEBA_B_001 desde el dispositivo B.
+8. Comprueba que el dispositivo A pueda recuperar el segundo registro.
+
+Fase 3. Actualización y sincronización
+1. En el dispositivo A, cambia el estado de PRUEBA_A_001 de Pendiente a En proceso.
+2. Confirma que el cambio se haya guardado.
+3. Observa el dispositivo B.
+4. Comprueba si muestra el nuevo estado y cuánto tarda en reflejarlo.
+5. Si la aplicación no actualiza automáticamente, ejecuta el mecanismo de consulta definido.
+6. Desde el dispositivo B, cambia la prioridad a Crítica, si esa prioridad está contemplada en las reglas del ejercicio.
+7. Vuelve a consultar el registro desde el dispositivo A.
+8. Verifica los valores finales en Firestore.
+
+Fase 4. Prueba de conflictos
+Esta fase evalúa un escenario más avanzado: dos dispositivos modifican el mismo documento.
+1. Selecciona una incidencia de prueba.
+2. Abre el mismo registro en ambos dispositivos.
+3. En el dispositivo A, modifica el estado a En proceso, pero no guardes todavía si la aplicación permite separar edición y guardado.
+4. En el dispositivo B, cambia la prioridad a Alta y guarda.
+5. En el dispositivo A, guarda la modificación pendiente.
+6. Consulta el documento final desde ambos dispositivos y desde Firestore.
+7. Registra qué campos se conservaron y cuáles cambiaron.
+
+Fase 6. Cierre y análisis
+1. Completa la matriz de pruebas.
+2. Compara los resultados observados con los esperados.
+3. Identifica al menos un riesgo de sincronización o explica por qué no se detectaron defectos en las condiciones evaluadas.
+4. Recopila las evidencias.
+5. Redacta una conclusión técnica breve.
+
+Práctica 9 — Matriz de pruebas
+DB-01 | Conexión compartida
+Esperado: Ambos dispositivos acceden al mismo proyecto y colección.
+Resultado: No registrado
+Observación: Sin observación
+
+DB-02 | Escritura desde A
+Esperado: La incidencia creada por A aparece en la base remota.
+Resultado: No registrado
+Observación: Sin observación
+
+DB-03 | Lectura desde B
+Esperado: B puede recuperar la incidencia creada por A.
+Resultado: No registrado
+Observación: Sin observación
+
+DB-04 | Escritura desde B
+Esperado: La incidencia creada por B se almacena correctamente.
+Resultado: No registrado
+Observación: Sin observación
+
+DB-05 | Lectura desde A
+Esperado: A puede recuperar la incidencia creada por B.
+Resultado: No registrado
+Observación: Sin observación
+
+DB-06 | Actualización cruzada
+Esperado: El cambio confirmado es visible en el otro dispositivo.
+Resultado: No registrado
+Observación: Sin observación
+
+DB-07 | Modificación concurrente
+Esperado: El resultado final cumple la política de actualización definida.
+Resultado: No registrado
+Observación: Sin observación
+
+DB-08 | Persistencia
+Esperado: Los registros confirmados permanecen tras cerrar y abrir la app.
+Resultado: No registrado
+Observación: Sin observación
+
+DB-09 | Pérdida de conexión
+Esperado: La aplicación informa o gestiona la operación sin confirmar falsamente el éxito.
+Resultado: No registrado
+Observación: Sin observación
+
+PRÁCTICA 10. Seguridad, autenticación y control de acceso a una base de datos compartida entre dispositivos
+
+Implementar y validar controles de seguridad en una aplicación móvil compartida entre dos dispositivos, comprobando que cada usuario solamente pueda realizar las operaciones autorizadas sobre los datos de la base de datos remota.
+
+Fase 1. Configuración de autenticación
+1. Habilitar el proveedor de correo y contraseña en Firebase Authentication.
+2. Crear dos cuentas de prueba diferentes.
+3. Iniciar sesión con el usuario A en el primer dispositivo y con el usuario B en el segundo.
+4. Mostrar en pantalla el UID del usuario autenticado para verificar que son diferentes.
+Resultado esperado: cada dispositivo identifica correctamente a su usuario.
+
+Fase 2. Asociación de registros con usuarios
+1. Modificar la función de creación de incidencias.
+2. Asignar el UID del usuario autenticado a creadoPor.
+3. Registrar dos incidencias desde el dispositivo A y una desde el B.
+4. Consultar los documentos en Firestore y verificar su propietario.
+Resultado esperado: todos los registros tienen un propietario correcto y verificable.
+
+Fase 3. Implementación de reglas de seguridad
+En la consola de Firestore, configurar reglas que permitan a los usuarios autenticados leer y modificar únicamente sus propios documentos.
+
+Fase 4. Pruebas de acceso autorizado y no autorizado
+Ejecutar pruebas con ambos dispositivos. Verificar que el usuario A pueda modificar su incidencia, pero no modificar ni eliminar la incidencia del usuario B.
+
+Fase 5. Análisis de resultados y corrección
+1. Registrar las operaciones exitosas y rechazadas.
+2. Revisar los mensajes de error y los registros de depuración.
+3. Corregir errores de configuración o de lógica.
+4. Repetir las pruebas fallidas y reunir evidencias.
+Resultado esperado: el equipo entrega una matriz de pruebas con resultados verificables y una conclusión de seguridad.
+
+Intentar también crear un documento asignando un UID ajeno y acceder sin iniciar sesión.
+Resultado esperado: las operaciones no autorizadas son rechazadas por Firestore, no solamente ocultadas en la interfaz.
+
+MATRIZ DE PRUEBAS DE SEGURIDAD
+
+SEG-01 - Inicio de sesión válido
+Acción: Ingresar con la cuenta del usuario A.
+Esperado: Autenticación exitosa.
+Resultado: Sin ejecutar
+Evidencia: Sin observaciones
+
+SEG-02 - Inicio de sesión inválido
+Acción: Intentar ingresar con una contraseña incorrecta.
+Esperado: Acceso rechazado.
+Resultado: Sin ejecutar
+Evidencia: Sin observaciones
+
+SEG-03 - Creación propia
+Acción: A registra una incidencia con su UID.
+Esperado: Documento creado con propietario A.
+Resultado: Sin ejecutar
+Evidencia: Sin observaciones
+
+SEG-04 - Suplantación de propietario
+Acción: A intenta crear una incidencia indicando el UID de B.
+Esperado: Firestore rechaza la escritura.
+Resultado: Sin ejecutar
+Evidencia: Sin observaciones
+
+SEG-05 - Lectura de datos ajenos
+Acción: A intenta leer directamente una incidencia de B.
+Esperado: Lectura denegada.
+Resultado: Sin ejecutar
+Evidencia: Sin observaciones
+
+SEG-06 - Actualización de datos ajenos
+Acción: A intenta modificar una incidencia de B.
+Esperado: Actualización denegada.
+Resultado: Sin ejecutar
+Evidencia: Sin observaciones
+
+SEG-07 - Eliminación de datos ajenos
+Acción: A intenta eliminar una incidencia de B.
+Esperado: Eliminación denegada.
+Resultado: Sin ejecutar
+Evidencia: Sin observaciones
+
+SEG-08 - Actualización propia
+Acción: A modifica el estado de su incidencia.
+Esperado: Actualización permitida.
+Resultado: Sin ejecutar
+Evidencia: Sin observaciones
+
+SEG-09 - Cambio de propietario
+Acción: A intenta cambiar el UID de propietario en un documento propio.
+Esperado: Cambio de propietario rechazado.
+Resultado: Sin ejecutar
+Evidencia: Sin observaciones
+
+SEG-10 - Acceso sin autenticación
+Acción: Cerrar sesión e intentar leer o escribir.
+Esperado: Operación rechazada.
+Resultado: Sin ejecutar
+Evidencia: Sin observaciones
+
+ENTREGABLES
+Aplicación funcionando en dos dispositivos o emuladores con cuentas diferentes.
+Capturas de las sesiones y los UID de ambos usuarios.
+Capturas de documentos de Firestore que demuestren la asignación de propietarios.
+Reglas de seguridad implementadas y una explicación de sus condiciones.
+Matriz con los diez casos ejecutados y sus evidencias.
+Reporte técnico de una cuartilla con los defectos encontrados, las correcciones realizadas y los riesgos pendientes.
+Responde individualmente al finalizar la práctica:
+1. ¿Por qué no es suficiente ocultar en la interfaz los botones de editar o eliminar?
+2. ¿Cuál es la diferencia entre autenticación y autorización?
+3. ¿Qué riesgo existe si la aplicación permite que el cliente envíe cualquier valor en creadoPor?
+4. ¿Por qué las reglas deben comprobar el UID del usuario autenticado y no confiar en un correo o nombre enviado por la aplicación?
+5. ¿Qué pruebas adicionales realizarías para validar los tipos de datos y evitar campos inesperados?
+6. ¿Cómo cambiaría el diseño si se necesitara un rol de administrador que pudiera consultar todas las incidencias?
+7. ¿Qué diferencia existe entre un fallo de conectividad y una denegación por reglas de seguridad?
+
+PRACTICA 11: Pruebas de Whitebox
+
+Cada estudiante realizará una auditoría técnica de su propia aplicación móvil desarrollada en Flutter o Kotlin, aplicando técnicas de pruebas White Box para evaluar el funcionamiento interno del software y no solamente su comportamiento visual.
+
+La evaluación abarcará tres componentes de la solución:
+1. Sitio web o servicio web: frontend web, backend, API REST o servicios que formen parte del proyecto.
+2. Aplicación móvil: lógica de negocio, navegación, validaciones, consumo de servicios, manejo de errores y rendimiento.
+3. Base de datos: operaciones CRUD, consultas, integridad, consistencia, seguridad y rendimiento.
+Además, se evaluará la comunicación entre los componentes, incluyendo latencia, ping, tiempo de respuesta, tasa de transferencia, códigos HTTP, tamaño de las respuestas y comportamiento ante pérdidas de conectividad.
+
+Demostrar mediante evidencias técnicas que la aplicación funciona correctamente desde su estructura interna, que sus componentes se comunican de forma eficiente y que los datos mantienen su integridad durante todo el proceso.
+
+NO SERÁ SUFICIENTE mostrar capturas de pantalla de la aplicación funcionando. El estudiante deberá presentar evidencias obtenidas del código fuente, herramientas de depuración, registros de ejecución, pruebas automatizadas y mediciones de rendimiento.
+
+Objetivos específicos
+- Analizar las estructuras de control, condiciones, métodos y rutas de ejecución del código.
+- Medir la cobertura de instrucciones, decisiones y condiciones.
+- Identificar errores de lógica, excepciones no controladas y defectos de validación.
+- Evaluar las comunicaciones entre aplicación, servidor y base de datos.
+- Medir latencia, ping, tasa de transferencia y tiempos de respuesta.
+- Validar códigos HTTP, estructura de respuestas y consistencia de datos.
+- Detectar consultas ineficientes, problemas de concurrencia y vulnerabilidades.
+- Elaborar un informe de calidad con evidencias y propuestas de corrección.
+
+Herramientas complementarias:
+- Git para identificar la versión del código evaluado.
+- Postman o Insomnia para probar endpoints.
+- Wireshark, cuando se tenga autorización y acceso a la red de pruebas.
+- JMeter, k6 o Apache Bench para pruebas controladas de carga.
+- Consola del gestor de base de datos para revisar consultas y registros.
+- Herramientas de análisis estático propias del lenguaje.
+
+Fase 1. Inspección y análisis estático
+
+Propósito: identificar defectos potenciales en el código antes de ejecutar las pruebas.
+
+Actividades:
+1. Identificar los módulos principales de la aplicación.
+2. Localizar las funciones responsables de conectarse con el servidor.
+3. Identificar métodos de acceso a la base de datos.
+4. Revisar validaciones, excepciones, condiciones y ciclos.
+5. Ejecutar las herramientas de análisis estático.
+6. Registrar advertencias, errores, dependencias desactualizadas y posibles problemas de seguridad.
+Puntos de revisión obligatorios:
+- Métodos sin manejo de excepciones.
+- Credenciales o claves expuestas.
+- Validaciones duplicadas o inexistentes.
+- Código inaccesible o redundante.
+- Consultas construidas con datos sin validar.
+- Operaciones de red ejecutadas bloqueando el hilo principal.
+- Recursos que no se liberan correctamente.
+Evidencia: reporte del análisis estático y listado de defectos identificados.
+
+Fase 2. Pruebas White Box de la aplicación móvil
+
+Propósito: comprobar las rutas internas de ejecución y la lógica de negocio.
+
+El estudiante seleccionará al menos tres métodos críticos de su aplicación:
+- Un método de validación.
+- Un método de procesamiento o cálculo.
+- Un método de comunicación con un servicio o base de datos.
+Para cada método deberá realizar:
+1. Identificar sus instrucciones y condiciones.
+2. Elaborar un grafo de flujo de control.
+3. Identificar caminos independientes.
+4. Diseñar casos de prueba para ejecutar los caminos identificados.
+5. Comprobar los resultados mediante pruebas unitarias.
+6. Obtener el porcentaje de cobertura.
+
+Técnicas obligatorias:
+- Cobertura de instrucciones (Statement Coverage).
+- Cobertura de decisiones (Branch Coverage).
+- Cobertura de condiciones (Condition Coverage).
+- Pruebas de valores límite.
+- Pruebas de excepciones.
+
+Fase 3. White Box del sitio web y los servicios
+
+Propósito: evaluar la implementación interna de los componentes web y de los endpoints.
+
+Actividades:
+1. Seleccionar al menos tres endpoints o funciones web relevantes.
+2. Revisar los controladores, servicios, validadores y funciones que ejecutan las operaciones.
+3. Probar rutas exitosas, errores de validación y excepciones.
+4. Comprobar que los códigos HTTP correspondan al resultado real.
+5. Verificar que la estructura JSON sea consistente.
+6. Comprobar que no se expongan contraseñas, tokens o información sensible en las respuestas.
+Códigos de respuesta que se deben evaluar cuando correspondan:
+Código    Significado    Situación de prueba
+200    OK    Consulta exitosa
+201    Created    Registro creado
+204    No Content    Eliminación sin cuerpo de respuesta
+400    Bad Request    Datos mal estructurados
+401    Unauthorized    Usuario no autenticado
+403    Forbidden    Usuario sin permisos
+404    Not Found    Recurso inexistente
+409    Conflict    Conflicto de información
+422    Unprocessable Content    Validación semántica fallida
+500    Internal Server Error    Error inesperado del servidor
+
+El estudiante deberá comprobar que el servidor no responda siempre con 200 ante operaciones fallidas y que no confunda errores de autenticación con errores de autorización.
+
+Fase 4. Pruebas White Box de la base de datos
+
+Propósito: analizar las operaciones internas de persistencia y su comportamiento.
+
+Seleccionar al menos tres operaciones de base de datos de la aplicación y ejecutar:
+1. Inserción de un registro válido.
+2. Inserción con datos incompletos o inválidos.
+3. Consulta por identificador existente.
+4. Consulta por identificador inexistente.
+5. Actualización de un registro.
+6. Eliminación de un registro.
+7. Consulta después de una operación para verificar persistencia.
+8. Dos operaciones concurrentes sobre el mismo registro, cuando la arquitectura lo permita.
+Revisar:
+- Restricciones NOT NULL, UNIQUE y claves foráneas.
+- Índices utilizados.
+- Transacciones y operaciones parcialmente completadas.
+- Consistencia entre los datos del servidor y los de la aplicación.
+- Consultas ineficientes o que recuperan más información de la necesaria.
+- Riesgo de inyección SQL, cuando se utilice SQL.
+- Reglas de seguridad y permisos, cuando se utilice una base de datos en la nube.
+Medición de consultas: registrar el tiempo de ejecución de al menos tres consultas. Cuando el gestor lo permita, utilizar el plan de ejecución (EXPLAIN o EXPLAIN ANALYZE).
+
+Fase 5. Pruebas de conectividad y rendimiento
+
+Propósito: evaluar la comunicación entre los tres componentes.
+
+El estudiante deberá ejecutar mediciones desde el dispositivo o equipo cliente y registrar los resultados.
+
+A. Ping y latencia de red
+Registrar:
+- Tiempo mínimo.
+- Tiempo máximo.
+- Tiempo promedio.
+- Desviación estándar o variación de latencia.
+- Porcentaje de paquetes perdidos.
+
+B. Latencia HTTP
+Medir el tiempo real que tarda el servicio en responder
+
+C. Tasa de transferencia
+Calcular la tasa de transferencia efectiva:
+Tasa(Mbps)=(Bytes transferidos X 8) / Tiempo(s) X 1000000
+
+Medir por separado la transferencia de subida y descarga, cuando el servicio lo permita.
+
+D. Comparación de respuestas
+
+Ejecutar diez solicitudes consecutivas al mismo endpoint, con los mismos datos y condiciones. Registrar el tiempo de respuesta de cada una, el promedio, el máximo y el mínimo.
+
+E. Prueba de interrupción
+
+Desactivar temporalmente la conectividad, ejecutar una operación y comprobar si la aplicación:
+- Detecta el error.
+- Evita mostrar una operación fallida como exitosa.
+- Conserva o recupera los datos según su diseño.
+- Reintenta de manera controlada, si corresponde.
+- Evita duplicar registros al recuperar la conexión.
+Importante: el ping mide latencia ICMP, no el tiempo de respuesta de la API. Algunos servidores bloquean ICMP; en ese caso se debe registrar la limitación y utilizar mediciones HTTP. No se deben interpretar ambas métricas como equivalentes.
+
+Fase 6. Integración y reporte de defectos
+
+Integrar los resultados y documentar al menos tres defectos, riesgos o áreas de mejora. Cada hallazgo debe incluir:
+- Identificador.
+- Componente afectado.
+- Pasos para reproducirlo.
+- Resultado esperado.
+- Resultado observado.
+- Severidad.
+- Evidencia.
+- Propuesta de corrección.
+
+MATRIZ DE PRUEBAS WHITE BOX
+Aplicación móvil
+WB-01 - Cobertura de instrucciones
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+WB-02 - Cobertura de decisiones
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+WB-03 - Cobertura de condiciones
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+WB-04 - Manejo de excepciones
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+WB-05 - Validación de entradas
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+WB-06 - Rendimiento de interfaz
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+
+Sitio web / API
+WEB-01 - Respuesta HTTP exitosa
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+WEB-02 - Respuesta HTTP de error
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+WEB-03 - Validación del backend
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+WEB-04 - Autenticación y autorización
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+WEB-05 - Latencia HTTP
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+WEB-06 - Consistencia de respuesta
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+
+Base de datos
+DB-01 - Inserción válida
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+DB-02 - Integridad
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+DB-03 - Consulta
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+DB-04 - Actualización
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+DB-05 - Eliminación
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+DB-06 - Concurrencia
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+
+Conectividad y rendimiento
+NET-01 - Ping
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+NET-02 - Latencia de API
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+NET-03 - Tasa de descarga
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+NET-04 - Tasa de subida
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+NET-05 - Pérdida de conexión
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+NET-06 - Recuperación
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+NET-07 - Carga controlada
+Resultado: Sin ejecutar
+Evidencia: Sin registrar
+
+Registro de métricas de rendimiento
+No se aceptará un reporte que diga solamente «la aplicación es rápida» o «la conexión funciona». Se deberán registrar valores medibles.
+A. Tabla de medición de conectividad
+Métrica    Unidad    Cantidad mínima
+Ping mínimo    ms    20 paquetes
+Ping promedio    ms    20 paquetes
+Ping máximo    ms    20 paquetes
+Pérdida de paquetes    %    20 paquetes
+Latencia HTTP    ms    10 solicitudes
+Tiempo de descarga    s    3 mediciones
+Tasa de descarga    Mbps    3 mediciones
+Tasa de subida    Mbps    3 mediciones
+Tamaño de respuesta    bytes / KB    10 solicitudes
+Tiempo de consulta DB    ms    3 consultas
+
+B. Tabla de resultados por solicitud
+El estudiante debe registrar las diez solicitudes de un endpoint real de su aplicación.
+Solicitud    Código HTTP    Tiempo (ms)    Tamaño (bytes)
+1            
+2            
+3            
+4            
+5            
+6            
+7            
+8            
+9            
+10            
+
+C. Indicadores que deberá calcular
+Latencia promedio
+Pérdida de paquetes
+Tasa de transferencia
+Cobertura de instrucciones
+Cobertura de ramas
+
+Criterios de referencia para evaluar el rendimiento
+Los siguientes valores son objetivos orientativos para una prueba de laboratorio, no estándares universales ni garantías de rendimiento. Deben interpretarse considerando la infraestructura, el tamaño de los datos, la distancia al servidor y las condiciones de red.
+Indicador    Objetivo orientativo
+Cobertura de instrucciones en módulos críticos    ≥ 85 %
+Cobertura de ramas en módulos críticos    ≥ 80 %
+Pérdida de paquetes en red estable    0 %
+Latencia HTTP promedio en entorno controlado    ≤ 500 ms
+Tiempo de consulta sencilla a DB    ≤ 200 ms
+Respuestas exitosas del endpoint    100 % de las solicitudes válidas
+Operaciones inválidas correctamente rechazadas    100 % de los casos diseñados
+
+Para evaluar correctamente el rendimiento, se deben repetir las pruebas bajo las mismas condiciones y registrar el tipo de conexión, dispositivo, servidor, ubicación lógica, tamaño de carga y concurrencia.
+
+Regla importante: no se debe forzar una cobertura del 100 % a costa de crear pruebas artificiales que no validen comportamientos reales. Se busca cubrir rutas relevantes y justificar las rutas que no se ejecutan.
+
+Cada estudiante seleccionará un endpoint de lectura y uno de escritura. En un ambiente de pruebas propio o autorizado, ejecutará una prueba de carga controlada.
+
+Parámetros propuestos:
+- 1 usuario concurrente.
+- 5 usuarios concurrentes.
+- 10 usuarios concurrentes.
+- 20 solicitudes por escenario, como mínimo.
+- Datos de prueba no sensibles.
+- Sin utilizar servicios externos sin autorización.
+
+Deberá comparar:
+- Tiempo promedio de respuesta.
+- Percentil 95 de latencia (P95).
+- Solicitudes exitosas.
+- Solicitudes fallidas.
+- Tasa de transferencia.
+- Comportamiento de la base de datos.
+- Consumo de CPU y memoria, si es posible.
+
+El estudiante deberá responder individualmente:
+1. ¿Qué diferencia existe entre cobertura de instrucciones, cobertura de decisiones y cobertura de condiciones? Incluye un ejemplo de tu aplicación.
+2. ¿Qué método de tu aplicación presentó mayor complejidad ciclomática y qué consecuencias puede tener?
+3. ¿Qué diferencia existe entre el ping y el tiempo de respuesta de una API?
+4. Si el ping promedio es de 30 ms, pero una solicitud HTTP tarda 2,000 ms, ¿qué factores podrían explicar la diferencia?
+5. ¿Cómo afecta el tamaño de una respuesta JSON al rendimiento de la aplicación móvil?
+6. ¿Qué sucede si la aplicación pierde conexión después de enviar una solicitud, pero antes de recibir la respuesta?
+7. ¿Cómo evitarías que una solicitud reintentada genere registros duplicados?
+8. ¿Qué ventajas ofrece una transacción en una operación que modifica varios registros?
+9. ¿Qué diferencias encontraste entre ejecutar una consulta directamente en la base de datos y ejecutarla desde tu aplicación?
+10. ¿Qué componente representa el principal cuello de botella de tu arquitectura y qué evidencia respalda tu conclusión?
+
+Condiciones de entrega
+- El proyecto debe ser el desarrollado por el estudiante, no un proyecto de ejemplo descargado.
+- Se deberá entregar el código fuente de los casos de prueba.
+- Las mediciones deberán corresponder a ejecuciones reales.
+- Cada resultado debe identificar dispositivo, sistema operativo, versión de la aplicación, entorno de servidor y fecha de ejecución.
+- Los defectos encontrados deberán estar relacionados con una sección identificable del código.
+- No se aceptarán métricas inventadas ni capturas de herramientas sin interpretación.
+- Las pruebas que no puedan ejecutarse deberán justificarse y acompañarse de una alternativa técnicamente válida.
+
+PRÁCTICA 12. Optimización, pruebas de estrés y resiliencia de aplicaciones móviles Flutter/Kotlin
+
+Evaluar y mejorar el rendimiento, la escalabilidad y la capacidad de recuperación de una aplicación móvil propia mediante pruebas de estrés, análisis de cuellos de botella, profiling y optimización de sus componentes.
+
+Objetivos específicos
+- Identificar componentes que consumen recursos excesivos.
+- Medir tiempos de ejecución y consumo de memoria y CPU.
+- Evaluar la estabilidad de los servicios ante múltiples solicitudes concurrentes.
+- Detectar problemas de saturación en la base de datos.
+- Comprobar la recuperación ante errores de red y fallos de servicios.
+- Implementar al menos una optimización real.
+- Comparar cuantitativamente el comportamiento anterior y posterior a la optimización.
+
+Fase 1. Recuperación de resultados de la auditoría anterior
+
+Cada estudiante deberá revisar su reporte anterior y seleccionar:
+- Un método de la aplicación con alto tiempo de ejecución o complejidad.
+- Un endpoint con latencia elevada.
+- Una consulta de base de datos que pueda optimizarse.
+- Un problema de conectividad o recuperación.
+- Un riesgo de consumo excesivo de memoria o CPU.
+Debe elaborar una hipótesis técnica para cada problema.
+
+Fase 2. Profiling y diagnóstico de la aplicación móvil
+
+El estudiante ejecutará su aplicación y utilizará las herramientas de profiling.
+Pruebas obligatorias
+1. Ejecutar una operación de consulta repetidamente.
+2. Ejecutar una operación de escritura.
+3. Navegar entre las pantallas principales.
+4. Realizar una operación que implique procesamiento de datos.
+5. Observar el consumo de CPU y memoria.
+6. Identificar bloqueos o retrasos en la interfaz.
+
+Fase 3. Pruebas de estrés del sitio web y API
+
+El estudiante seleccionará un endpoint de lectura y otro de escritura.
+Resultados que se deben obtener
+- Solicitudes por segundo (RPS).
+- Tiempo promedio de respuesta.
+- Latencia P90 y P95.
+- Tiempo máximo.
+- Porcentaje de errores.
+- Códigos HTTP devueltos.
+- Comportamiento del servidor durante la prueba.
+Pregunta técnica: ¿el aumento de usuarios provoca un incremento proporcional en el tiempo de respuesta o existe un punto de saturación?
+
+Fase 4. Pruebas avanzadas de base de datos
+
+El estudiante deberá identificar una consulta crítica de su aplicación y ejecutar las siguientes pruebas:
+1. Consulta individual por identificador.
+2. Consulta de un conjunto pequeño de registros.
+3. Consulta de un conjunto grande de registros.
+4. Consulta con filtros.
+5. Actualización de registros concurrentes.
+6. Escrituras simultáneas sobre un mismo registro, cuando el motor lo permita.
+
+Análisis obligatorio
+- Tiempo de respuesta de cada consulta.
+- Número de registros recuperados.
+- Uso de índices.
+- Bloqueos o esperas.
+- Consultas repetidas innecesariamente.
+- Problemas de concurrencia.
+- Integridad de los datos después de las operaciones.
+
+Elegir una consulta y mejorarla mediante alguna de las siguientes técnicas:
+- Agregar índices.
+- Implementar paginación.
+- Recuperar únicamente los campos necesarios.
+- Reducir consultas repetidas.
+- Optimizar filtros y ordenamientos.
+- Utilizar transacciones cuando sea necesario.
+- Mejorar la estrategia de caché.
+
+Fase 5. Pruebas de resiliencia y recuperación
+En esta fase se provocarán fallos controlados para determinar si la aplicación puede continuar funcionando o recuperarse sin comprometer la información.
+Escenarios obligatorios
+Código    Escenario    Resultado esperado
+RES-01    Pérdida de Internet durante una consulta    Error controlado
+RES-02    Pérdida de Internet durante una escritura    No confirmar falsamente el registro
+RES-03    Servidor sin respuesta    Timeout controlado
+RES-04    Respuesta HTTP 500    Mostrar error y conservar estabilidad
+RES-05    Respuesta HTTP 401 o 403    Gestionar correctamente autenticación o permisos
+RES-06    Recuperación de conexión    Restablecer comunicación
+RES-07    Reintento de una escritura    Evitar duplicados inesperados
+RES-08    Respuesta tardía    Evitar operaciones duplicadas o inconsistentes en la interfaz
+
+Análisis requerido
+El estudiante deberá explicar:
+- ¿Cuánto tarda la aplicación en detectar una interrupción?
+- ¿Qué ocurre con una operación que queda pendiente?
+- ¿Se repite automáticamente la solicitud?
+- ¿Puede generarse un registro duplicado?
+- ¿Cómo se recupera el estado de la interfaz?
+- ¿Qué sucede si el servidor procesa la operación, pero la respuesta nunca llega al dispositivo?
+Reto: proponer o implementar un mecanismo de reintento controlado con espera progresiva (exponential backoff) y una estrategia de idempotencia para las escrituras que lo requieran.
+
+Fase 6. Optimización y comparación
+
+El estudiante seleccionará uno de los problemas encontrados y realizará una corrección real.
+
+Ejemplos:
+- Optimizar una consulta.
+- Reducir solicitudes HTTP innecesarias.
+- Implementar paginación.
+- Evitar operaciones pesadas en el hilo principal.
+- Reducir el consumo de memoria.
+- Corregir una fuga de recursos.
+- Implementar un mecanismo de recuperación.
+- Reducir el tamaño de las respuestas del servidor.
+Después de implementar la mejora, repetirá las mediciones en las mismas condiciones.
+
+RESULTADOS DE RENDIMIENTO
+PER-01 CPU de la aplicación
+Métrica: CPU promedio y máximo
+Resultado: Sin registrar
+Evidencia: Sin registrar
+
+PER-02 Memoria
+Métrica: RAM inicial, máxima y final
+Resultado: Sin registrar
+Evidencia: Sin registrar
+
+PER-03 Tiempo de operación
+Métrica: Milisegundos por operación
+Resultado: Sin registrar
+Evidencia: Sin registrar
+
+PER-04 Carga API
+Métrica: RPS y solicitudes exitosas
+Resultado: Sin registrar
+Evidencia: Sin registrar
+
+PER-05 Latencia API
+Métrica: Promedio, P90 y P95
+Resultado: Sin registrar
+Evidencia: Sin registrar
+
+PER-06 Errores HTTP
+Métrica: Cantidad y porcentaje de errores
+Resultado: Sin registrar
+Evidencia: Sin registrar
+
+PER-07 Consultas DB
+Métrica: Tiempo y cantidad de registros
+Resultado: Sin registrar
+Evidencia: Sin registrar
+
+PER-08 Concurrencia DB
+Métrica: Conflictos y consistencia
+Resultado: Sin registrar
+Evidencia: Sin registrar
+
+PER-09 Pérdida de conexión
+Métrica: Tiempo de detección y manejo
+Resultado: Sin registrar
+Evidencia: Sin registrar
+
+PER-10 Recuperación
+Métrica: Tiempo y consistencia posterior
+Resultado: Sin registrar
+Evidencia: Sin registrar
+
+PER-11 Optimización
+Métrica: Comparación antes y después
+Resultado: Sin registrar
+Evidencia: Sin registrar
+
+Tabla comparativa antes y después
+Este apartado es obligatorio. No basta con afirmar que la aplicación mejoró.
+Métrica    Antes    Después    Diferencia
+Latencia promedio API (ms)            
+P95 API (ms)            
+RPS            
+Errores (%)            
+Tiempo de consulta DB (ms)            
+RAM máxima (MB)            
+CPU promedio (%)            
+Tiempo de operación crítica (ms)
+
+Criterios de aceptación
+Para aprobar la práctica, el estudiante deberá demostrar:
+- Una prueba de estrés reproducible.
+- Un análisis de CPU y memoria.
+- Una evaluación de concurrencia de API y base de datos, según la arquitectura.
+- Al menos tres escenarios de resiliencia ejecutados.
+- Una optimización real en su propio proyecto.
+- Comparación antes y después.
+- Ausencia de defectos críticos nuevos introducidos por la optimización.
+
+Entregables
+1. Código fuente original y versión optimizada.
+2. Evidencias de profiling.
+3. Script de pruebas de carga.
+4. Reporte de métricas de API.
+5. Reporte de rendimiento de base de datos.
+6. Matriz de pruebas de resiliencia.
+7. Comparativa antes y después.
+8. Registro de defectos y correcciones.
+9. Conclusiones técnicas de una cuartilla.

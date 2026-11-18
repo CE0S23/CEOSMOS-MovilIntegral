@@ -1,0 +1,519 @@
+diff --git a/lib/app.dart b/lib/app.dart
+index 2a10cf0..1633aa1 100644
+--- a/lib/app.dart
++++ b/lib/app.dart
+@@ -483,9 +483,13 @@ class _SessionBar extends StatelessWidget {
+                 ],
+               ),
+             ),
+-            Text(
+-              clockLabel(state.remaining),
+-              style: const TextStyle(color: Cosmos.lavender),
++            // P12-O2: solo este texto se redibuja con el tic de cada segundo.
++            ListenableBuilder(
++              listenable: state.reloj,
++              builder: (context, _) => Text(
++                clockLabel(state.remaining),
++                style: const TextStyle(color: Cosmos.lavender),
++              ),
+             ),
+             const SizedBox(width: 10),
+             IconButton(
+diff --git a/lib/core/app_state.dart b/lib/core/app_state.dart
+index 400b5ae..d070f62 100644
+--- a/lib/core/app_state.dart
++++ b/lib/core/app_state.dart
+@@ -9,6 +9,7 @@ import '../data/ceosmos_repository.dart';
+ import '../data/token_store.dart';
+ import '../domain/models.dart';
+ import 'config.dart';
++import 'reintentos.dart';
+ import 'wearable.dart';
+ 
+ enum AuthStatus { restoring, signedOut, signedIn }
+@@ -16,6 +17,14 @@ enum AuthStatus { restoring, signedOut, signedIn }
+ /// Duraciones de sesión de enfoque que ofrece la app (el servidor admite 5–180).
+ const sessionMinutes = [5, 15, 25, 45, 60];
+ 
++/// Sesiones por página del historial (P12-O1: antes se pedían 50 de una vez).
++const historialPorPagina = 20;
++
++/// Avisa a quien muestra el tiempo restante, una vez por segundo (P12-O2).
++class _Reloj extends ChangeNotifier {
++  void avanzar() => notifyListeners();
++}
++
+ /// Estado global: sesión de acceso, datos del usuario (API de CEOSMOS),
+ /// temporizador de enfoque y wearable.
+ class AppState extends ChangeNotifier {
+@@ -25,6 +34,7 @@ class AppState extends ChangeNotifier {
+     WearableClient? wearable,
+     DateTime Function()? now,
+     bool startTicker = true,
++    this.reintentos = const PoliticaReintento(),
+   }) : wearable = wearable ?? WearableClient(),
+        _now = now ?? DateTime.now {
+     auth.api.onUnauthorized = _sesionVencida;
+@@ -45,10 +55,17 @@ class AppState extends ChangeNotifier {
+   final AuthRepository auth;
+   final CeosmosRepository data;
+   final WearableClient wearable;
++  final PoliticaReintento reintentos;
+   final DateTime Function() _now;
+   Timer? _ticker;
+   bool _disposed = false;
+ 
++  /// Se notifica cada segundo mientras corre una sesión. Solo lo escuchan los widgets
++  /// que muestran el tiempo (P12-O2); antes el tic notificaba a todo [AppState] y se
++  /// reconstruía la pantalla completa cada segundo.
++  Listenable get reloj => _reloj;
++  final _reloj = _Reloj();
++
+   AuthStatus status = AuthStatus.restoring;
+   AuthSession? authentication;
+   AppUser? get user => authentication?.user;
+@@ -66,6 +83,21 @@ class AppState extends ChangeNotifier {
+   String? dataError;
+   final List<FocusSession> _pendientes = [];
+ 
++  /// Reenvío automático de pendientes con espera exponencial (P12-O3).
++  Timer? _reintento;
++  int _intentosFallidos = 0;
++  Future<void>? _envioEnCurso;
++
++  /// Carga en curso: una segunda recarga simultánea reutiliza la primera (P12-O3).
++  Future<void>? _cargaEnCurso;
++
++  /// Totales del servidor (`/focus-sessions/resumen`) y paginación del historial.
++  int totalSessions = 0;
++  int _totalSegundos = 0;
++  int get totalMinutes => _totalSegundos ~/ 60;
++  bool historyHasMore = false;
++  bool loadingMoreHistory = false;
++
+   MediaItem? currentMedia;
+   DateTime? _startedAt, _runningSince;
+   Duration _accumulated = Duration.zero;
+@@ -122,28 +154,41 @@ class AppState extends ChangeNotifier {
+ 
+   int _minutosValidos(int m) => sessionMinutes.contains(m) ? m : 25;
+ 
+-  /// Trae favoritos, historial, dispositivos y biblioteca en paralelo.
+-  Future<void> loadWorkspace() async {
+-    if (user == null) return;
++  /// Trae favoritos, historial (primera página), totales, dispositivos y biblioteca en
++  /// paralelo. Si ya hay una carga en curso (doble «Actualizar», respuesta tardía) se
++  /// devuelve la misma en lugar de repetir las peticiones (P12-O3).
++  Future<void> loadWorkspace() {
++    if (user == null) return Future.value();
++    return _cargaEnCurso ??= _cargar().whenComplete(() => _cargaEnCurso = null);
++  }
++
++  Future<void> _cargar() async {
+     loadingData = true;
+     dataError = null;
+     _changed();
+     try {
++      // Un pendiente que falla ya no impide cargar los datos (P12-D02).
+       await _enviarPendientes();
+       final r = await Future.wait([
+         data.favorites(),
+-        data.focusSessions(),
++        data.focusSessions(limit: historialPorPagina),
+         data.devices(),
+         data.library(),
++        data.focusSummary(),
+       ]);
+       if (user == null) return;
++      final pagina = r[1] as List<FocusSession>;
++      final resumen = r[4] as ({int sesiones, int segundos});
+       workspace.favorites
+         ..clear()
+         ..addAll(r[0] as Set<String>);
+       workspace.history
+         ..clear()
+         ..addAll(_pendientes)
+-        ..addAll(r[1] as List<FocusSession>);
++        ..addAll(pagina);
++      historyHasMore = pagina.length == historialPorPagina;
++      totalSessions = resumen.sesiones;
++      _totalSegundos = resumen.segundos;
+       workspace.devices
+         ..clear()
+         ..addAll(r[2] as List<LinkedDevice>);
+@@ -158,6 +203,25 @@ class AppState extends ChangeNotifier {
+     }
+   }
+ 
++  /// Trae la siguiente página del historial a partir de la última sesión guardada.
++  Future<void> loadMoreHistory() async {
++    if (user == null || loadingMoreHistory || !historyHasMore) return;
++    final ultima = workspace.history.lastWhere((s) => s.synced, orElse: () => workspace.history.last);
++    loadingMoreHistory = true;
++    _changed();
++    try {
++      final pagina = await data.focusSessions(limit: historialPorPagina, cursor: ultima.id);
++      final ids = workspace.history.map((s) => s.id).toSet();
++      workspace.history.addAll(pagina.where((s) => !ids.contains(s.id)));
++      historyHasMore = pagina.length == historialPorPagina;
++    } on ApiException catch (e) {
++      notice = 'No se cargaron más sesiones: ${e.message}';
++    } finally {
++      loadingMoreHistory = false;
++      _changed();
++    }
++  }
++
+   void _sesionVencida() {
+     if (authentication == null) return;
+     _cerrarLocal();
+@@ -174,6 +238,12 @@ class AppState extends ChangeNotifier {
+     status = AuthStatus.signedOut;
+     workspace = UserWorkspace();
+     _pendientes.clear();
++    _reintento?.cancel();
++    _reintento = null;
++    _intentosFallidos = 0;
++    totalSessions = 0;
++    _totalSegundos = 0;
++    historyHasMore = false;
+   }
+ 
+   Future<void> signOut() async {
+@@ -297,23 +367,80 @@ class AppState extends ChangeNotifier {
+     _changed();
+     try {
+       final saved = await data.saveFocusSession(local);
+-      final i = workspace.history.indexOf(local);
+-      if (i >= 0) workspace.history[i] = saved;
++      _confirmada(local, saved);
+     } on ApiException catch (e) {
+       if (e.unauthorized) return;
+-      _pendientes.add(local);
+-      notice = 'La sesión se guardará cuando vuelva la conexión (${e.message})';
++      if (PoliticaReintento.reintentable(e)) {
++        _pendientes.add(local);
++        notice = 'La sesión se guardará cuando vuelva la conexión (${e.message})';
++        _programarReintento();
++      } else {
++        // Rechazo definitivo (400, 409…): reintentarla nunca funcionaría (P12-D02).
++        workspace.history.remove(local);
++        notice = 'El servidor no aceptó la sesión: ${e.message}';
++      }
+     }
+     _changed();
+   }
+ 
+-  Future<void> _enviarPendientes() async {
++  /// Sustituye la sesión local por la que confirmó el servidor y actualiza los totales.
++  void _confirmada(FocusSession local, FocusSession saved) {
++    final i = workspace.history.indexOf(local);
++    if (i >= 0) workspace.history[i] = saved;
++    totalSessions++;
++    _totalSegundos += saved.durationSeconds;
++  }
++
++  /// Reenvía las sesiones pendientes en orden. Un fallo reintentable detiene el envío y
++  /// programa el siguiente intento con espera exponencial; un rechazo definitivo
++  /// descarta esa sesión (antes la dejaba en la cola para siempre y cada carga de datos
++  /// fallaba: P12-D02). Si ya hay un envío en curso se reutiliza (no se duplican POST).
++  Future<void> _enviarPendientes() => _envioEnCurso ??= _enviar().whenComplete(() => _envioEnCurso = null);
++
++  Future<void> _enviar() async {
+     for (final p in List.of(_pendientes)) {
+-      await data.saveFocusSession(p);
+-      _pendientes.remove(p);
++      if (!_pendientes.contains(p)) continue;
++      try {
++        final saved = await data.saveFocusSession(p);
++        _pendientes.remove(p);
++        _confirmada(p, saved);
++        _intentosFallidos = 0;
++      } on ApiException catch (e) {
++        if (e.unauthorized) return;
++        if (PoliticaReintento.reintentable(e)) {
++          _programarReintento();
++          return;
++        }
++        _pendientes.remove(p);
++        workspace.history.remove(p);
++        notice = 'Se descartó una sesión que el servidor no acepta: ${e.message}';
++      }
+     }
++    _reintento?.cancel();
++    _reintento = null;
++    _intentosFallidos = 0;
+   }
+ 
++  /// Programa un reintento automático (2 s, 4 s, 8 s… hasta 60 s, ±20 %).
++  void _programarReintento() {
++    if (_disposed || _pendientes.isEmpty || _reintento != null) return;
++    final espera = reintentos.espera(_intentosFallidos++);
++    _reintento = Timer(espera, () async {
++      _reintento = null;
++      if (_disposed || user == null) return;
++      final habiaError = dataError != null;
++      await _enviarPendientes();
++      if (_pendientes.isEmpty && habiaError) {
++        unawaited(loadWorkspace()); // la red volvió: se recupera la pantalla sola
++      } else {
++        _changed();
++      }
++    });
++  }
++
++  /// ¿Hay un reintento automático programado?
++  bool get retryScheduled => _reintento != null;
++
+   int get pendingSessions => _pendientes.length;
+ 
+   // ---------------------------------------------------------------------------
+@@ -382,8 +509,8 @@ class AppState extends ChangeNotifier {
+   void tick() {
+     if (hasSession && remaining == Duration.zero) {
+       unawaited(finishSession(completed: true));
+-    } else if (running) {
+-      _changed();
++    } else if (running && !_disposed) {
++      _reloj.avanzar(); // solo se redibuja el reloj, no toda la pantalla (P12-O2)
+     }
+   }
+ 
+@@ -391,7 +518,9 @@ class AppState extends ChangeNotifier {
+   void dispose() {
+     _disposed = true;
+     _ticker?.cancel();
++    _reintento?.cancel();
+     wearable.dispose();
++    _reloj.dispose();
+     super.dispose();
+   }
+ }
+diff --git a/lib/data/api_client.dart b/lib/data/api_client.dart
+index b58384a..7b8b7ab 100644
+--- a/lib/data/api_client.dart
++++ b/lib/data/api_client.dart
+@@ -55,9 +55,11 @@ class ApiClient {
+     }
+     final http.Response response;
+     try {
+-      response = await http.Response.fromStream(
+-        await _http.send(request).timeout(timeout),
+-      ).timeout(timeout);
++      // P12-D03: UN solo plazo para toda la petición. Antes había uno para las
++      // cabeceras y otro para el cuerpo: si la red caía a mitad de la respuesta, el
++      // error tardaba hasta 2 × 15 s (se midieron 26 s en RES-01).
++      response = await (() async => http.Response.fromStream(await _http.send(request)))()
++          .timeout(timeout);
+     } on TimeoutException {
+       throw const ApiException(
+         'El servidor de CEOSMOS tardó demasiado en responder. Intenta de nuevo.',
+@@ -109,9 +111,9 @@ String traducirError(int status, Object? body) {
+         ? 'Cuenta bloqueada temporalmente por intentos fallidos. Intenta más tarde.'
+         : 'Demasiados intentos. Espera un momento e inténtalo de nuevo.';
+   }
+-  if (m.contains('already saved')) {
+-    return 'Ese elemento ya está en tu biblioteca.'; // 409 de /media (P11-D05)
+-  }
++  if (m.contains('already saved')) {
++    return 'Ese elemento ya está en tu biblioteca.'; // 409 de /media (P11-D05)
++  }
+   if (m.contains('already in use')) {
+     return 'Ese correo o nombre de usuario ya está registrado.';
+   }
+diff --git a/lib/data/ceosmos_repository.dart b/lib/data/ceosmos_repository.dart
+index f53a5da..44faf43 100644
+--- a/lib/data/ceosmos_repository.dart
++++ b/lib/data/ceosmos_repository.dart
+@@ -32,11 +32,18 @@ class CeosmosRepository {
+       api.delete('/favorites/${Uri.encodeComponent(key)}');
+ 
+   // ---- Sesiones de enfoque (/focus-sessions) ----
+-  Future<List<FocusSession>> focusSessions({int limit = 50}) async =>
+-      _lista(await api.get('/focus-sessions', query: {'limit': '$limit'}))
++  /// Página del historial; [cursor] es el id de la última sesión de la página anterior.
++  Future<List<FocusSession>> focusSessions({int limit = 50, String? cursor}) async =>
++      _lista(await api.get('/focus-sessions', query: {'limit': '$limit', 'cursor': ?cursor}))
+           .map(FocusSession.fromJson)
+           .toList();
+ 
++  /// Número de sesiones y segundos totales del usuario, calculados en el servidor.
++  Future<({int sesiones, int segundos})> focusSummary() async {
++    final j = (await api.get('/focus-sessions/resumen')) as Map;
++    return (sesiones: (j['sesiones'] as num).toInt(), segundos: (j['segundos'] as num).toInt());
++  }
++
+   Future<FocusSession> saveFocusSession(FocusSession session) async =>
+       FocusSession.fromJson(
+         (await api.post('/focus-sessions', session.toJson())) as Map<String, dynamic>,
+diff --git a/lib/ui/home_screen.dart b/lib/ui/home_screen.dart
+index d66df71..c1fe80b 100644
+--- a/lib/ui/home_screen.dart
++++ b/lib/ui/home_screen.dart
+@@ -24,12 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
+   @override
+   Widget build(BuildContext context) {
+     final state = widget.state;
+-    final minutes =
+-        state.workspace.history.fold<int>(
+-          0,
+-          (sum, s) => sum + s.durationSeconds,
+-        ) ~/
+-        60;
++    // P12-O1: total calculado en el servidor (antes se sumaba solo el historial descargado).
++    final minutes = state.totalMinutes;
+     return Column(
+       crossAxisAlignment: CrossAxisAlignment.start,
+       children: [
+@@ -275,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
+               style: const TextStyle(color: Cosmos.muted),
+             ),
+             Text(
+-              '${state.workspace.history.length} sesiones guardadas',
++              '${state.totalSessions} sesiones guardadas',
+               style: const TextStyle(color: Cosmos.muted),
+             ),
+             const Text(
+diff --git a/lib/ui/profile_screen.dart b/lib/ui/profile_screen.dart
+index cb9caf3..f185bc2 100644
+--- a/lib/ui/profile_screen.dart
++++ b/lib/ui/profile_screen.dart
+@@ -213,7 +213,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
+                 onPressed: state.loadWorkspace,
+                 icon: const Icon(Icons.refresh, size: 20),
+               ),
+-            Text('${workspace.history.length} sesiones', style: const TextStyle(color: Cosmos.muted, fontSize: 12)),
++            Text('${state.totalSessions} sesiones', style: const TextStyle(color: Cosmos.muted, fontSize: 12)),
+           ],
+         ),
+         const SizedBox(height: 14),
+@@ -229,6 +229,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
+             message: 'Cuando termines una sesión, encontrarás aquí tu tiempo y tu ambiente.',
+           ),
+         ...workspace.history.map((session) => _SesionTile(state: state, session: session)),
++        // P12-O1: el historial llega por páginas de 20.
++        if (state.historyHasMore)
++          Center(
++            child: state.loadingMoreHistory
++                ? const Padding(padding: EdgeInsets.all(8), child: CircularProgressIndicator(strokeWidth: 2))
++                : TextButton.icon(
++                    onPressed: state.loadMoreHistory,
++                    icon: const Icon(Icons.expand_more_rounded),
++                    label: const Text('Ver más sesiones'),
++                  ),
++          ),
+         const SizedBox(height: 28),
+         Text('Sesiones de acceso activas', style: Theme.of(context).textTheme.titleLarge),
+         const SizedBox(height: 12),
+diff --git a/lib/ui/session_screen.dart b/lib/ui/session_screen.dart
+index 0550399..f079023 100644
+--- a/lib/ui/session_screen.dart
++++ b/lib/ui/session_screen.dart
+@@ -69,23 +69,30 @@ class SessionScreen extends StatelessWidget {
+                   child: Stack(
+                     alignment: Alignment.center,
+                     children: [
++                      // P12-O2: solo el anillo y el reloj escuchan el tic de cada segundo.
+                       SizedBox.expand(
+-                        child: CircularProgressIndicator(
+-                          value: state.progress,
+-                          strokeWidth: 3,
+-                          backgroundColor: Colors.white.withValues(alpha: .14),
+-                          color: modeColor(item.mode),
++                        child: ListenableBuilder(
++                          listenable: state.reloj,
++                          builder: (context, _) => CircularProgressIndicator(
++                            value: state.progress,
++                            strokeWidth: 3,
++                            backgroundColor: Colors.white.withValues(alpha: .14),
++                            color: modeColor(item.mode),
++                          ),
+                         ),
+                       ),
+                       Column(
+                         mainAxisSize: MainAxisSize.min,
+                         children: [
+-                          Text(
+-                            clockLabel(state.remaining),
+-                            style: const TextStyle(
+-                              fontSize: 56,
+-                              fontWeight: FontWeight.w300,
+-                              letterSpacing: -2,
++                          ListenableBuilder(
++                            listenable: state.reloj,
++                            builder: (context, _) => Text(
++                              clockLabel(state.remaining),
++                              style: const TextStyle(
++                                fontSize: 56,
++                                fontWeight: FontWeight.w300,
++                                letterSpacing: -2,
++                              ),
+                             ),
+                           ),
+                           const SizedBox(height: 8),
+diff --git a/test/support/fake_ceosmos_api.dart b/test/support/fake_ceosmos_api.dart
+index 78da348..c6c4c1b 100644
+--- a/test/support/fake_ceosmos_api.dart
++++ b/test/support/fake_ceosmos_api.dart
+@@ -4,6 +4,7 @@
+ import 'dart:convert';
+ 
+ import 'package:ceosmos_movil_integral/core/app_state.dart';
++import 'package:ceosmos_movil_integral/core/reintentos.dart';
+ import 'package:ceosmos_movil_integral/core/wearable.dart';
+ import 'package:ceosmos_movil_integral/data/api_client.dart';
+ import 'package:ceosmos_movil_integral/data/auth_repository.dart';
+@@ -34,6 +35,9 @@ class FakeCeosmosApi {
+   /// Si es true todas las peticiones fallan como sin red.
+   bool offline = false;
+ 
++  /// Si es true, `POST /focus-sessions` responde 400 (rechazo definitivo, P12-D02).
++  bool rechazarSesiones = false;
++
+   FakeUser addUser(String email, String password, {String username = 'usuario', String role = 'USER', bool verified = true}) {
+     final u = FakeUser('u${++_seq}', email, username, password, role: role, verified: verified);
+     users[u.id] = u;
+@@ -126,8 +130,19 @@ class FakeCeosmosApi {
+       case ('GET', '/favorites'):
+         return _json(200, [for (final f in u.favorites) {'contentKey': f}]);
+       case ('GET', '/focus-sessions'):
+-        final ordenadas = [...u.sessions]..sort((a, b) => '${b['startedAt']}'.compareTo('${a['startedAt']}'));
+-        return _json(200, ordenadas);
++        // Como la API (P12-O1): orden descendente, `limit` y `cursor` (id de la última).
++        var ordenadas = [...u.sessions]..sort((a, b) => '${b['startedAt']}'.compareTo('${a['startedAt']}'));
++        final cursor = req.url.queryParameters['cursor'];
++        if (cursor != null) ordenadas = ordenadas.skipWhile((x) => x['id'] != cursor).skip(1).toList();
++        final limite = int.tryParse(req.url.queryParameters['limit'] ?? '') ?? 50;
++        return _json(200, ordenadas.take(limite).toList());
++      case ('GET', '/focus-sessions/resumen'):
++        return _json(200, {
++          'sesiones': u.sessions.length,
++          'segundos': u.sessions.fold<int>(0, (s, x) => s + (x['durationSeconds'] as num).toInt()),
++        });
++      case ('POST', '/focus-sessions') when rechazarSesiones:
++        return _error(400, 'endedAt no puede estar en el futuro');
+       case ('POST', '/focus-sessions'):
+         // Igual que la API corregida (P11-D01): mismo clientId → misma sesión.
+         final previa = u.sessions.where((x) => body['clientId'] != null && x['clientId'] == body['clientId']).firstOrNull;
+@@ -180,7 +195,12 @@ class FakeCeosmosApi {
+   }
+ 
+   /// AppState conectado a este servidor falso.
+-  AppState appState({DateTime Function()? now, WearableClient? wearable, MemoryTokenStore? tokens}) {
++  AppState appState({
++    DateTime Function()? now,
++    WearableClient? wearable,
++    MemoryTokenStore? tokens,
++    PoliticaReintento reintentos = const PoliticaReintento(),
++  }) {
+     final api = ApiClient(baseUrl: 'http://api.test/api', client: client);
+     return AppState(
+       auth: AuthRepository(api, tokens ?? MemoryTokenStore()),
+@@ -188,6 +208,7 @@ class FakeCeosmosApi {
+       wearable: wearable,
+       now: now,
+       startTicker: false,
++      reintentos: reintentos,
+     );
+   }
+ }

@@ -24,12 +24,8 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final state = widget.state;
-    final minutes =
-        state.workspace.history.fold<int>(
-          0,
-          (sum, s) => sum + s.durationSeconds,
-        ) ~/
-        60;
+    // P12-O1: total calculado en el servidor (antes se sumaba solo el historial descargado).
+    final minutes = state.totalMinutes;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -275,7 +271,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: const TextStyle(color: Cosmos.muted),
             ),
             Text(
-              '${state.workspace.history.length} sesiones guardadas',
+              '${state.totalSessions} sesiones guardadas',
               style: const TextStyle(color: Cosmos.muted),
             ),
             const Text(

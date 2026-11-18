@@ -1,0 +1,12 @@
+ calls | prom_ms | total_ms |  rows   |                                                         consulta                                                         
+-------+---------+----------+---------+--------------------------------------------------------------------------------------------------------------------------
+ 61446 |   0.051 |   3145.9 |   61446 | SELECT s."expiresAt" AS "sessionExpiresAt", u.id, u.email, u.username, u."emailVerified", u.role::text AS role, u.active
+ 32587 |   0.161 |   5253.5 |   32587 | INSERT INTO "public"."FocusSession" ("id","userId","contentKey","mode","startedAt","endedAt","durationSeconds","targetMi
+ 32587 |   0.017 |    563.6 |       0 | SELECT "public"."FocusSession"."id", "public"."FocusSession"."userId", "public"."FocusSession"."contentKey", "public"."F
+ 28859 |   0.357 |  10310.7 | 1442950 | SELECT "public"."FocusSession"."id", "public"."FocusSession"."clientId", "public"."FocusSession"."contentKey", "public".
+    66 |   0.004 |      0.3 |      66 | SELECT $1
+    22 |   0.036 |      0.8 |      22 | select xact_commit, tup_fetched, tup_inserted, blks_hit, blks_read from pg_stat_database where datname=$1
+     1 |  38.573 |     38.6 |       0 | analyze "FocusSession"
+     1 |   0.472 |      0.5 |       1 | select pg_stat_statements_reset()
+(8 filas)
+

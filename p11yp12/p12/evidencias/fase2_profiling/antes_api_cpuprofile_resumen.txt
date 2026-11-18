@@ -1,0 +1,59 @@
+Perfil: p11yp12/p12/evidencias/fase2_profiling/antes_api.cpuprofile
+Duración muestreada: 15.16 s, 17263 muestras
+
+== Tiempo propio por componente ==
+ 28.0 %    4243 ms  Express y middlewares (helmet, cors, cookies)
+ 27.2 %    4122 ms  Prisma (cliente JS + motor)
+ 25.3 %    3841 ms  Node interno (red, streams, timers, crypto)
+  4.1 %     620 ms  Passport / verificación JWT
+  3.8 %     576 ms  NestJS (enrutado, guards, interceptores)
+  2.6 %     393 ms  Otras dependencias
+  2.5 %     374 ms  Motor V8 / nativo
+  1.9 %     294 ms  Recolector de basura (GC)
+  1.8 %     275 ms  ValidationPipe (class-validator/transformer)
+  1.2 %     189 ms  Inactivo (esperando E/S)
+  0.8 %     127 ms  Código de la API (dist/)
+  0.7 %     102 ms  JSON (serializar/parsear)
+
+Hilo JS ocupado:  98.8 % del tiempo
+
+== 25 funciones con más tiempo propio ==
+ 21.2 %    3208 ms  stringify  express/lib/response.js:1029
+  7.9 %    1204 ms  dp  @prisma/client/runtime/library.js:21
+  6.9 %    1039 ms  parseEngineResponse  @prisma/client/runtime/library.js:112
+  3.4 %     512 ms  Ui  @prisma/client/runtime/library.js:31
+  2.9 %     445 ms  init  :0
+  2.7 %     406 ms  (anónima)  :0
+  2.5 %     374 ms  (program)  :0
+  1.9 %     294 ms  (garbage collector)  :0
+  1.6 %     246 ms  createPublicKey  node:internal/crypto/keys:699
+  1.4 %     207 ms  writev  :0
+  1.4 %     206 ms  (anónima)  @prisma/client/runtime/library.js:31
+  1.3 %     204 ms  update  :0
+  1.3 %     190 ms  yt  @prisma/client/runtime/library.js:21
+  1.2 %     189 ms  (idle)  :0
+  1.2 %     184 ms  authenticate  passport/lib/middleware/authenticate.js:94
+  1.0 %     147 ms  request  @prisma/client/runtime/library.js:112
+  0.9 %     141 ms  post  node:inspector:118
+  0.9 %     141 ms  next  router/index.js:188
+  0.7 %     113 ms  mapQueryEngineResult  @prisma/client/runtime/library.js:121
+  0.7 %     102 ms  writeHead  node:_http_server:351
+  0.7 %      99 ms  json  express/lib/response.js:239
+  0.7 %      99 ms  wt  @prisma/client/runtime/library.js:21
+  0.6 %      93 ms  handle  router/index.js:149
+  0.6 %      86 ms  _storeHeader  node:_http_outgoing:455
+  0.5 %      81 ms  setHeader  node:_http_outgoing:698
+
+== Tiempo inclusivo de funciones de la API ==
+ 21.2 %    3208 ms  stringify lib/response.js
+ 13.1 %    1978 ms  canActivate dist/auth.guard.js
+  4.8 %     727 ms  validate auth/jwt.strategy.js
+  2.1 %     317 ms  transform pipes/validation.pipe.js
+  1.2 %     175 ms  canActivate dist/throttler.guard.js
+  1.1 %     159 ms  list focus-sessions/focus-sessions.controller.js
+  1.0 %     154 ms  validate pipes/validation.pipe.js
+  1.0 %     154 ms  validate cjs/index.js
+  1.0 %     149 ms  validate validation/Validator.js
+  1.0 %     149 ms  list focus-sessions/focus-sessions.service.js
+  0.6 %      91 ms  transform cjs/TransformOperationExecutor.js
+  0.1 %       9 ms  canActivate auth/jwt-auth.guard.js

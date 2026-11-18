@@ -1,0 +1,226 @@
+Resolving dependencies...
+Downloading packages...
+  _flutterfire_internals 1.3.77 (1.3.79 available)
+  audioplayers 6.7.1 (6.8.1 available)
+  audioplayers_android 5.2.1 (5.3.0 available)
+  audioplayers_darwin 6.4.0 (6.5.0 available)
+  audioplayers_linux 4.2.1 (4.3.0 available)
+  audioplayers_platform_interface 7.1.1 (7.2.0 available)
+  audioplayers_web 5.2.1 (5.3.0 available)
+  audioplayers_windows 4.3.1 (4.4.1 available)
+  clock 1.1.2 (1.1.3 available)
+  cloud_firestore 6.10.2 (7.1.0 available)
+  cloud_firestore_platform_interface 8.0.7 (8.1.0 available)
+  cloud_firestore_web 5.7.3 (5.8.0 available)
+  code_assets 1.2.1 (2.2.0 available)
+  connectivity_plus 7.3.1 (7.3.2 available)
+  cross_file 0.3.5+5 (0.4.0 available)
+  crypto 3.0.7 (3.0.8 available)
+  cupertino_icons 1.0.9 (2.0.0 available)
+  dbus 0.7.15 (0.8.0 available)
+  dev_build 1.1.7+4 (1.2.2 available)
+  file_picker 10.3.10 (13.3.3 available)
+  firebase_auth 6.7.1 (7.0.1 available)
+  firebase_auth_platform_interface 9.1.0 (9.1.2 available)
+  firebase_auth_web 6.3.0 (6.3.2 available)
+  firebase_core 4.15.2 (5.1.0 available)
+  firebase_core_web 3.12.0 (4.1.0 available)
+  firebase_storage 13.6.1 (14.0.1 available)
+  firebase_storage_platform_interface 6.0.7 (6.0.9 available)
+  firebase_storage_web 3.11.13 (3.11.15 available)
+  flutter_secure_storage 10.3.4 (11.2.0 available)
+  flutter_secure_storage_darwin 0.3.2 (0.4.3 available)
+  flutter_secure_storage_windows 4.1.0 (4.2.2 available)
+  hooks 2.0.2 (2.2.0 available)
+  intl 0.20.2 (0.20.3 available)
+  jni 1.0.3 (1.1.2 available)
+  jni_flutter 1.0.2 (1.0.4+1 available)
+  matcher 0.12.19 (0.12.20 available)
+  material_color_utilities 0.13.0 (0.13.1 available)
+  meta 1.17.0 (1.19.0 available)
+  native_toolchain_c 0.19.2 (0.19.6 available)
+  nm 0.5.0 (0.6.0 available)
+  objective_c 9.5.0 (9.6.4 available)
+  petitparser 7.0.2 (7.1.0 available)
+  platform 3.1.6 (3.2.0 available)
+  process_run 1.3.3+1 (1.4.4 available)
+  record_use 0.6.0 (1.1.1 available)
+  shared_preferences_android 2.4.23 (2.5.5 available)
+  shared_preferences_foundation 2.5.7 (2.6.2 available)
+  sqflite 2.4.2+1 (2.4.6 available)
+  sqflite_android 2.4.2+3 (2.4.6 available)
+  sqflite_common 2.5.8 (2.5.17 available)
+  sqflite_common_ffi 2.4.0+3 (2.4.7 available)
+  sqflite_common_ffi_web 0.4.5+4 (1.2.2 available)
+  sqflite_darwin 2.4.2 (2.4.6 available)
+  sqflite_platform_interface 2.4.0 (2.4.4 available)
+  sqlite3 3.5.2 (3.9.1 available)
+  sqlparser 0.34.1 (0.45.1 available)
+  stack_trace 1.12.1 (1.12.2 available)
+  synchronized 3.4.0+1 (3.6.1+1 available)
+  test_api 0.7.10 (0.7.15 available)
+  url_launcher_android 6.3.30 (6.3.33 available)
+  vector_math 2.2.0 (2.4.4 available)
+  vm_service 15.3.0 (15.4.0 available)
+  web 1.1.1 (1.1.2 available)
+  win32 5.15.0 (6.4.0 available)
+  xml 7.0.1 (7.1.0 available)
+Got dependencies!
+65 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Running Gradle task 'assembleProfile'...                          145.3s
+✓ Built build\app\outputs\flutter-apk\app-profile.apk (50.2MB)
+Installing build\app\outputs\flutter-apk\app-profile.apk...      1,623ms
+W/_movil_integral( 4697): Accessing hidden method Landroid/view/accessibility/AccessibilityNodeInfo;->getSourceNodeId()J (unsupported,test-api, reflection, allowed)
+W/_movil_integral( 4697): Accessing hidden method Landroid/view/accessibility/AccessibilityRecord;->getSourceNodeId()J (unsupported, reflection, allowed)
+W/_movil_integral( 4697): Accessing hidden field Landroid/view/accessibility/AccessibilityNodeInfo;->mChildNodeIds:Landroid/util/LongArray; (unsupported, reflection, allowed)
+W/_movil_integral( 4697): Accessing hidden method Landroid/util/LongArray;->get(I)J (unsupported, reflection, allowed)
+D/CompatibilityChangeReporter( 4697): Compat change id reported: 237531167; UID 10203; state: DISABLED
+W/OpenGLRenderer( 4697): Unknown dataspace 0
+I/Choreographer( 4697): Skipped 223 frames!  The application may be doing too much work on its main thread.
+W/OpenGLRenderer( 4697): Failed to choose config with EGL_SWAP_BEHAVIOR_PRESERVED, retrying without...
+W/OpenGLRenderer( 4697): Failed to initialize 101010-2 format, error = EGL_SUCCESS
+I/Gralloc4( 4697): mapper 4.x is not supported
+E/OpenGLRenderer( 4697): Unable to match the desired swap behavior.
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 10795(859KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 2972KB/5944KB, paused 21us,10us total 30.173ms
+I/Choreographer( 4697): Skipped 212 frames!  The application may be doing too much work on its main thread.
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3849(206KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3150KB/6301KB, paused 39us,14us total 36.461ms
+D/ProfileInstaller( 4697): Installing profile for com.ceosmos.ceosmos_movil_integral
+VMServiceFlutterDriver: Connecting to Flutter application at http://127.0.0.1:36892/zqL0BpCyLgU=/
+VMServiceFlutterDriver: Isolate found with number: 5368785332830095
+VMServiceFlutterDriver: Isolate 5368785332830095 is runnable.
+VMServiceFlutterDriver: Isolate is paused at start.
+VMServiceFlutterDriver: Attempting to resume isolate
+I/flutter ( 4697): 00:00 +0: P12 profiling: consulta, escritura, navegación, procesamiento y reposo
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 5523(246KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3568KB/7135KB, paused 18us,10us total 22.256ms
+VMServiceFlutterDriver: Connected to Flutter application.
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 2931(178KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3533KB/7067KB, paused 55us,6us total 7.390ms
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 4746(209KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3581KB/7162KB, paused 14us,8us total 29.230ms
+D/EGL_emulation( 4697): app_time_stats: avg=427.31ms min=11.84ms max=5451.23ms count=15
+D/EGL_emulation( 4697): app_time_stats: avg=24.00ms min=5.83ms max=73.30ms count=36
+D/EGL_emulation( 4697): app_time_stats: avg=18.51ms min=3.82ms max=79.23ms count=39
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 18492(718KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3582KB/7165KB, paused 12us,9us total 12.005ms
+D/EGL_emulation( 4697): app_time_stats: avg=40.84ms min=6.01ms max=120.70ms count=22
+D/EGL_emulation( 4697): app_time_stats: avg=24.77ms min=5.36ms max=51.37ms count=37
+D/EGL_emulation( 4697): app_time_stats: avg=64.23ms min=6.88ms max=124.82ms count=15
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 10182(434KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3580KB/7161KB, paused 107us,8us total 27.657ms
+D/EGL_emulation( 4697): app_time_stats: avg=29.51ms min=3.27ms max=134.27ms count=32
+D/EGL_emulation( 4697): app_time_stats: avg=16.99ms min=3.20ms max=98.88ms count=44
+D/EGL_emulation( 4697): app_time_stats: avg=19.67ms min=2.65ms max=86.33ms count=44
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 2947(144KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3580KB/7161KB, paused 35us,7us total 42.058ms
+D/EGL_emulation( 4697): app_time_stats: avg=25.71ms min=5.22ms max=114.65ms count=37
+D/EGL_emulation( 4697): app_time_stats: avg=32.22ms min=3.18ms max=122.78ms count=27
+D/EGL_emulation( 4697): app_time_stats: avg=15.98ms min=4.24ms max=85.18ms count=46
+D/EGL_emulation( 4697): app_time_stats: avg=19.16ms min=4.91ms max=75.42ms count=45
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3177(142KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3581KB/7163KB, paused 20us,11us total 51.652ms
+D/EGL_emulation( 4697): app_time_stats: avg=26.97ms min=5.80ms max=97.94ms count=39
+D/EGL_emulation( 4697): app_time_stats: avg=76.91ms min=11.66ms max=118.83ms count=13
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 20505(664KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3732KB/7465KB, paused 24us,489us total 47.567ms
+D/EGL_emulation( 4697): app_time_stats: avg=41.80ms min=23.16ms max=73.13ms count=24
+D/EGL_emulation( 4697): app_time_stats: avg=42.20ms min=20.85ms max=88.82ms count=24
+D/EGL_emulation( 4697): app_time_stats: avg=31.71ms min=7.03ms max=96.03ms count=30
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 83703(2597KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3726KB/7453KB, paused 18us,11us total 28.604ms
+D/EGL_emulation( 4697): app_time_stats: avg=31.41ms min=4.19ms max=169.99ms count=29
+D/EGL_emulation( 4697): app_time_stats: avg=28.71ms min=4.65ms max=110.78ms count=36
+D/EGL_emulation( 4697): app_time_stats: avg=73.01ms min=12.76ms max=122.95ms count=14
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 49438(1614KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3584KB/7168KB, paused 14us,9us total 9.243ms
+D/EGL_emulation( 4697): app_time_stats: avg=25.67ms min=5.18ms max=127.94ms count=35
+D/EGL_emulation( 4697): app_time_stats: avg=41.58ms min=10.81ms max=119.92ms count=22
+D/EGL_emulation( 4697): app_time_stats: avg=39.24ms min=6.78ms max=124.64ms count=23
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 11426(416KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3599KB/7199KB, paused 20us,11us total 65.197ms
+D/EGL_emulation( 4697): app_time_stats: avg=34.32ms min=5.05ms max=123.67ms count=27
+D/EGL_emulation( 4697): app_time_stats: avg=22.38ms min=5.04ms max=42.25ms count=40
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 9759(348KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7175KB, paused 12us,9us total 10.529ms
+D/EGL_emulation( 4697): app_time_stats: avg=70.59ms min=8.41ms max=128.97ms count=14
+D/EGL_emulation( 4697): app_time_stats: avg=28.04ms min=5.64ms max=126.11ms count=32
+D/EGL_emulation( 4697): app_time_stats: avg=23.03ms min=5.39ms max=73.45ms count=37
+D/EGL_emulation( 4697): app_time_stats: avg=26.38ms min=4.31ms max=122.12ms count=33
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 22721(766KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3605KB/7210KB, paused 11us,9us total 17.627ms
+D/EGL_emulation( 4697): app_time_stats: avg=23.77ms min=5.10ms max=55.42ms count=36
+D/EGL_emulation( 4697): app_time_stats: avg=47.23ms min=6.25ms max=121.45ms count=21
+D/EGL_emulation( 4697): app_time_stats: avg=22.50ms min=3.05ms max=134.43ms count=37
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 11521(434KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3586KB/7172KB, paused 19us,30us total 36.036ms
+D/EGL_emulation( 4697): app_time_stats: avg=11.11ms min=3.01ms max=81.44ms count=52
+D/EGL_emulation( 4697): app_time_stats: avg=18.34ms min=2.86ms max=81.39ms count=45
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3195(127KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3571KB/7142KB, paused 11us,8us total 13.188ms
+D/EGL_emulation( 4697): app_time_stats: avg=34.14ms min=8.20ms max=114.96ms count=29
+D/EGL_emulation( 4697): app_time_stats: avg=21.98ms min=2.85ms max=123.94ms count=37
+D/EGL_emulation( 4697): app_time_stats: avg=14.02ms min=3.14ms max=98.74ms count=51
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 2937(144KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3571KB/7142KB, paused 1.310ms,10us total 22.220ms
+D/EGL_emulation( 4697): app_time_stats: avg=20.36ms min=3.28ms max=95.75ms count=42
+D/EGL_emulation( 4697): app_time_stats: avg=30.73ms min=5.21ms max=117.06ms count=31
+D/EGL_emulation( 4697): app_time_stats: avg=39.60ms min=14.67ms max=119.29ms count=25
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 52865(1602KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3729KB/7458KB, paused 25us,11us total 35.710ms
+D/EGL_emulation( 4697): app_time_stats: avg=36.08ms min=6.16ms max=97.49ms count=27
+D/EGL_emulation( 4697): app_time_stats: avg=33.71ms min=10.33ms max=87.61ms count=29
+D/EGL_emulation( 4697): app_time_stats: avg=28.11ms min=5.06ms max=96.81ms count=32
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 99453(2969KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3687KB/7374KB, paused 12us,9us total 18.125ms
+D/EGL_emulation( 4697): app_time_stats: avg=29.07ms min=10.19ms max=72.41ms count=33
+D/EGL_emulation( 4697): app_time_stats: avg=65.19ms min=24.66ms max=121.16ms count=15
+D/EGL_emulation( 4697): app_time_stats: avg=23.16ms min=4.43ms max=138.81ms count=37
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 20000(710KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3585KB/7170KB, paused 13us,8us total 11.612ms
+D/EGL_emulation( 4697): app_time_stats: avg=56.47ms min=5.26ms max=130.00ms count=17
+D/EGL_emulation( 4697): app_time_stats: avg=33.75ms min=8.24ms max=119.60ms count=26
+D/EGL_emulation( 4697): app_time_stats: avg=35.71ms min=6.77ms max=119.76ms count=25
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 9053(336KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3601KB/7202KB, paused 17us,12us total 32.648ms
+D/EGL_emulation( 4697): app_time_stats: avg=23.02ms min=5.53ms max=50.57ms count=37
+D/EGL_emulation( 4697): app_time_stats: avg=69.37ms min=5.68ms max=518.94ms count=19
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 4016(174KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3586KB/7173KB, paused 9us,8us total 11.016ms
+D/EGL_emulation( 4697): app_time_stats: avg=158.52ms min=42.49ms max=507.05ms count=9
+D/EGL_emulation( 4697): app_time_stats: avg=1020.05ms min=1020.05ms max=1020.05ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1014.85ms min=1014.85ms max=1014.85ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3130(127KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 9us,9us total 9.579ms
+D/EGL_emulation( 4697): app_time_stats: avg=1028.96ms min=1028.96ms max=1028.96ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1010.38ms min=1010.38ms max=1010.38ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1014.80ms min=1014.80ms max=1014.80ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3291(144KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 17us,11us total 15.782ms
+D/EGL_emulation( 4697): app_time_stats: avg=1014.44ms min=1014.44ms max=1014.44ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1028.23ms min=1028.23ms max=1028.23ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1038.73ms min=1038.73ms max=1038.73ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3291(144KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 10us,7us total 11.391ms
+D/EGL_emulation( 4697): app_time_stats: avg=1027.89ms min=1027.89ms max=1027.89ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1016.91ms min=1016.91ms max=1016.91ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1034.78ms min=1034.78ms max=1034.78ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3291(128KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 14us,8us total 10.034ms
+D/EGL_emulation( 4697): app_time_stats: avg=1017.42ms min=1017.42ms max=1017.42ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1015.52ms min=1015.52ms max=1015.52ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1014.86ms min=1014.86ms max=1014.86ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3291(128KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 10us,8us total 13.544ms
+D/EGL_emulation( 4697): app_time_stats: avg=1019.28ms min=1019.28ms max=1019.28ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1014.42ms min=1014.42ms max=1014.42ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1014.11ms min=1014.11ms max=1014.11ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3291(128KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 17us,7us total 12.747ms
+D/EGL_emulation( 4697): app_time_stats: avg=1020.59ms min=1020.59ms max=1020.59ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1014.25ms min=1014.25ms max=1014.25ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1014.15ms min=1014.15ms max=1014.15ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3291(144KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 9us,7us total 10.526ms
+D/EGL_emulation( 4697): app_time_stats: avg=1033.36ms min=1033.36ms max=1033.36ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1015.70ms min=1015.70ms max=1015.70ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1018.45ms min=1018.45ms max=1018.45ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3291(128KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 10us,8us total 10.209ms
+D/EGL_emulation( 4697): app_time_stats: avg=1027.90ms min=1027.90ms max=1027.90ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1009.01ms min=1009.01ms max=1009.01ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1015.37ms min=1015.37ms max=1015.37ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3291(128KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 16us,9us total 12.133ms
+D/EGL_emulation( 4697): app_time_stats: avg=1010.43ms min=1010.43ms max=1010.43ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1015.15ms min=1015.15ms max=1015.15ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1029.99ms min=1029.99ms max=1029.99ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3291(144KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 10us,9us total 11.692ms
+D/EGL_emulation( 4697): app_time_stats: avg=1013.56ms min=1013.56ms max=1013.56ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1015.14ms min=1015.14ms max=1015.14ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1019.05ms min=1019.05ms max=1019.05ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3291(128KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 9us,8us total 9.177ms
+D/EGL_emulation( 4697): app_time_stats: avg=1013.72ms min=1013.72ms max=1013.72ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1027.63ms min=1027.63ms max=1027.63ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1013.64ms min=1013.64ms max=1013.64ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3291(128KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 15us,10us total 11.752ms
+D/EGL_emulation( 4697): app_time_stats: avg=1034.58ms min=1034.58ms max=1034.58ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1016.89ms min=1016.89ms max=1016.89ms count=1
+D/EGL_emulation( 4697): app_time_stats: avg=1012.30ms min=1012.30ms max=1012.30ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 3291(144KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3587KB/7173KB, paused 16us,11us total 24.277ms
+D/EGL_emulation( 4697): app_time_stats: avg=1033.49ms min=1033.49ms max=1033.49ms count=1
+I/_movil_integral( 4697): Explicit concurrent copying GC freed 4025(189KB) AllocSpace objects, 1(20KB) LOS objects, 49% free, 3557KB/7114KB, paused 16us,7us total 7.274ms
+D/EGL_emulation( 4697): app_time_stats: avg=1783.97ms min=550.93ms max=3017.01ms count=2
+I/flutter ( 4697): 01:44 +1: (tearDownAll)
+I/flutter ( 4697): 01:44 +2: All tests passed!
+All tests passed.

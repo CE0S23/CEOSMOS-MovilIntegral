@@ -1,0 +1,397 @@
+{
+  "fecha": "2026-11-12T06:08:33.036Z",
+  "pruebas": [
+    {
+      "id": "DB-01",
+      "nombre": "Consulta individual por id (PK)",
+      "sql": "select * from \"FocusSession\" where id = $1",
+      "repeticiones": 30,
+      "filas": 1,
+      "bytes_json": 438,
+      "prom_ms": 0.698,
+      "p95_ms": 1.156,
+      "max_ms": 1.37,
+      "ejecucion_pg_ms": 0.036,
+      "nodos_plan": [
+        "Index Scan using \"FocusSession_pkey\" on \"FocusSession\"",
+        "Index Cond: (id = 'p12-db-f-777'::text)"
+      ],
+      "plan": [
+        "Index Scan using \"FocusSession_pkey\" on \"FocusSession\"  (cost=0.42..8.44 rows=1 width=326) (actual time=0.019..0.020 rows=1 loops=1)",
+        "  Index Cond: (id = 'p12-db-f-777'::text)",
+        "  Buffers: shared hit=4",
+        "Planning Time: 0.086 ms",
+        "Execution Time: 0.036 ms"
+      ]
+    },
+    {
+      "id": "DB-02",
+      "nombre": "Conjunto pequeño: últimas 10 sesiones del usuario",
+      "sql": "select * from \"FocusSession\" where \"userId\" = $1 order by \"startedAt\" desc limit 10",
+      "repeticiones": 30,
+      "filas": 10,
+      "bytes_json": 4358,
+      "prom_ms": 1.084,
+      "p95_ms": 1.705,
+      "max_ms": 1.971,
+      "ejecucion_pg_ms": 0.036,
+      "nodos_plan": [
+        "->  Index Scan Backward using \"FocusSession_userId_startedAt_idx\" on \"FocusSession\"",
+        "Index Cond: (\"userId\" = 'p12-db-u-7'::text)"
+      ],
+      "plan": [
+        "Limit  (cost=0.42..37.90 rows=10 width=326) (actual time=0.014..0.022 rows=10 loops=1)",
+        "  Buffers: shared hit=13",
+        "  ->  Index Scan Backward using \"FocusSession_userId_startedAt_idx\" on \"FocusSession\"  (cost=0.42..375.22 rows=100 width=326) (actual time=0.013..0.020 rows=10 loops=1)",
+        "        Index Cond: (\"userId\" = 'p12-db-u-7'::text)",
+        "        Buffers: shared hit=13",
+        "Planning Time: 0.084 ms",
+        "Execution Time: 0.036 ms"
+      ]
+    },
+    {
+      "id": "DB-03a",
+      "nombre": "Conjunto grande: historial completo del usuario pesado (20 000, sin LIMIT)",
+      "sql": "select * from \"FocusSession\" where \"userId\" = $1 order by \"startedAt\" desc",
+      "repeticiones": 10,
+      "filas": 20000,
+      "bytes_json": 8733895,
+      "prom_ms": 293.29,
+      "p95_ms": 328.96,
+      "max_ms": 328.96,
+      "ejecucion_pg_ms": 83.038,
+      "nodos_plan": [
+        "->  Sort",
+        "Sort Key: \"startedAt\" DESC",
+        "Sort Method: external merge  Disk: 6152kB",
+        "Worker 0:  Sort Method: quicksort  Memory: 25kB",
+        "Worker 1:  Sort Method: quicksort  Memory: 25kB",
+        "->  Bitmap Index Scan on \"FocusSession_userId_clientId_key\"",
+        "Index Cond: (\"userId\" = 'p12-db-u-0'::text)"
+      ],
+      "plan": [
+        "Gather Merge  (cost=12058.61..13982.35 rows=16488 width=326) (actual time=64.761..72.136 rows=20000 loops=1)",
+        "  Workers Planned: 2",
+        "  Workers Launched: 2",
+        "  Buffers: shared hit=1735, temp read=769 written=770",
+        "  ->  Sort  (cost=11058.59..11079.20 rows=8244 width=326) (actual time=10.354..12.196 rows=6667 loops=3)",
+        "        Sort Key: \"startedAt\" DESC",
+        "        Sort Method: external merge  Disk: 6152kB",
+        "        Buffers: shared hit=1735, temp read=769 written=770",
+        "        Worker 0:  Sort Method: quicksort  Memory: 25kB",
+        "        Worker 1:  Sort Method: quicksort  Memory: 25kB",
+        "        ->  Parallel Bitmap Heap Scan on \"FocusSession\"  (cost=365.76..10522.35 rows=8244 width=326) (actual time=0.760..2.009 rows=6667 loops=3)",
+        "              Recheck Cond: (\"userId\" = 'p12-db-u-0'::text)",
+        "              Heap Blocks: exact=1687",
+        "              Buffers: shared hit=1721",
+        "              ->  Bitmap Index Scan on \"FocusSession_userId_clientId_key\"  (cost=0.00..360.81 rows=19786 width=0) (actual time=1.216..1.216 rows=40088 loops=1)",
+        "                    Index Cond: (\"userId\" = 'p12-db-u-0'::text)",
+        "                    Buffers: shared hit=34",
+        "Planning Time: 0.103 ms",
+        "Execution Time: 83.038 ms"
+      ]
+    },
+    {
+      "id": "DB-03b",
+      "nombre": "Conjunto grande paginado: primera página de 50 (lo que hace la API)",
+      "sql": "select * from \"FocusSession\" where \"userId\" = $1 order by \"startedAt\" desc limit 50",
+      "repeticiones": 30,
+      "filas": 50,
+      "bytes_json": 21704,
+      "prom_ms": 1.676,
+      "p95_ms": 2.028,
+      "max_ms": 6.019,
+      "ejecucion_pg_ms": 0.086,
+      "nodos_plan": [
+        "->  Index Scan Backward using \"FocusSession_userId_startedAt_idx\" on \"FocusSession\"",
+        "Index Cond: (\"userId\" = 'p12-db-u-0'::text)"
+      ],
+      "plan": [
+        "Limit  (cost=0.42..95.87 rows=50 width=326) (actual time=0.027..0.060 rows=50 loops=1)",
+        "  Buffers: shared hit=8",
+        "  ->  Index Scan Backward using \"FocusSession_userId_startedAt_idx\" on \"FocusSession\"  (cost=0.42..37771.71 rows=19786 width=326) (actual time=0.025..0.054 rows=50 loops=1)",
+        "        Index Cond: (\"userId\" = 'p12-db-u-0'::text)",
+        "        Buffers: shared hit=8",
+        "Planning Time: 0.142 ms",
+        "Execution Time: 0.086 ms"
+      ]
+    },
+    {
+      "id": "DB-03c",
+      "nombre": "Página profunda con OFFSET 19 000",
+      "sql": "select * from \"FocusSession\" where \"userId\" = $1 order by \"startedAt\" desc offset 19000 limit 50",
+      "repeticiones": 10,
+      "filas": 50,
+      "bytes_json": 21863,
+      "prom_ms": 85.115,
+      "p95_ms": 101.209,
+      "max_ms": 101.209,
+      "ejecucion_pg_ms": 88.76,
+      "nodos_plan": [
+        "->  Sort",
+        "Sort Key: \"startedAt\" DESC",
+        "Sort Method: external merge  Disk: 6144kB",
+        "Worker 0:  Sort Method: quicksort  Memory: 25kB",
+        "Worker 1:  Sort Method: quicksort  Memory: 25kB",
+        "->  Bitmap Index Scan on \"FocusSession_userId_clientId_key\"",
+        "Index Cond: (\"userId\" = 'p12-db-u-0'::text)"
+      ],
+      "plan": [
+        "Limit  (cost=13982.35..13982.46 rows=1 width=326) (actual time=75.715..75.878 rows=50 loops=1)",
+        "  Buffers: shared hit=1735, temp read=748 written=770",
+        "  ->  Gather Merge  (cost=12058.61..13982.35 rows=16488 width=326) (actual time=65.823..74.962 rows=19050 loops=1)",
+        "        Workers Planned: 2",
+        "        Workers Launched: 2",
+        "        Buffers: shared hit=1735, temp read=748 written=770",
+        "        ->  Sort  (cost=11058.59..11079.20 rows=8244 width=326) (actual time=13.770..16.099 rows=6350 loops=3)",
+        "              Sort Key: \"startedAt\" DESC",
+        "              Sort Method: external merge  Disk: 6144kB",
+        "              Buffers: shared hit=1735, temp read=748 written=770",
+        "              Worker 0:  Sort Method: quicksort  Memory: 25kB",
+        "              Worker 1:  Sort Method: quicksort  Memory: 25kB",
+        "              ->  Parallel Bitmap Heap Scan on \"FocusSession\"  (cost=365.76..10522.35 rows=8244 width=326) (actual time=1.122..2.560 rows=6667 loops=3)",
+        "                    Recheck Cond: (\"userId\" = 'p12-db-u-0'::text)",
+        "                    Heap Blocks: exact=1687",
+        "                    Buffers: shared hit=1721",
+        "                    ->  Bitmap Index Scan on \"FocusSession_userId_clientId_key\"  (cost=0.00..360.81 rows=19786 width=0) (actual time=2.011..2.011 rows=40088 loops=1)",
+        "                          Index Cond: (\"userId\" = 'p12-db-u-0'::text)",
+        "                          Buffers: shared hit=34",
+        "Planning Time: 0.152 ms",
+        "Execution Time: 88.760 ms"
+      ]
+    },
+    {
+      "id": "DB-03d",
+      "nombre": "Página profunda por cursor (keyset: startedAt < cursor)",
+      "sql": "select * from \"FocusSession\" where \"userId\" = $1 and \"startedAt\" < $2 order by \"startedAt\" desc limit 50",
+      "repeticiones": 30,
+      "filas": 50,
+      "bytes_json": 21863,
+      "prom_ms": 1.687,
+      "p95_ms": 2.363,
+      "max_ms": 2.4,
+      "ejecucion_pg_ms": 0.059,
+      "nodos_plan": [
+        "->  Index Scan Backward using \"FocusSession_userId_startedAt_idx\" on \"FocusSession\"",
+        "Index Cond: ((\"userId\" = 'p12-db-u-0'::text) AND (\"startedAt\" < '2026-10-29 19:27:36.354'::timestamp without time zone))"
+      ],
+      "plan": [
+        "Limit  (cost=0.42..113.16 rows=50 width=326) (actual time=0.018..0.040 rows=50 loops=1)",
+        "  Buffers: shared hit=8",
+        "  ->  Index Scan Backward using \"FocusSession_userId_startedAt_idx\" on \"FocusSession\"  (cost=0.42..30437.50 rows=13499 width=326) (actual time=0.017..0.035 rows=50 loops=1)",
+        "        Index Cond: ((\"userId\" = 'p12-db-u-0'::text) AND (\"startedAt\" < '2026-10-29 19:27:36.354'::timestamp without time zone))",
+        "        Buffers: shared hit=8",
+        "Planning Time: 0.150 ms",
+        "Execution Time: 0.059 ms"
+      ]
+    },
+    {
+      "id": "DB-04",
+      "nombre": "Con filtros: usuario + modo + completada + rango de fechas",
+      "sql": "select * from \"FocusSession\" where \"userId\" = $1 and mode = $2 and completed = true and \"startedAt\" >= now() - interval '7 days' order by \"startedAt\" desc limit 50",
+      "repeticiones": 30,
+      "filas": 50,
+      "bytes_json": 21694,
+      "prom_ms": 1.759,
+      "p95_ms": 2.3,
+      "max_ms": 4.418,
+      "ejecucion_pg_ms": 0.078,
+      "nodos_plan": [
+        "->  Index Scan Backward using \"FocusSession_userId_startedAt_idx\" on \"FocusSession\"",
+        "Index Cond: ((\"userId\" = 'p12-db-u-0'::text) AND (\"startedAt\" >= (now() - '7 days'::interval)))"
+      ],
+      "plan": [
+        "Limit  (cost=0.42..370.87 rows=50 width=326) (actual time=0.024..0.058 rows=50 loops=1)",
+        "  Buffers: shared hit=9",
+        "  ->  Index Scan Backward using \"FocusSession_userId_startedAt_idx\" on \"FocusSession\"  (cost=0.42..10358.15 rows=1398 width=326) (actual time=0.023..0.054 rows=50 loops=1)",
+        "        Index Cond: ((\"userId\" = 'p12-db-u-0'::text) AND (\"startedAt\" >= (now() - '7 days'::interval)))",
+        "        Filter: (completed AND (mode = 'RELAX'::\"FocusMode\"))",
+        "        Rows Removed by Filter: 16",
+        "        Buffers: shared hit=9",
+        "Planning Time: 0.132 ms",
+        "Execution Time: 0.078 ms"
+      ]
+    },
+    {
+      "id": "DB-04b",
+      "nombre": "Agregado: minutos totales del usuario pesado (SUM en el servidor)",
+      "sql": "select count(*)::int sesiones, coalesce(sum(\"durationSeconds\"),0)::int segundos from \"FocusSession\" where \"userId\" = $1",
+      "repeticiones": 30,
+      "filas": 1,
+      "bytes_json": 39,
+      "prom_ms": 8.565,
+      "p95_ms": 9.64,
+      "max_ms": 9.658,
+      "ejecucion_pg_ms": 9.539,
+      "nodos_plan": [
+        "->  Bitmap Index Scan on \"FocusSession_userId_clientId_key\"",
+        "Index Cond: (\"userId\" = 'p12-db-u-0'::text)"
+      ],
+      "plan": [
+        "Aggregate  (cost=10765.55..10765.57 rows=1 width=8) (actual time=9.499..9.500 rows=1 loops=1)",
+        "  Buffers: shared hit=1721",
+        "  ->  Bitmap Heap Scan on \"FocusSession\"  (cost=365.76..10666.62 rows=19786 width=4) (actual time=2.531..5.926 rows=20000 loops=1)",
+        "        Recheck Cond: (\"userId\" = 'p12-db-u-0'::text)",
+        "        Heap Blocks: exact=1687",
+        "        Buffers: shared hit=1721",
+        "        ->  Bitmap Index Scan on \"FocusSession_userId_clientId_key\"  (cost=0.00..360.81 rows=19786 width=0) (actual time=1.567..1.567 rows=40088 loops=1)",
+        "              Index Cond: (\"userId\" = 'p12-db-u-0'::text)",
+        "              Buffers: shared hit=34",
+        "Planning Time: 0.119 ms",
+        "Execution Time: 9.539 ms"
+      ]
+    },
+    {
+      "id": "DB-AUTH-a",
+      "nombre": "Auth actual (1/2): sesión por token",
+      "sql": "select * from \"Session\" where token = $1 limit 1",
+      "repeticiones": 30,
+      "filas": 1,
+      "bytes_json": 200,
+      "prom_ms": 0.617,
+      "p95_ms": 0.848,
+      "max_ms": 1.043,
+      "ejecucion_pg_ms": 0.024,
+      "nodos_plan": [
+        "->  Index Scan using \"Session_token_key\" on \"Session\"",
+        "Index Cond: (token = 'ee6a495a7ce866c0a1af5cf26162e64b'::text)"
+      ],
+      "plan": [
+        "Limit  (cost=0.41..8.43 rows=1 width=90) (actual time=0.011..0.012 rows=1 loops=1)",
+        "  Buffers: shared hit=4",
+        "  ->  Index Scan using \"Session_token_key\" on \"Session\"  (cost=0.41..8.43 rows=1 width=90) (actual time=0.010..0.011 rows=1 loops=1)",
+        "        Index Cond: (token = 'ee6a495a7ce866c0a1af5cf26162e64b'::text)",
+        "        Buffers: shared hit=4",
+        "Planning Time: 0.066 ms",
+        "Execution Time: 0.024 ms"
+      ]
+    },
+    {
+      "id": "DB-AUTH-b",
+      "nombre": "Auth actual (2/2): usuario por id",
+      "sql": "select * from \"User\" where id = $1 limit 1",
+      "repeticiones": 30,
+      "filas": 1,
+      "bytes_json": 282,
+      "prom_ms": 0.537,
+      "p95_ms": 0.712,
+      "max_ms": 0.773,
+      "ejecucion_pg_ms": 0.027,
+      "nodos_plan": [
+        "->  Index Scan using \"User_pkey\" on \"User\"",
+        "Index Cond: (id = 'p12-db-u-78'::text)"
+      ],
+      "plan": [
+        "Limit  (cost=0.28..8.29 rows=1 width=91) (actual time=0.012..0.012 rows=1 loops=1)",
+        "  Buffers: shared hit=3",
+        "  ->  Index Scan using \"User_pkey\" on \"User\"  (cost=0.28..8.29 rows=1 width=91) (actual time=0.010..0.010 rows=1 loops=1)",
+        "        Index Cond: (id = 'p12-db-u-78'::text)",
+        "        Buffers: shared hit=3",
+        "Planning Time: 0.076 ms",
+        "Execution Time: 0.027 ms"
+      ]
+    },
+    {
+      "id": "DB-AUTH-c",
+      "nombre": "Auth optimizada: sesión + usuario en una sola consulta (JOIN)",
+      "sql": "select u.* , s.\"expiresAt\" as \"sessionExpiresAt\" from \"Session\" s join \"User\" u on u.id = s.\"userId\" where s.token = $1",
+      "repeticiones": 30,
+      "filas": 1,
+      "bytes_json": 328,
+      "prom_ms": 1.056,
+      "p95_ms": 1.372,
+      "max_ms": 1.388,
+      "ejecucion_pg_ms": 0.133,
+      "nodos_plan": [
+        "->  Index Scan using \"Session_token_key\" on \"Session\" s",
+        "Index Cond: (token = 'ee6a495a7ce866c0a1af5cf26162e64b'::text)",
+        "->  Index Scan using \"User_pkey\" on \"User\" u",
+        "Index Cond: (id = s.\"userId\")"
+      ],
+      "plan": [
+        "Nested Loop  (cost=0.69..16.74 rows=1 width=99) (actual time=0.028..0.029 rows=1 loops=1)",
+        "  Buffers: shared hit=7",
+        "  ->  Index Scan using \"Session_token_key\" on \"Session\" s  (cost=0.41..8.43 rows=1 width=20) (actual time=0.017..0.018 rows=1 loops=1)",
+        "        Index Cond: (token = 'ee6a495a7ce866c0a1af5cf26162e64b'::text)",
+        "        Buffers: shared hit=4",
+        "  ->  Index Scan using \"User_pkey\" on \"User\" u  (cost=0.28..8.29 rows=1 width=91) (actual time=0.006..0.006 rows=1 loops=1)",
+        "        Index Cond: (id = s.\"userId\")",
+        "        Buffers: shared hit=3",
+        "Planning:",
+        "  Buffers: shared hit=16",
+        "Planning Time: 0.380 ms",
+        "Execution Time: 0.133 ms"
+      ]
+    }
+  ],
+  "volumen": [
+    {
+      "relname": "FocusSession",
+      "n_live_tup": "120059"
+    },
+    {
+      "relname": "Session",
+      "n_live_tup": "20031"
+    },
+    {
+      "relname": "User",
+      "n_live_tup": "1066"
+    }
+  ],
+  "concurrencia_filas_distintas": {
+    "actualizaciones": 400,
+    "conexiones_pool": 25,
+    "prom_ms": 215.773,
+    "p95_ms": 307.345,
+    "filas_intactas": 400,
+    "duracion_ms": 631.708,
+    "muestras_monitor": 67,
+    "muestras_con_espera": 0,
+    "max_conexiones_esperando": 0
+  },
+  "misma_fila": [
+    {
+      "variante": "a) leer y luego escribir (patrón de ORM sin bloqueo)",
+      "esperado": 500,
+      "final": 43,
+      "actualizaciones_perdidas": 457,
+      "errores": 0,
+      "duracion_ms": 446.046,
+      "muestras_monitor": 24,
+      "muestras_con_espera": 2,
+      "max_conexiones_esperando": 5
+    },
+    {
+      "variante": "b) incremento atómico en una sola sentencia",
+      "esperado": 500,
+      "final": 500,
+      "actualizaciones_perdidas": 0,
+      "errores": 0,
+      "duracion_ms": 152.55,
+      "muestras_monitor": 14,
+      "muestras_con_espera": 11,
+      "max_conexiones_esperando": 16
+    },
+    {
+      "variante": "c) transacción con SELECT … FOR UPDATE",
+      "esperado": 500,
+      "final": 500,
+      "actualizaciones_perdidas": 0,
+      "errores": 0,
+      "duracion_ms": 599.184,
+      "muestras_monitor": 85,
+      "muestras_con_espera": 84,
+      "max_conexiones_esperando": 20
+    }
+  ],
+  "integridad": {
+    "filas": 119999,
+    "ids_unicos": 119999,
+    "fechas_invalidas": 0,
+    "duracion_invalida": 0
+  },
+  "limpieza": {
+    "usuarios_borrados_en_cascada": 1001,
+    "focus_restantes": 0
+  }
+}

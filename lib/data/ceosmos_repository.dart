@@ -32,10 +32,17 @@ class CeosmosRepository {
       api.delete('/favorites/${Uri.encodeComponent(key)}');
 
   // ---- Sesiones de enfoque (/focus-sessions) ----
-  Future<List<FocusSession>> focusSessions({int limit = 50}) async =>
-      _lista(await api.get('/focus-sessions', query: {'limit': '$limit'}))
+  /// Página del historial; [cursor] es el id de la última sesión de la página anterior.
+  Future<List<FocusSession>> focusSessions({int limit = 50, String? cursor}) async =>
+      _lista(await api.get('/focus-sessions', query: {'limit': '$limit', 'cursor': ?cursor}))
           .map(FocusSession.fromJson)
           .toList();
+
+  /// Número de sesiones y segundos totales del usuario, calculados en el servidor.
+  Future<({int sesiones, int segundos})> focusSummary() async {
+    final j = (await api.get('/focus-sessions/resumen')) as Map;
+    return (sesiones: (j['sesiones'] as num).toInt(), segundos: (j['segundos'] as num).toInt());
+  }
 
   Future<FocusSession> saveFocusSession(FocusSession session) async =>
       FocusSession.fromJson(

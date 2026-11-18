@@ -4,6 +4,7 @@
 import 'dart:convert';
 
 import 'package:ceosmos_movil_integral/core/app_state.dart';
+import 'package:ceosmos_movil_integral/core/reintentos.dart';
 import 'package:ceosmos_movil_integral/core/wearable.dart';
 import 'package:ceosmos_movil_integral/data/api_client.dart';
 import 'package:ceosmos_movil_integral/data/auth_repository.dart';
@@ -33,6 +34,9 @@ class FakeCeosmosApi {
 
   /// Si es true todas las peticiones fallan como sin red.
   bool offline = false;
+
+  /// Si es true, `POST /focus-sessions` responde 400 (rechazo definitivo, P12-D02).
+  bool rechazarSesiones = false;
 
   FakeUser addUser(String email, String password, {String username = 'usuario', String role = 'USER', bool verified = true}) {
     final u = FakeUser('u${++_seq}', email, username, password, role: role, verified: verified);
@@ -126,8 +130,19 @@ class FakeCeosmosApi {
       case ('GET', '/favorites'):
         return _json(200, [for (final f in u.favorites) {'contentKey': f}]);
       case ('GET', '/focus-sessions'):
-        final ordenadas = [...u.sessions]..sort((a, b) => '${b['startedAt']}'.compareTo('${a['startedAt']}'));
-        return _json(200, ordenadas);
+        // Como la API (P12-O1): orden descendente, `limit` y `cursor` (id de la última).
+        var ordenadas = [...u.sessions]..sort((a, b) => '${b['startedAt']}'.compareTo('${a['startedAt']}'));
+        final cursor = req.url.queryParameters['cursor'];
+        if (cursor != null) ordenadas = ordenadas.skipWhile((x) => x['id'] != cursor).skip(1).toList();
+        final limite = int.tryParse(req.url.queryParameters['limit'] ?? '') ?? 50;
+        return _json(200, ordenadas.take(limite).toList());
+      case ('GET', '/focus-sessions/resumen'):
+        return _json(200, {
+          'sesiones': u.sessions.length,
+          'segundos': u.sessions.fold<int>(0, (s, x) => s + (x['durationSeconds'] as num).toInt()),
+        });
+      case ('POST', '/focus-sessions') when rechazarSesiones:
+        return _error(400, 'endedAt no puede estar en el futuro');
       case ('POST', '/focus-sessions'):
         // Igual que la API corregida (P11-D01): mismo clientId → misma sesión.
         final previa = u.sessions.where((x) => body['clientId'] != null && x['clientId'] == body['clientId']).firstOrNull;
@@ -180,7 +195,12 @@ class FakeCeosmosApi {
   }
 
   /// AppState conectado a este servidor falso.
-  AppState appState({DateTime Function()? now, WearableClient? wearable, MemoryTokenStore? tokens}) {
+  AppState appState({
+    DateTime Function()? now,
+    WearableClient? wearable,
+    MemoryTokenStore? tokens,
+    PoliticaReintento reintentos = const PoliticaReintento(),
+  }) {
     final api = ApiClient(baseUrl: 'http://api.test/api', client: client);
     return AppState(
       auth: AuthRepository(api, tokens ?? MemoryTokenStore()),
@@ -188,6 +208,7 @@ class FakeCeosmosApi {
       wearable: wearable,
       now: now,
       startTicker: false,
+      reintentos: reintentos,
     );
   }
 }

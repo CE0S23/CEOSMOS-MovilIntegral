@@ -1,0 +1,53 @@
+{
+  "etiqueta": "perfil-antes",
+  "fecha": "2026-11-12T06:20:39.597Z",
+  "base": "http://127.0.0.1:8080/api",
+  "duracion_por_escenario_s": 20,
+  "ruta_lectura": "/focus-sessions?limit=50",
+  "maquina": {
+    "cpu": "Intel(R) Core(TM) i3-10110U CPU @ 2.10GHz",
+    "hilos": 4,
+    "ram_gb": 7.8,
+    "so": "Windows_NT 10.0.26100",
+    "node": "v22.22.0"
+  },
+  "filas": [
+    {
+      "escenario": "lectura",
+      "usuarios": 10,
+      "duracion_s": 20,
+      "solicitudes": 4132,
+      "exitosas": 4132,
+      "errores": 0,
+      "errores_pct": 0,
+      "codigos": {
+        "200": 4132
+      },
+      "rps": 206.3,
+      "rps_exitosas": 206.3,
+      "prom_ms": 48.4,
+      "p50_ms": 46.7,
+      "p90_ms": 56.1,
+      "p95_ms": 62.6,
+      "p99_ms": 80.8,
+      "min_ms": 32.1,
+      "max_ms": 192,
+      "bytes_resp_prom": 25792,
+      "cpu_api_prom_pct": 182.1,
+      "cpu_api_max_pct": 219.1,
+      "cpu_pg_prom_pct": 24,
+      "ram_api_max_mb": 232.5,
+      "ram_api_fin_mb": 228,
+      "pg_transacciones": 12218,
+      "pg_tx_por_solicitud": 3,
+      "pg_filas_leidas": 208035,
+      "pg_filas_insertadas": 0
+    }
+  ],
+  "integridad": {
+    "respuestas_201": 0,
+    "filas_insertadas": 0,
+    "clientId_duplicados": 0
+  },
+  "limpieza_filas_borradas": 2500
+}

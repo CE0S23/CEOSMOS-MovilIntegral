@@ -483,9 +483,13 @@ class _SessionBar extends StatelessWidget {
                 ],
               ),
             ),
-            Text(
-              clockLabel(state.remaining),
-              style: const TextStyle(color: Cosmos.lavender),
+            // P12-O2: solo este texto se redibuja con el tic de cada segundo.
+            ListenableBuilder(
+              listenable: state.reloj,
+              builder: (context, _) => Text(
+                clockLabel(state.remaining),
+                style: const TextStyle(color: Cosmos.lavender),
+              ),
             ),
             const SizedBox(width: 10),
             IconButton(

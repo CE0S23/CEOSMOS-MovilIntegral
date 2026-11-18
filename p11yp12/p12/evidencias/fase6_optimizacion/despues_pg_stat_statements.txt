@@ -1,0 +1,7 @@
+ calls | prom_ms | total_ms |  rows  |                                                         consulta                                                         
+-------+---------+----------+--------+--------------------------------------------------------------------------------------------------------------------------
+  9889 |   0.054 |    536.3 |   9889 | SELECT s."expiresAt" AS "sessionExpiresAt", u.id, u.email, u.username, u."emailVerified", u.role::text AS role, u.active
+  9885 |   0.238 |   2355.2 | 329810 | SELECT "public"."FocusSession"."id", "public"."FocusSession"."clientId", "public"."FocusSession"."contentKey", "public".
+    14 |   0.005 |      0.1 |     14 | SELECT $1
+(3 filas)
+

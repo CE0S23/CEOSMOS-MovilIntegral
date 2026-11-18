@@ -1,0 +1,247 @@
+diff --git a/ceosmos-api/src/auth/auth.service.ts b/ceosmos-api/src/auth/auth.service.ts
+index 2b94c88..7791890 100644
+--- a/ceosmos-api/src/auth/auth.service.ts
++++ b/ceosmos-api/src/auth/auth.service.ts
+@@ -134,16 +134,23 @@ export class AuthService {
+     const isValid = await bcrypt.compare(dto.password, user.passwordHash);
+     if (!isValid) {
+       console.error(`[AuthService] Login failed: Password mismatch for ${dto.email}`);
+-      const newFailedCount = user.failedLoginAttempts + 1;
+-      const shouldLock = newFailedCount >= MAX_FAILED_ATTEMPTS;
+-
+-      await this.prisma.user.update({
+-        where: { id: user.id },
+-        data: {
+-          failedLoginAttempts: shouldLock ? 0 : newFailedCount,
+-          lockedUntil: shouldLock ? new Date(Date.now() + LOCK_DURATION_MS) : user.lockedUntil,
+-        },
+-      });
++      // P12-D01: antes se leía el contador, se sumaba 1 en JS y se escribía el valor
++      // («leer y luego escribir»). Con intentos simultáneos todos leían el mismo número
++      // y se perdían incrementos, así que la cuenta no se bloqueaba a los 5 fallos. Ahora
++      // el incremento y el bloqueo se hacen en UNA sentencia: PostgreSQL bloquea la fila
++      // y cada UPDATE parte del valor que dejó el anterior.
++      const [fila] = await this.prisma.$queryRaw<{ failedLoginAttempts: number }[]>`
++        UPDATE "User" SET
++          "failedLoginAttempts" = CASE WHEN "failedLoginAttempts" + 1 >= ${MAX_FAILED_ATTEMPTS}
++                                       THEN 0 ELSE "failedLoginAttempts" + 1 END,
++          "lockedUntil" = CASE WHEN "failedLoginAttempts" + 1 >= ${MAX_FAILED_ATTEMPTS}
++                               THEN (now() AT TIME ZONE 'UTC') + make_interval(secs => ${LOCK_DURATION_MS / 1000})
++                               ELSE "lockedUntil" END
++        WHERE id = ${user.id}
++        RETURNING "failedLoginAttempts"`;
++      // Tras el incremento, 0 solo puede significar que este intento bloqueó la cuenta.
++      const shouldLock = fila.failedLoginAttempts === 0;
++      const newFailedCount = shouldLock ? MAX_FAILED_ATTEMPTS : fila.failedLoginAttempts;
+ 
+       if (shouldLock) {
+         throw new UnauthorizedException(
+diff --git a/ceosmos-api/src/auth/jwt.strategy.ts b/ceosmos-api/src/auth/jwt.strategy.ts
+index b0d8c38..3ccd6da 100644
+--- a/ceosmos-api/src/auth/jwt.strategy.ts
++++ b/ceosmos-api/src/auth/jwt.strategy.ts
+@@ -24,27 +24,38 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
+     });
+   }
+ 
+-  async validate(payload: JwtPayload): Promise<User> {
++  /**
++   * Se ejecuta en CADA petición autenticada. Antes hacía dos consultas (sesión por
++   * token y luego usuario por id); P12-O1 las une en una sola con JOIN, de modo que
++   * cada petición cuesta un viaje menos a PostgreSQL y una deserialización menos de
++   * Prisma. Además exige que la sesión pertenezca al usuario del JWT y ya no carga
++   * `passwordHash` en `req.user` (ningún controlador lo usa).
++   */
++  async validate(payload: JwtPayload): Promise<UsuarioAutenticado> {
+     const hashedToken = createHash('sha256')
+       .update(payload.sessionToken)
+       .digest('hex');
+ 
+-    const session = await this.prisma.session.findUnique({
+-      where: { token: hashedToken },
+-    });
+-
+-    if (!session || session.expiresAt < new Date()) {
++    const filas = await this.prisma.$queryRaw<FilaSesionUsuario[]>`
++      SELECT s."expiresAt" AS "sessionExpiresAt",
++             u.id, u.email, u.username, u."emailVerified", u.role::text AS role, u.active,
++             u."failedLoginAttempts", u."lockedUntil", u."createdAt", u."updatedAt", u."deletedAt"
++      FROM "Session" s
++      JOIN "User" u ON u.id = s."userId"
++      WHERE s.token = ${hashedToken} AND s."userId" = ${payload.userId}
++      LIMIT 1`;
++    const fila = filas[0];
++
++    // Misma semántica que antes: sesión inexistente o vencida → 401.
++    if (!fila || fila.sessionExpiresAt < new Date()) {
+       throw new UnauthorizedException('Session not found or expired');
+     }
+ 
+-    const user = await this.prisma.user.findUnique({
+-      where: { id: payload.userId },
+-    });
+-
+-    if (!user) {
+-      throw new UnauthorizedException('User not found');
+-    }
+-
++    const { sessionExpiresAt: _vence, ...user } = fila;
+     return user;
+   }
+ }
++
++/** Usuario que queda en `req.user` (sin el hash de la contraseña). */
++export type UsuarioAutenticado = Omit<User, 'passwordHash'>;
++type FilaSesionUsuario = UsuarioAutenticado & { sessionExpiresAt: Date };
+diff --git a/ceosmos-api/src/focus-sessions/dto/focus-sessions.dto.ts b/ceosmos-api/src/focus-sessions/dto/focus-sessions.dto.ts
+index 07a0a30..a1b497d 100644
+--- a/ceosmos-api/src/focus-sessions/dto/focus-sessions.dto.ts
++++ b/ceosmos-api/src/focus-sessions/dto/focus-sessions.dto.ts
+@@ -76,4 +76,9 @@ export class ListFocusSessionsQueryDto {
+   @Min(1)
+   @Max(100)
+   limit?: number;
++
++  /** P12-O1: id de la última sesión recibida; la página siguiente empieza después. */
++  @IsOptional()
++  @Matches(/^[A-Za-z0-9-]{1,80}$/)
++  cursor?: string;
+ }
+diff --git a/ceosmos-api/src/focus-sessions/focus-sessions.controller.ts b/ceosmos-api/src/focus-sessions/focus-sessions.controller.ts
+index 2831824..6a7bced 100644
+--- a/ceosmos-api/src/focus-sessions/focus-sessions.controller.ts
++++ b/ceosmos-api/src/focus-sessions/focus-sessions.controller.ts
+@@ -27,7 +27,13 @@ export class FocusSessionsController {
+ 
+   @Get()
+   list(@Req() req: RequestWithUser, @Query() query: ListFocusSessionsQueryDto) {
+-    return this.service.list(req.user.id, query.limit);
++    return this.service.list(req.user.id, query.limit, query.cursor);
++  }
++
++  /** P12-O1: número de sesiones y segundos totales, calculados en la base. */
++  @Get('resumen')
++  resumen(@Req() req: RequestWithUser) {
++    return this.service.resumen(req.user.id);
+   }
+ 
+   @Post()
+diff --git a/ceosmos-api/src/focus-sessions/focus-sessions.service.spec.ts b/ceosmos-api/src/focus-sessions/focus-sessions.service.spec.ts
+index 95f7d85..1d6d00a 100644
+--- a/ceosmos-api/src/focus-sessions/focus-sessions.service.spec.ts
++++ b/ceosmos-api/src/focus-sessions/focus-sessions.service.spec.ts
+@@ -6,7 +6,7 @@ import { BadRequestException } from '@nestjs/common';
+ import { Prisma } from '@prisma/client';
+ import { validate } from 'class-validator';
+ import { plainToInstance } from 'class-transformer';
+-import { FocusSessionsService } from './focus-sessions.service';
++import { CAMPOS_HISTORIAL, FocusSessionsService } from './focus-sessions.service';
+ import {
+   CreateFocusSessionDto,
+   ListFocusSessionsQueryDto,
+@@ -37,6 +37,7 @@ describe('FocusSessionsService (white box)', () => {
+       create: jest.fn(),
+       findMany: jest.fn(),
+       findUnique: jest.fn(),
++      aggregate: jest.fn(),
+     },
+   };
+   const service = new FocusSessionsService(prisma as any);
+@@ -135,14 +136,33 @@ describe('FocusSessionsService (white box)', () => {
+     expect(prisma.focusSession.findUnique).not.toHaveBeenCalled();
+   });
+ 
+-  it('list: límite por defecto 50, ordenado por startedAt desc y filtrado por usuario', async () => {
++  it('list: límite por defecto 50, ordenado por startedAt desc (id desempata), filtrado por usuario y solo los campos del historial (P12-O1)', async () => {
+     prisma.focusSession.findMany.mockResolvedValue([]);
+     await service.list('u1');
+     expect(prisma.focusSession.findMany).toHaveBeenCalledWith({
+       where: { userId: 'u1' },
+-      orderBy: { startedAt: 'desc' },
++      orderBy: [{ startedAt: 'desc' }, { id: 'desc' }],
+       take: 50,
++      select: CAMPOS_HISTORIAL,
+     });
++    expect(CAMPOS_HISTORIAL).not.toHaveProperty('userId');
++    expect(CAMPOS_HISTORIAL).not.toHaveProperty('createdAt');
++  });
++
++  it('list con cursor: continúa después de la última sesión, sin OFFSET (P12-O1)', async () => {
++    prisma.focusSession.findMany.mockResolvedValue([]);
++    await service.list('u1', 20, 'fs-ultima');
++    expect(prisma.focusSession.findMany).toHaveBeenCalledWith(
++      expect.objectContaining({ take: 20, cursor: { id: 'fs-ultima' }, skip: 1, where: { userId: 'u1' } }),
++    );
++  });
++
++  it('resumen: cuenta y suma en la base, solo del usuario (P12-O1)', async () => {
++    prisma.focusSession.aggregate.mockResolvedValue({ _count: { _all: 45 }, _sum: { durationSeconds: 13500 } });
++    expect(await service.resumen('u1')).toEqual({ sesiones: 45, segundos: 13500 });
++    expect(prisma.focusSession.aggregate).toHaveBeenCalledWith(expect.objectContaining({ where: { userId: 'u1' } }));
++    prisma.focusSession.aggregate.mockResolvedValue({ _count: { _all: 0 }, _sum: { durationSeconds: null } });
++    expect(await service.resumen('u1')).toEqual({ sesiones: 0, segundos: 0 });
+   });
+ });
+ 
+diff --git a/ceosmos-api/src/focus-sessions/focus-sessions.service.ts b/ceosmos-api/src/focus-sessions/focus-sessions.service.ts
+index eda422a..97a1965 100644
+--- a/ceosmos-api/src/focus-sessions/focus-sessions.service.ts
++++ b/ceosmos-api/src/focus-sessions/focus-sessions.service.ts
+@@ -3,16 +3,55 @@ import { Prisma } from '@prisma/client';
+ import { PrismaService } from '../prisma/prisma.service';
+ import { CreateFocusSessionDto } from './dto/focus-sessions.dto';
+ 
++/** Campos del historial que muestra la app (P12-O1: sin `userId` ni `createdAt`). */
++export const CAMPOS_HISTORIAL = {
++  id: true,
++  clientId: true,
++  contentKey: true,
++  mode: true,
++  startedAt: true,
++  endedAt: true,
++  durationSeconds: true,
++  targetMinutes: true,
++  completed: true,
++  metadata: true,
++} satisfies Prisma.FocusSessionSelect;
++
+ @Injectable()
+ export class FocusSessionsService {
+   constructor(private readonly prisma: PrismaService) {}
+ 
+-  list(userId: string, limit = 50) {
++  /**
++   * Historial paginado por cursor (P12-O1). Devuelve solo los campos que usan los
++   * clientes (sin `userId` ni `createdAt`) y, si llega `cursor` (id de la última sesión
++   * de la página anterior), continúa justo después usando el índice
++   * (userId, startedAt): no hay OFFSET, así que la página 400 cuesta lo mismo que la 1.
++   * El `id` desempata sesiones con el mismo `startedAt`.
++   */
++  list(userId: string, limit = 50, cursor?: string) {
+     return this.prisma.focusSession.findMany({
+       where: { userId },
+-      orderBy: { startedAt: 'desc' },
++      orderBy: [{ startedAt: 'desc' }, { id: 'desc' }],
+       take: limit,
++      ...(cursor && { cursor: { id: cursor }, skip: 1 }),
++      select: CAMPOS_HISTORIAL,
++    });
++  }
++
++  /**
++   * Totales del usuario calculados en PostgreSQL (P12-O1). Antes la app sumaba los
++   * minutos recorriendo el historial descargado, que solo trae la primera página.
++   */
++  async resumen(userId: string) {
++    const r = await this.prisma.focusSession.aggregate({
++      where: { userId },
++      _count: { _all: true },
++      _sum: { durationSeconds: true },
+     });
++    return {
++      sesiones: r._count._all,
++      segundos: r._sum.durationSeconds ?? 0,
++    };
+   }
+ 
+   /**

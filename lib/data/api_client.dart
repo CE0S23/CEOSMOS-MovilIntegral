@@ -55,9 +55,11 @@ class ApiClient {
     }
     final http.Response response;
     try {
-      response = await http.Response.fromStream(
-        await _http.send(request).timeout(timeout),
-      ).timeout(timeout);
+      // P12-D03: UN solo plazo para toda la petición. Antes había uno para las
+      // cabeceras y otro para el cuerpo: si la red caía a mitad de la respuesta, el
+      // error tardaba hasta 2 × 15 s (se midieron 26 s en RES-01).
+      response = await (() async => http.Response.fromStream(await _http.send(request)))()
+          .timeout(timeout);
     } on TimeoutException {
       throw const ApiException(
         'El servidor de CEOSMOS tardó demasiado en responder. Intenta de nuevo.',

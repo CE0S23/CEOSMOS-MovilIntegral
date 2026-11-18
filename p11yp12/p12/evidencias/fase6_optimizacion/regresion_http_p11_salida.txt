@@ -1,0 +1,50 @@
+OK   H01 POST /auth/login → 200 (esperado 200,201) 381 ms Set-Cookie: Authentication=<jwt>; Max-Age=604800; Path=/; Expires=Thu, 19 Nov 2026 07:08:25 GMT; HttpOnly; Secure; SameSite=None, csrfToken=5ffeff1f13c4fa480b0becfbf844b35a4684f6f7a03352fbe4d81e43d4060254; Max-Age=604800; Path=/; Expires=Thu, 19 Nov 2026 07:08:25 GMT; Secure; SameSite=None
+OK   H02 POST /auth/login → 401 (esperado 401) 269 ms 
+OK   H03 POST /auth/login → 400 (esperado 400) 5 ms 
+OK   H04 POST /auth/login → 400 (esperado 400) 4 ms 
+OK   H05 GET /users/me → 401 (esperado 401) 4 ms 
+OK   H06 GET /users/me → 401 (esperado 401) 4 ms 
+OK   H07 GET /users/me → 200 (esperado 200) 15 ms 
+OK   H08 GET /users/me/sessions → 200 (esperado 200) 7 ms 
+OK   H09 GET /admin/users → 403 (esperado 403) 5 ms 
+OK   H10 GET /admin/users → 401 (esperado 401) 2 ms 
+OK   H11 POST /devices → 201 (esperado 201) 9 ms 
+OK   H12 POST /devices → 409 (esperado 409) 10 ms 
+OK   H13 POST /devices → 400 (esperado 400) 5 ms 
+OK   H14 POST /devices → 400 (esperado 400) 4 ms 
+OK   H15 PATCH /devices/:id → 404 (esperado 404) 9 ms 
+OK   H16 PATCH /devices/:id → 400 (esperado 400) 5 ms 
+OK   H17 PATCH /devices/:id → 200 (esperado 200) 7 ms 
+OK   H18 DELETE /devices/:id → 204 (esperado 204) 5 ms 
+OK   H19 DELETE /devices/:id → 404 (esperado 404) 4 ms 
+OK   H20 POST /focus-sessions → 201 (esperado 201) 9 ms 
+OK   H21 POST /focus-sessions → 400 (esperado 422,400) 3 ms La API usa 400 para validación semántica (no 422)
+OK   H22 POST /focus-sessions → 400 (esperado 422,400) 4 ms 
+OK   H23 GET /focus-sessions → 400 (esperado 400) 3 ms 
+OK   H24 GET /focus-sessions → 200 (esperado 200) 8 ms 
+OK   H35 POST /focus-sessions → 201 (esperado 201) 9 ms 
+OK   H36 POST /focus-sessions → 201 (esperado 201) 5 ms id1=d6b3c0d6-ec11-4c2c-84e1-27de0a2148ef id2=d6b3c0d6-ec11-4c2c-84e1-27de0a2148ef
+OK   H37 POST /focus-sessions → 400 (esperado 400) 7 ms 
+OK   H40 POST /focus-sessions → 201 (esperado 201) 10 ms 
+OK   H38 POST /focus-sessions → 413 (esperado 413) 3 ms 
+OK   H39 GET /users/me → 401 (esperado 401) 2 ms 
+OK   H25 PUT /favorites/:key → 400 (esperado 400) 3 ms 
+OK   H26 POST /media → 201 (esperado 201) 14 ms 
+OK   H27 POST /media → 409 (esperado 409) 8 ms Corrección P11-D05 (antes 400)
+OK   H28 DELETE /media/:id → 404 (esperado 404) 5 ms 
+OK   H29 DELETE /media/:id → 204 (esperado 204) 4 ms 
+OK   H30 PATCH /admin/users/:id/status → 404 (esperado 404) 6 ms Si responde 500 es un error no controlado
+OK   H31 PATCH /admin/users/:id → 404 (esperado 400,404) 5 ms 
+OK   H32 GET /admin/users → 200 (esperado 200) 7 ms 
+OK   H33 GET /users/me → 401 (esperado 401) 3 ms 
+OK   H34 POST /auth/login → 429 (esperado 429) 2 ms 
+
+Aprobados 40/40
+Cabeceras de seguridad: {
+  'x-powered-by': null,
+  'x-frame-options': 'DENY',
+  'x-content-type-options': 'nosniff',
+  'strict-transport-security': 'max-age=63072000; includeSubDomains; preload',
+  'content-type': 'application/json; charset=utf-8',
+  'ratelimit-limit / x-ratelimit-limit': '10000000'
+}

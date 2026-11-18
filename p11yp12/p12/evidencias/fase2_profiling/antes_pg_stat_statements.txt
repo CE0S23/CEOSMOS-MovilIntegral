@@ -1,0 +1,8 @@
+ calls | prom_ms | total_ms |  rows  |                                                         consulta                                                         
+-------+---------+----------+--------+--------------------------------------------------------------------------------------------------------------------------
+  5019 |   0.043 |    216.5 |   5019 | SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."userAgent",
+  5019 |   0.463 |   2326.0 | 250950 | SELECT "public"."FocusSession"."id", "public"."FocusSession"."userId", "public"."FocusSession"."contentKey", "public"."F
+  5019 |   0.025 |    126.9 |   5019 | SELECT "public"."User"."id", "public"."User"."email", "public"."User"."username", "public"."User"."passwordHash", "publi
+     6 |   0.006 |      0.0 |      6 | SELECT $1
+(4 filas)
+

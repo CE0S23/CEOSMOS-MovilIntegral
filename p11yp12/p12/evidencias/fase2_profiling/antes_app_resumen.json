@@ -1,0 +1,154 @@
+{
+  "total": {
+    "cpu_prom_pct": 35,
+    "cpu_max_pct": 76.8,
+    "ram_inicial_pss_mb": 140.6,
+    "ram_max_pss_mb": 193.4,
+    "ram_final_pss_mb": 193.4,
+    "rss_inicial_mb": 221.8,
+    "rss_max_mb": 275.8,
+    "rss_final_mb": 269.4,
+    "muestras": 122
+  },
+  "por_fase": [
+    {
+      "fase": "carga_inicial",
+      "duracion_s": 1.4,
+      "cpu_prom_pct": 14.5,
+      "cpu_max_pct": 22.7,
+      "rss_max_mb": 223.2,
+      "pss_max_mb": 148.1,
+      "max_retraso_hilo_ui_ms": 42.7,
+      "bloqueos_sobre_50ms": 0
+    },
+    {
+      "fase": "consulta_repetida",
+      "duracion_s": 1.5,
+      "cpu_prom_pct": 25.3,
+      "cpu_max_pct": 39.8,
+      "rss_max_mb": 228.2,
+      "pss_max_mb": 152.8,
+      "max_retraso_hilo_ui_ms": 101.6,
+      "bloqueos_sobre_50ms": 3
+    },
+    {
+      "fase": "escritura",
+      "duracion_s": 0.1,
+      "cpu_prom_pct": 39.8,
+      "cpu_max_pct": 39.8,
+      "rss_max_mb": 228.2,
+      "pss_max_mb": 152.8,
+      "max_retraso_hilo_ui_ms": 5,
+      "bloqueos_sobre_50ms": 0
+    },
+    {
+      "fase": "navegacion",
+      "duracion_s": 59,
+      "cpu_prom_pct": 50.7,
+      "cpu_max_pct": 76.8,
+      "rss_max_mb": 275.8,
+      "pss_max_mb": 192.8,
+      "max_retraso_hilo_ui_ms": 265.9,
+      "bloqueos_sobre_50ms": 54
+    },
+    {
+      "fase": "procesamiento",
+      "duracion_s": 0.1,
+      "cpu_prom_pct": 54.2,
+      "cpu_max_pct": 54.2,
+      "rss_max_mb": 260.6,
+      "pss_max_mb": 184.6,
+      "max_retraso_hilo_ui_ms": 2.5,
+      "bloqueos_sobre_50ms": 0
+    },
+    {
+      "fase": "sesion_en_curso_reposo",
+      "duracion_s": 41.2,
+      "cpu_prom_pct": 14,
+      "cpu_max_pct": 27,
+      "rss_max_mb": 269.5,
+      "pss_max_mb": 192.4,
+      "max_retraso_hilo_ui_ms": 41.1,
+      "bloqueos_sobre_50ms": 0
+    }
+  ],
+  "datos_app": {
+    "carga_inicial_ms": 1406,
+    "sesiones_cargadas": 50,
+    "recarga_workspace_ms": {
+      "n": 20,
+      "prom": 40.48995000000001,
+      "p50": 24.46,
+      "p90": 82.483,
+      "p95": 83.499,
+      "max": 115.334,
+      "min": 16.723
+    },
+    "consulta_historial_ms": {
+      "n": 30,
+      "prom": 21.35103333333333,
+      "p50": 13.514,
+      "p90": 41.345,
+      "p95": 49.267,
+      "max": 56.019,
+      "min": 10.074
+    },
+    "guardar_sesion_ms": {
+      "n": 10,
+      "prom": 11.5016,
+      "p50": 8.917,
+      "p90": 10.095,
+      "p95": 36.441,
+      "max": 36.441,
+      "min": 7.955
+    },
+    "pendientes_tras_escritura": 0,
+    "navegacion_cuadros": {
+      "cuadros": 1649,
+      "build_ms": {
+        "n": 1649,
+        "prom": 2.263537295330502,
+        "p50": 0.737,
+        "p90": 5.045,
+        "p95": 8.354,
+        "max": 395.343,
+        "min": 0.108
+      },
+      "raster_ms": {
+        "n": 1649,
+        "prom": 14.476400242571268,
+        "p50": 13.418,
+        "p90": 23.784,
+        "p95": 27.695,
+        "max": 413.267,
+        "min": 2.391
+      },
+      "build_sobre_16_7ms": 16,
+      "raster_sobre_16_7ms": 525
+    },
+    "procesar_100_sesiones_ms": {
+      "n": 50,
+      "prom": 1.16924,
+      "p50": 0.919,
+      "p90": 2.153,
+      "p95": 2.359,
+      "max": 3.703,
+      "min": 0.651
+    },
+    "procesar_bytes": 46260,
+    "procesar_minutos": 2250,
+    "reposo_cuadros": {
+      "cuadros": 42,
+      "build_ms": {
+        "n": 42,
+        "prom": 8.115238095238096,
+        "p50": 6.901,
+        "p90": 10.347,
+        "p95": 15.233,
+        "max": 35.236,
+        "min": 0.842
+      },
+      "build_total_ms": 340.84
+    }
+  }
+}

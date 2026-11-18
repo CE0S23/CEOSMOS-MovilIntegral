@@ -69,23 +69,30 @@ class SessionScreen extends StatelessWidget {
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
+                      // P12-O2: solo el anillo y el reloj escuchan el tic de cada segundo.
                       SizedBox.expand(
-                        child: CircularProgressIndicator(
-                          value: state.progress,
-                          strokeWidth: 3,
-                          backgroundColor: Colors.white.withValues(alpha: .14),
-                          color: modeColor(item.mode),
+                        child: ListenableBuilder(
+                          listenable: state.reloj,
+                          builder: (context, _) => CircularProgressIndicator(
+                            value: state.progress,
+                            strokeWidth: 3,
+                            backgroundColor: Colors.white.withValues(alpha: .14),
+                            color: modeColor(item.mode),
+                          ),
                         ),
                       ),
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text(
-                            clockLabel(state.remaining),
-                            style: const TextStyle(
-                              fontSize: 56,
-                              fontWeight: FontWeight.w300,
-                              letterSpacing: -2,
+                          ListenableBuilder(
+                            listenable: state.reloj,
+                            builder: (context, _) => Text(
+                              clockLabel(state.remaining),
+                              style: const TextStyle(
+                                fontSize: 56,
+                                fontWeight: FontWeight.w300,
+                                letterSpacing: -2,
+                              ),
                             ),
                           ),
                           const SizedBox(height: 8),

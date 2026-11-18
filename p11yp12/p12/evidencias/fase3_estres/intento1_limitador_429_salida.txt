@@ -1,0 +1,13 @@
+calentar  vus= 5 rps=206.5 prom=24 p90=29.3 p95=33.8 max=107.4 err=0% cpuAPI=144.8% ram=142.3MB tx/sol=2.6 {"200":1036}
+lectura   vus= 1 rps=109.2 prom=9.2 p90=9.9 p95=10.6 max=34.1 err=0% cpuAPI=86.7% ram=142.7MB tx/sol=3 {"200":2184}
+lectura   vus= 5 rps=589.1 prom=8.5 p90=21.9 p95=24.3 max=67.4 err=76.4% cpuAPI=151.1% ram=145.1MB tx/sol=0.7 {"200":2780,"429":9003}
+lectura   vus=10 rps=1210.9 prom=8.3 p90=12.3 p95=15.5 max=49.6 err=100% cpuAPI=108.4% ram=143.4MB tx/sol=0 {"429":24226}
+lectura   vus=25 rps=1136.2 prom=22 p90=34.7 p95=39.8 max=114.1 err=100% cpuAPI=102.1% ram=144.2MB tx/sol=0 {"429":22744}
+lectura   vus=50 rps=286 prom=174.5 p90=241.3 p95=266.3 max=481.4 err=28.6% cpuAPI=180.3% ram=148.9MB tx/sol=2.1 {"200":4100,"429":1645}
+escritura vus= 1 rps=108 prom=9.2 p90=10.4 p95=11.1 max=69.6 err=0% cpuAPI=82.5% ram=146.7MB tx/sol=4 {"201":2161}
+escritura vus= 5 rps=350.7 prom=14.2 p90=23.8 p95=26.8 max=66.2 err=45.3% cpuAPI=162.9% ram=149.1MB tx/sol=2.2 {"201":3839,"429":3177}
+escritura vus=10 rps=962.8 prom=10.4 p90=15.3 p95=18.6 max=54.4 err=100% cpuAPI=104.8% ram=152.5MB tx/sol=0 {"429":19263}
+escritura vus=25 rps=923.9 prom=27 p90=42 p95=47.2 max=127.3 err=100% cpuAPI=-1441.2% ram=152.5MB tx/sol=0 {"429":12500,"red":5982}
+escritura vus=50 rps=924.4 prom=54 p90=61.7 p95=231.5 max=542.3 err=94.4% cpuAPI=0% ram=0MB tx/sol=0.3 {"201":1050,"red":17644}
+integridad { respuestas_201: 7050, filas_insertadas: 900, clientId_duplicados: 0 } borradas 3400
+[muestreador] terminó con código null

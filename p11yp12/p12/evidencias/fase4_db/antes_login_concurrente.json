@@ -1,0 +1,73 @@
+{
+  "fecha": "2026-11-12T06:25:45.491Z",
+  "intentos_simultaneos": 10,
+  "respuestas": [
+    {
+      "intento": 1,
+      "status": 401,
+      "mensaje": "Invalid credentials. 4 attempt(s) remaining before lock.",
+      "ms": 853
+    },
+    {
+      "intento": 2,
+      "status": 401,
+      "mensaje": "Invalid credentials. 4 attempt(s) remaining before lock.",
+      "ms": 860
+    },
+    {
+      "intento": 3,
+      "status": 401,
+      "mensaje": "Invalid credentials. 4 attempt(s) remaining before lock.",
+      "ms": 1150
+    },
+    {
+      "intento": 4,
+      "status": 401,
+      "mensaje": "Invalid credentials. 4 attempt(s) remaining before lock.",
+      "ms": 1154
+    },
+    {
+      "intento": 5,
+      "status": 401,
+      "mensaje": "Invalid credentials. 4 attempt(s) remaining before lock.",
+      "ms": 504
+    },
+    {
+      "intento": 6,
+      "status": 401,
+      "mensaje": "Invalid credentials. 4 attempt(s) remaining before lock.",
+      "ms": 506
+    },
+    {
+      "intento": 7,
+      "status": 401,
+      "mensaje": "Invalid credentials. 4 attempt(s) remaining before lock.",
+      "ms": 507
+    },
+    {
+      "intento": 8,
+      "status": 401,
+      "mensaje": "Invalid credentials. 4 attempt(s) remaining before lock.",
+      "ms": 519
+    },
+    {
+      "intento": 9,
+      "status": 401,
+      "mensaje": "Invalid credentials. 4 attempt(s) remaining before lock.",
+      "ms": 855
+    },
+    {
+      "intento": 10,
+      "status": 401,
+      "mensaje": "Invalid credentials. 4 attempt(s) remaining before lock.",
+      "ms": 858
+    }
+  ],
+  "mensajes": {
+    "Invalid credentials. 4 attempt(s) remaining before lock.": 10
+  },
+  "bd_failedLoginAttempts": 1,
+  "bd_lockedUntil": null,
+  "cuenta_bloqueada": false,
+  "esperado": "con 10 fallos la cuenta debe quedar bloqueada (regla: 5 fallos)"
+}

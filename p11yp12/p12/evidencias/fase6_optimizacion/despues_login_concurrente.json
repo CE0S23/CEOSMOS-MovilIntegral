@@ -1,0 +1,77 @@
+{
+  "fecha": "2026-11-12T07:06:56.117Z",
+  "intentos_simultaneos": 10,
+  "respuestas": [
+    {
+      "intento": 1,
+      "status": 401,
+      "mensaje": "Invalid credentials. 2 attempt(s) remaining before lock.",
+      "ms": 507
+    },
+    {
+      "intento": 2,
+      "status": 401,
+      "mensaje": "Invalid credentials. 1 attempt(s) remaining before lock.",
+      "ms": 508
+    },
+    {
+      "intento": 3,
+      "status": 401,
+      "mensaje": "Account locked for 15 minutes due to 5 failed attempts.",
+      "ms": 852
+    },
+    {
+      "intento": 4,
+      "status": 401,
+      "mensaje": "Invalid credentials. 2 attempt(s) remaining before lock.",
+      "ms": 856
+    },
+    {
+      "intento": 5,
+      "status": 401,
+      "mensaje": "Account locked for 15 minutes due to 5 failed attempts.",
+      "ms": 1144
+    },
+    {
+      "intento": 6,
+      "status": 401,
+      "mensaje": "Invalid credentials. 4 attempt(s) remaining before lock.",
+      "ms": 504
+    },
+    {
+      "intento": 7,
+      "status": 401,
+      "mensaje": "Invalid credentials. 3 attempt(s) remaining before lock.",
+      "ms": 506
+    },
+    {
+      "intento": 8,
+      "status": 401,
+      "mensaje": "Invalid credentials. 4 attempt(s) remaining before lock.",
+      "ms": 853
+    },
+    {
+      "intento": 9,
+      "status": 401,
+      "mensaje": "Invalid credentials. 3 attempt(s) remaining before lock.",
+      "ms": 855
+    },
+    {
+      "intento": 10,
+      "status": 401,
+      "mensaje": "Invalid credentials. 1 attempt(s) remaining before lock.",
+      "ms": 1143
+    }
+  ],
+  "mensajes": {
+    "Invalid credentials. 2 attempt(s) remaining before lock.": 2,
+    "Invalid credentials. 1 attempt(s) remaining before lock.": 2,
+    "Account locked for 15 minutes due to 5 failed attempts.": 2,
+    "Invalid credentials. 4 attempt(s) remaining before lock.": 2,
+    "Invalid credentials. 3 attempt(s) remaining before lock.": 2
+  },
+  "bd_failedLoginAttempts": 0,
+  "bd_lockedUntil": "2026-11-12 07:21:56.056",
+  "cuenta_bloqueada": true,
+  "esperado": "con 10 fallos la cuenta debe quedar bloqueada (regla: 5 fallos)"
+}

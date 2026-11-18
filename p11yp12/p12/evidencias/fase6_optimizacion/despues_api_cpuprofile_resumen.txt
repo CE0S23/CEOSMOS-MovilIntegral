@@ -1,0 +1,60 @@
+Perfil: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/p11yp12/p12/evidencias/fase6_optimizacion/despues_api.cpuprofile
+Duración muestreada: 15.21 s, 18540 muestras
+
+== Tiempo propio por componente ==
+ 28.1 %    4270 ms  Node interno (red, streams, timers, crypto)
+ 24.7 %    3761 ms  Express y middlewares (helmet, cors, cookies)
+ 24.2 %    3681 ms  Prisma (cliente JS + motor)
+  6.7 %    1020 ms  NestJS (enrutado, guards, interceptores)
+  4.7 %     719 ms  Passport / verificación JWT
+  2.5 %     381 ms  Otras dependencias
+  2.4 %     358 ms  Motor V8 / nativo
+  2.3 %     350 ms  Recolector de basura (GC)
+  1.7 %     252 ms  ValidationPipe (class-validator/transformer)
+  1.5 %     226 ms  Inactivo (esperando E/S)
+  0.8 %     129 ms  Código de la API (dist/)
+  0.4 %      66 ms  JSON (serializar/parsear)
+
+Hilo JS ocupado:  98.5 % del tiempo
+
+== 25 funciones con más tiempo propio ==
+ 18.2 %    2768 ms  stringify  express/lib/response.js:1029
+  6.8 %    1028 ms  dp  @prisma/client/runtime/library.js:21
+  5.3 %     803 ms  parseEngineResponse  @prisma/client/runtime/library.js:112
+  3.5 %     526 ms  Ui  @prisma/client/runtime/library.js:31
+  3.3 %     502 ms  init  :0
+  2.8 %     423 ms  createPublicKey  node:internal/crypto/keys:699
+  2.4 %     358 ms  (program)  :0
+  2.3 %     350 ms  (garbage collector)  :0
+  2.1 %     325 ms  writev  :0
+  2.1 %     323 ms  custom_gc  :0
+  2.0 %     304 ms  (anónima)  @nestjs/throttler/dist/throttler.service.js:30
+  1.8 %     273 ms  authenticate  passport/lib/middleware/authenticate.js:94
+  1.5 %     226 ms  (idle)  :0
+  1.3 %     203 ms  update  :0
+  1.3 %     201 ms  post  node:inspector:118
+  1.2 %     176 ms  request  @prisma/client/runtime/library.js:112
+  1.0 %     151 ms  (anónima)  @nestjs/throttler/dist/throttler.service.js:26
+  1.0 %     145 ms  next  router/index.js:188
+  0.9 %     138 ms  mapQueryEngineResult  @prisma/client/runtime/library.js:121
+  0.9 %     134 ms  yt  @prisma/client/runtime/library.js:21
+  0.8 %     124 ms  writeHead  node:_http_server:351
+  0.7 %     100 ms  send  express/lib/response.js:125
+  0.6 %      98 ms  wt  @prisma/client/runtime/library.js:21
+  0.6 %      94 ms  nextTick  node:internal/process/task_queues:113
+  0.6 %      90 ms  json  express/lib/response.js:239
+
+== Tiempo inclusivo de funciones de la API ==
+ 18.2 %    2768 ms  stringify lib/response.js
+ 12.6 %    1923 ms  canActivate dist/auth.guard.js
+  2.0 %     304 ms  transform pipes/validation.pipe.js
+  1.7 %     255 ms  list focus-sessions/focus-sessions.controller.js
+  1.6 %     245 ms  list focus-sessions/focus-sessions.service.js
+  1.1 %     172 ms  validate pipes/validation.pipe.js
+  1.1 %     165 ms  validate cjs/index.js
+  1.1 %     165 ms  validate validation/Validator.js
+  1.1 %     164 ms  canActivate dist/throttler.guard.js
+  0.8 %     128 ms  validate auth/jwt.strategy.js
+  0.5 %      78 ms  transform cjs/TransformOperationExecutor.js
+  0.0 %       5 ms  canActivate auth/jwt-auth.guard.js
+  0.0 %       2 ms  validate number/Max.js

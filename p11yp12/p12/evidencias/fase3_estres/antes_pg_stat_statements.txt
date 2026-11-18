@@ -1,0 +1,14 @@
+ calls | prom_ms | total_ms |  rows  |                                                    consulta                                                    
+-------+---------+----------+--------+----------------------------------------------------------------------------------------------------------------
+ 37392 |   0.043 |   1611.9 |  37392 | SELECT "public"."Session"."id", "public"."Session"."userId", "public"."Session"."token", "public"."Session"."u
+ 37392 |   0.029 |   1075.8 |  37392 | SELECT "public"."User"."id", "public"."User"."email", "public"."User"."username", "public"."User"."passwordHas
+ 19073 |   0.457 |   8708.7 | 953650 | SELECT "public"."FocusSession"."id", "public"."FocusSession"."userId", "public"."FocusSession"."contentKey", "
+ 18319 |   0.025 |    464.0 |      0 | SELECT "public"."FocusSession"."id", "public"."FocusSession"."userId", "public"."FocusSession"."contentKey", "
+ 18319 |   0.232 |   4241.9 |  18319 | INSERT INTO "public"."FocusSession" ("id","userId","contentKey","mode","startedAt","endedAt","durationSeconds"
+    67 |   0.005 |      0.4 |     67 | SELECT $1
+    22 |   0.053 |      1.2 |     22 | select xact_commit, tup_fetched, tup_inserted, blks_hit, blks_read from pg_stat_database where datname=$1
+     1 | 156.330 |    156.3 |   2500 | insert into "FocusSession"(id,"userId","contentKey",mode,"startedAt","endedAt","durationSeconds","targetMinute
+     1 |  18.762 |     18.8 |      1 | select count(*) from "FocusSession" where metadata->>$1=$2
+     1 |  42.222 |     42.2 |      1 | with d as (delete from "FocusSession" where metadata->>$1 in ($2,$3) returning $4) select count(*) from d
+(10 filas)
+

@@ -1,0 +1,12 @@
+ calls | prom_ms | total_ms |  rows  |                                                         consulta                                                         
+-------+---------+----------+--------+--------------------------------------------------------------------------------------------------------------------------
+  6055 |   0.056 |    339.6 |   6055 | SELECT s."expiresAt" AS "sessionExpiresAt", u.id, u.email, u.username, u."emailVerified", u.role::text AS role, u.active
+  6055 |   0.367 |   2221.7 | 302750 | SELECT "public"."FocusSession"."id", "public"."FocusSession"."clientId", "public"."FocusSession"."contentKey", "public".
+     8 |   0.005 |      0.0 |      8 | SELECT $1
+     4 |   0.040 |      0.2 |      4 | select xact_commit, tup_fetched, tup_inserted, blks_hit, blks_read from pg_stat_database where datname=$1
+     1 |   0.440 |      0.4 |      1 | select pg_stat_statements_reset()
+     1 |   1.405 |      1.4 |      1 | select count(*) from (select "clientId" from "FocusSession" where metadata->>$1=$2 group by 1 having count(*)>$3) d
+     1 | 103.439 |    103.4 |   2500 | insert into "FocusSession"(id,"userId","contentKey",mode,"startedAt","endedAt","durationSeconds","targetMinutes",complet
+     1 |   4.597 |      4.6 |      1 | with d as (delete from "FocusSession" where metadata->>$1 in ($2,$3) returning $4) select count(*) from d
+(8 filas)
+
