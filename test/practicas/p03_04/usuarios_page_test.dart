@@ -24,6 +24,7 @@ class DaoDePrueba implements UsuarioDao {
         nombre: usuario.nombre,
         edad: usuario.edad,
         profesion: usuario.profesion,
+        correo: usuario.correo,
       ),
     );
   }
@@ -74,6 +75,12 @@ void main() {
     expect(find.text('Ingresa el nombre.'), findsOneWidget);
     expect(find.text('Ingresa la profesión.'), findsOneWidget);
     expect(find.text('Ingresa una edad entera entre 1 y 120.'), findsOneWidget);
+    expect(find.text('Ingresa el correo.'), findsOneWidget);
+    for (final correo in ['sin-arroba', 'a@b', 'a b@c.mx']) {
+      await tester.enterText(find.byType(TextFormField).at(3), correo);
+      await pulsar(tester, 'REGISTRAR');
+      expect(find.text('Ingresa un correo válido.'), findsOneWidget);
+    }
     for (final edad in ['0', '121', '2.5', 'abc']) {
       await tester.enterText(find.byType(TextFormField).at(1), edad);
       await pulsar(tester, 'REGISTRAR');
@@ -94,6 +101,7 @@ void main() {
     await tester.enterText(find.byType(TextFormField).at(0), 'Ana');
     await tester.enterText(find.byType(TextFormField).at(1), '24');
     await tester.enterText(find.byType(TextFormField).at(2), 'Ingeniera');
+    await tester.enterText(find.byType(TextFormField).at(3), 'Ana@Correo.MX');
     await pulsar(tester, 'REGISTRAR');
     expect(dao.registros, hasLength(1));
     expect(dao.consultas, 0);
@@ -110,10 +118,12 @@ void main() {
     await pulsar(tester, 'ACTUALIZAR');
     expect(dao.consultas, 2);
     expect(dao.registros.single.nombre, 'Ana María');
+    expect(dao.registros.single.correo, 'ana@correo.mx');
 
     await tester.enterText(find.byType(TextFormField).at(0), 'Luis');
     await tester.enterText(find.byType(TextFormField).at(1), '30');
     await tester.enterText(find.byType(TextFormField).at(2), 'Docente');
+    await tester.enterText(find.byType(TextFormField).at(3), 'luis@uni.mx');
     await pulsar(tester, 'REGISTRAR');
     expect(dao.consultas, 3);
     expect(dao.registros, hasLength(2));
@@ -129,5 +139,24 @@ void main() {
     await pulsar(tester, 'ELIMINAR');
     expect(dao.registros.single.nombre, 'Luis');
     expect(dao.consultas, 4);
+  });
+
+  testWidgets('P4 caso 4: el correo se muestra en la consulta y se actualiza', (
+    tester,
+  ) async {
+    final dao = DaoDePrueba()
+      ..registros.add(
+        Usuario(id: 1, nombre: 'Previo', edad: 20, profesion: 'TI'),
+      )
+      ..siguienteId = 2;
+    await mostrar(tester, dao);
+    await pulsar(tester, 'VER usuarios');
+    expect(find.text('20 años · TI'), findsOneWidget); // registro de la v1 (sin correo)
+    await tester.tap(find.byType(ListTile));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextFormField).at(3), 'previo@uni.mx');
+    await pulsar(tester, 'ACTUALIZAR');
+    expect(dao.registros.single.correo, 'previo@uni.mx');
+    expect(find.text('20 años · TI\nprevio@uni.mx'), findsOneWidget);
   });
 }

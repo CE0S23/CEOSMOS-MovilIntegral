@@ -1,6 +1,8 @@
 package com.ceosmos.ceosmos_movil_integral
 
 import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.os.Bundle
 import com.ceosmos.practicas.BarraPracticas
 import com.ceosmos.practicas.bdflutter.ReportesFirestoreChannel
@@ -31,6 +33,18 @@ class MainActivity : FlutterActivity() {
         AccesoSeguroChannel().register(messenger)
         mobileConnect = MobileConnectChannels(this).also { it.register(messenger) }
         ReportesFirestoreChannel(applicationContext).register(messenger)
+
+        // Permiso de Bluetooth denegado de forma permanente: abre los ajustes de la app.
+        MethodChannel(messenger, "ceosmos/sistema").setMethodCallHandler { call, result ->
+            if (call.method == "abrirAjustesApp") {
+                startActivity(
+                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null))
+                )
+                result.success(null)
+            } else {
+                result.notImplemented()
+            }
+        }
 
         MethodChannel(messenger, "ceosmos/practicas").setMethodCallHandler { call, result ->
             when (call.method) {

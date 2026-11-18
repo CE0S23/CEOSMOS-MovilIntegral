@@ -4,6 +4,17 @@ import 'app_database.dart';
 import 'usuario.dart';
 import 'usuario_dao.dart';
 
+/// [CEOSMOS] Práctica 4, caso 4: el correo es obligatorio y con formato válido.
+String? validarCorreoUsuario(String? valor) {
+  final correo = valor?.trim() ?? '';
+  if (correo.isEmpty) return 'Ingresa el correo.';
+  if (correo.length > 120 ||
+      !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]{2,}$').hasMatch(correo)) {
+    return 'Ingresa un correo válido.';
+  }
+  return null;
+}
+
 class UsuariosPage extends StatefulWidget {
   const UsuariosPage({super.key, required this.baseDeDatos});
 
@@ -18,6 +29,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
   final _nombre = TextEditingController();
   final _edad = TextEditingController();
   final _profesion = TextEditingController();
+  final _correo = TextEditingController(); // [CEOSMOS] Práctica 4, caso 4
   UsuarioDao? _dao;
   int? _idSeleccionado;
   List<Usuario> _usuarios = [];
@@ -50,6 +62,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
     _nombre.dispose();
     _edad.dispose();
     _profesion.dispose();
+    _correo.dispose();
     super.dispose();
   }
 
@@ -58,6 +71,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
     _nombre.clear();
     _edad.clear();
     _profesion.clear();
+    _correo.clear();
     setState(() => _idSeleccionado = null);
   }
 
@@ -94,6 +108,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
       nombre: _nombre.text.trim(),
       edad: int.parse(_edad.text.trim()),
       profesion: _profesion.text.trim(),
+      correo: _correo.text.trim().toLowerCase(),
     );
     await _ejecutar(() async {
       if (usuario.id == null) {
@@ -112,6 +127,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
     _nombre.text = usuario.nombre;
     _edad.text = usuario.edad.toString();
     _profesion.text = usuario.profesion;
+    _correo.text = usuario.correo ?? '';
     setState(() => _idSeleccionado = usuario.id);
   }
 
@@ -188,6 +204,14 @@ class _UsuariosPageState extends State<UsuariosPage> {
                     ? 'Ingresa la profesión.'
                     : null,
               ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _correo,
+                enabled: habilitado,
+                decoration: const InputDecoration(labelText: 'Correo'),
+                keyboardType: TextInputType.emailAddress,
+                validator: validarCorreoUsuario,
+              ),
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: habilitado ? _guardar : null,
@@ -226,7 +250,10 @@ class _UsuariosPageState extends State<UsuariosPage> {
             Card(
               child: ListTile(
                 title: Text(usuario.nombre),
-                subtitle: Text('${usuario.edad} años · ${usuario.profesion}'),
+                subtitle: Text(
+                  '${usuario.edad} años · ${usuario.profesion}'
+                  '${(usuario.correo ?? '').isEmpty ? '' : '\n${usuario.correo}'}',
+                ),
                 onTap: habilitado ? () => _seleccionar(usuario) : null,
                 trailing: IconButton(
                   tooltip: 'Eliminar usuario',

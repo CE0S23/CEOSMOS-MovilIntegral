@@ -69,7 +69,7 @@ class _$AppDatabase extends AppDatabase {
     Callback? callback,
   ]) async {
     final databaseOptions = sqflite.OpenDatabaseOptions(
-      version: 1,
+      version: 2,
       onConfigure: (database) async {
         await database.execute('PRAGMA foreign_keys = ON');
         await callback?.onConfigure?.call(database);
@@ -85,7 +85,7 @@ class _$AppDatabase extends AppDatabase {
       },
       onCreate: (database, version) async {
         await database.execute(
-            'CREATE TABLE IF NOT EXISTS `usuarios` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `nombre` TEXT NOT NULL, `edad` INTEGER NOT NULL, `profesion` TEXT NOT NULL)');
+            'CREATE TABLE IF NOT EXISTS `usuarios` (`id` INTEGER PRIMARY KEY AUTOINCREMENT, `nombre` TEXT NOT NULL, `edad` INTEGER NOT NULL, `profesion` TEXT NOT NULL, `correo` TEXT)');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -111,7 +111,8 @@ class _$UsuarioDao extends UsuarioDao {
                   'id': item.id,
                   'nombre': item.nombre,
                   'edad': item.edad,
-                  'profesion': item.profesion
+                  'profesion': item.profesion,
+                  'correo': item.correo
                 }),
         _usuarioUpdateAdapter = UpdateAdapter(
             database,
@@ -121,7 +122,8 @@ class _$UsuarioDao extends UsuarioDao {
                   'id': item.id,
                   'nombre': item.nombre,
                   'edad': item.edad,
-                  'profesion': item.profesion
+                  'profesion': item.profesion,
+                  'correo': item.correo
                 }),
         _usuarioDeletionAdapter = DeletionAdapter(
             database,
@@ -131,7 +133,8 @@ class _$UsuarioDao extends UsuarioDao {
                   'id': item.id,
                   'nombre': item.nombre,
                   'edad': item.edad,
-                  'profesion': item.profesion
+                  'profesion': item.profesion,
+                  'correo': item.correo
                 });
 
   final sqflite.DatabaseExecutor database;
@@ -153,7 +156,8 @@ class _$UsuarioDao extends UsuarioDao {
             id: row['id'] as int?,
             nombre: row['nombre'] as String,
             edad: row['edad'] as int,
-            profesion: row['profesion'] as String));
+            profesion: row['profesion'] as String,
+            correo: row['correo'] as String?));
   }
 
   @override

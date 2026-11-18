@@ -4,10 +4,15 @@ import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 import '../data/api_client.dart';
+import '../data/catalog.dart';
 import '../data/auth_repository.dart';
 import '../data/ceosmos_repository.dart';
 import '../data/token_store.dart';
 import '../domain/models.dart';
+import 'ble/ble_protocolo.dart';
+import 'ble/ble_transporte.dart';
+import 'ble/ble_transporte_fbp.dart';
+import 'ble/ecosistema_ble.dart';
 import 'config.dart';
 import 'reintentos.dart';
 import 'wearable.dart';
@@ -32,12 +37,17 @@ class AppState extends ChangeNotifier {
     required this.auth,
     required this.data,
     WearableClient? wearable,
+    EcosistemaBle? ble,
     DateTime Function()? now,
     bool startTicker = true,
     this.reintentos = const PoliticaReintento(),
   }) : wearable = wearable ?? WearableClient(),
+       ble = ble ?? EcosistemaBle(transporte: const BleTransporteInactivo()),
        _now = now ?? DateTime.now {
     auth.api.onUnauthorized = _sesionVencida;
+    this.ble
+      ..estadoSesion = _estadoSesionBle
+      ..alComando = _comandoBle;
     if (startTicker) {
       _ticker = Timer.periodic(const Duration(seconds: 1), (_) => tick());
     }
@@ -49,12 +59,16 @@ class AppState extends ChangeNotifier {
     return AppState(
       auth: AuthRepository(api, SecureTokenStore()),
       data: CeosmosRepository(api),
+      ble: EcosistemaBle(transporte: BleTransporteFbp(), pines: AlmacenPinSeguro()),
     );
   }
 
   final AuthRepository auth;
   final CeosmosRepository data;
   final WearableClient wearable;
+
+  /// Reloj y TV compañeros por Bluetooth LE (CEOSMOS es el central).
+  final EcosistemaBle ble;
   final PoliticaReintento reintentos;
   final DateTime Function() _now;
   Timer? _ticker;
@@ -234,6 +248,9 @@ class AppState extends ChangeNotifier {
   void _cerrarLocal() {
     if (hasSession) _descartarSesionActiva();
     unawaited(wearable.desconectar());
+    for (final rol in RolBle.values) {
+      if (ble[rol].estado != EstadoEnlace.desconectado) unawaited(ble.desconectar(rol));
+    }
     authentication = null;
     status = AuthStatus.signedOut;
     workspace = UserWorkspace();
@@ -317,7 +334,10 @@ class AppState extends ChangeNotifier {
     _startedAt = _now();
     _runningSince = _startedAt;
     wearable.marcarInicio();
+    ble.marcarInicio();
     _changed();
+    ble.publicarSesion();
+    unawaited(ble.notificarReloj('Sesión iniciada: ${item.title} · $minutes min'));
   }
 
   void togglePause() {
@@ -329,6 +349,7 @@ class AppState extends ChangeNotifier {
       _runningSince = _now();
     }
     _changed();
+    ble.publicarSesion();
   }
 
   void _descartarSesionActiva() {
@@ -346,7 +367,7 @@ class AppState extends ChangeNotifier {
     final metadata = <String, dynamic>{
       'source': 'ceosmos-movil',
       'kind': media.kind.name,
-      ...wearable.resumenSesion(),
+      ..._resumenWearable(),
     };
     final local = FocusSession(
       id: 'pendiente-${_now().microsecondsSinceEpoch}',
@@ -365,6 +386,10 @@ class AppState extends ChangeNotifier {
     _descartarSesionActiva();
     workspace.history.insert(0, local);
     _changed();
+    ble.publicarSesion();
+    final mm = (local.durationSeconds ~/ 60).toString().padLeft(2, '0');
+    final ss = (local.durationSeconds % 60).toString().padLeft(2, '0');
+    unawaited(ble.notificarReloj('Sesión terminada · $mm:$ss${completed ? ' (completa)' : ''}'));
     try {
       final saved = await data.saveFocusSession(local);
       _confirmada(local, saved);
@@ -456,6 +481,10 @@ class AppState extends ChangeNotifier {
 
   Future<void> unlinkDevice(LinkedDevice device) async {
     if (wearable.deviceId == device.id) await wearable.desconectar();
+    final rol = RolBle.deTipoApi(device.type);
+    if (device.transport == 'BLE' && rol != null && bleVinculado(rol)?.id == device.id) {
+      await ble.olvidar(rol);
+    }
     await data.unlinkDevice(device.id);
     workspace.devices.removeWhere((d) => d.id == device.id);
     _changed();
@@ -477,6 +506,106 @@ class AppState extends ChangeNotifier {
         // La conexión con el dispositivo sigue siendo válida.
       }
     }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Reloj y TV por Bluetooth LE
+  // ---------------------------------------------------------------------------
+
+  /// El wearable TCP tiene prioridad; si no hay lecturas TCP se usa el reloj BLE.
+  Map<String, Object> _resumenWearable() {
+    final tcp = wearable.resumenSesion();
+    if (tcp.isNotEmpty) return tcp;
+    return ble.resumenSesion(deviceId: bleVinculado(RolBle.reloj)?.id);
+  }
+
+  EstadoSesionBle _estadoSesionBle() {
+    final m = currentMedia;
+    if (m == null) return EstadoSesionBle(estado: 'idle', usuario: user?.username ?? '');
+    return EstadoSesionBle(
+      estado: running ? 'running' : 'paused',
+      titulo: m.title,
+      modo: m.mode.name,
+      restante: remaining.inSeconds,
+      total: targetMinutes * 60,
+      usuario: user?.username ?? '',
+    );
+  }
+
+  /// Comandos del botón del reloj y del control de la TV.
+  void _comandoBle(RolBle rol, String comando) {
+    if (user == null) return;
+    switch (comando) {
+      case 'toggle' when hasSession:
+        togglePause();
+      case 'stop' when hasSession:
+        unawaited(finishSession());
+      case 'next' || 'prev':
+        final actual = catalog.indexWhere((i) => i.id == currentMedia?.id);
+        final paso = comando == 'next' ? 1 : -1;
+        final siguiente = catalog[(actual + paso + catalog.length) % catalog.length];
+        startSession(siguiente, hasSession ? targetMinutes : _minutosPreferidos);
+      default:
+        return; // pausar o terminar sin sesión activa: no hay nada que hacer
+    }
+    notice = '${rol.nombre}: ${switch (comando) {
+      'toggle' => running ? 'sesión reanudada' : 'sesión en pausa',
+      'stop' => 'sesión terminada',
+      'next' => 'siguiente ambiente',
+      _ => 'ambiente anterior',
+    }}';
+    _changed();
+  }
+
+  int get _minutosPreferidos =>
+      sessionMinutes.contains(workspace.preferredMinutes) ? workspace.preferredMinutes : 25;
+
+  /// Dispositivo BLE de ese rol guardado en la cuenta, si existe.
+  LinkedDevice? bleVinculado(RolBle rol) {
+    final id = ble[rol].idCompanero ?? _idGuardado(rol);
+    if (id == null) return null;
+    final dir = direccionApi(id);
+    return workspace.devices
+        .where((d) => d.transport == 'BLE' && d.type == rol.tipoApi && d.address == dir)
+        .firstOrNull;
+  }
+
+  /// Conecta el rol por BLE y, la primera vez, lo guarda en la cuenta (`/devices`).
+  Future<ResultadoConexion> connectBle(RolBle rol, {String? pin}) async {
+    final r = await ble.conectar(rol, pin: pin, idCompanero: _idGuardado(rol));
+    if (r != ResultadoConexion.conectado) return r;
+    final id = ble[rol].idCompanero;
+    if (id == null) return r;
+    try {
+      final previo = bleVinculado(rol);
+      final d = previo == null
+          ? await data.linkDevice(
+              name: 'CEOSMOS ${rol.nombre}',
+              address: direccionApi(id),
+              type: rol.tipoApi,
+              transport: 'BLE',
+            )
+          : await data.markDeviceSeen(previo.id);
+      workspace.devices
+        ..removeWhere((x) => x.id == d.id)
+        ..add(d);
+      _changed();
+    } on ApiException {
+      // El enlace BLE sigue siendo válido aunque no se haya guardado en la cuenta.
+    }
+    return r;
+  }
+
+  /// Id del compañero ya vinculado a la cuenta (para reconectar al mismo equipo).
+  String? _idGuardado(RolBle rol) {
+    if (ble[rol].idCompanero != null) return ble[rol].idCompanero;
+    for (final d in workspace.devices) {
+      if (d.transport == 'BLE' && d.type == rol.tipoApi) {
+        final id = idDesdeDireccion(d.address);
+        if (id != null) return id;
+      }
+    }
+    return null;
   }
 
   // ---------------------------------------------------------------------------
@@ -507,6 +636,7 @@ class AppState extends ChangeNotifier {
   }
 
   void tick() {
+    ble.publicarSesion();
     if (hasSession && remaining == Duration.zero) {
       unawaited(finishSession(completed: true));
     } else if (running && !_disposed) {
@@ -520,6 +650,7 @@ class AppState extends ChangeNotifier {
     _ticker?.cancel();
     _reintento?.cancel();
     wearable.dispose();
+    ble.dispose();
     _reloj.dispose();
     super.dispose();
   }

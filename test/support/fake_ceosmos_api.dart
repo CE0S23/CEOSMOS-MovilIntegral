@@ -4,6 +4,7 @@
 import 'dart:convert';
 
 import 'package:ceosmos_movil_integral/core/app_state.dart';
+import 'package:ceosmos_movil_integral/core/ble/ecosistema_ble.dart';
 import 'package:ceosmos_movil_integral/core/reintentos.dart';
 import 'package:ceosmos_movil_integral/core/wearable.dart';
 import 'package:ceosmos_movil_integral/data/api_client.dart';
@@ -153,7 +154,8 @@ class FakeCeosmosApi {
       case ('GET', '/devices'):
         return _json(200, u.devices);
       case ('POST', '/devices'):
-        if (u.devices.any((d) => d['address'] == body['address'])) {
+        // Igual que la API: único por (usuario, tipo, dirección).
+        if (u.devices.any((d) => d['address'] == body['address'] && (d['type'] ?? 'WEARABLE') == (body['type'] ?? 'WEARABLE'))) {
           return _error(409, 'Ese dispositivo ya está vinculado.');
         }
         final d = {...body, 'id': '00000000-0000-4000-8000-${(++_seq).toString().padLeft(12, '0')}', 'lastSeenAt': null};
@@ -198,6 +200,7 @@ class FakeCeosmosApi {
   AppState appState({
     DateTime Function()? now,
     WearableClient? wearable,
+    EcosistemaBle? ble,
     MemoryTokenStore? tokens,
     PoliticaReintento reintentos = const PoliticaReintento(),
   }) {
@@ -206,6 +209,7 @@ class FakeCeosmosApi {
       auth: AuthRepository(api, tokens ?? MemoryTokenStore()),
       data: CeosmosRepository(api),
       wearable: wearable,
+      ble: ble,
       now: now,
       startTicker: false,
       reintentos: reintentos,

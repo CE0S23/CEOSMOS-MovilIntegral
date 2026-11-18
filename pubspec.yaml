@@ -38,7 +38,9 @@ dependencies:
   # 11.x exige win32 6 y choca con file_picker 10 (P7, win32 5); 10.3.x conserva la API usada.
   flutter_secure_storage: ^10.3.4
   uuid: ^4.6.0
+  flutter_blue_plus: ^2.3.15
 dev_dependencies:
+  collection: any
   flutter_test:
     sdk: flutter
   integration_test:

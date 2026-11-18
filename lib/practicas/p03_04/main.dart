@@ -40,7 +40,9 @@ class _InicioPageState extends State<InicioPage> {
   @override
   void initState() {
     super.initState();
-    _baseDeDatos = $FloorAppDatabase.databaseBuilder('p03_04_usuarios.db').build(); // [CEOSMOS] archivo SQLite propio de la práctica
+    _baseDeDatos = $FloorAppDatabase.databaseBuilder('p03_04_usuarios.db')
+        .addMigrations([migracion1a2]) // [CEOSMOS] Práctica 4, caso 4 (campo correo)
+        .build(); // [CEOSMOS] archivo SQLite propio de la práctica
   }
 
   @override

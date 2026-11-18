@@ -4,6 +4,7 @@ import '../core/app_state.dart';
 import '../core/wearable.dart';
 import '../data/api_client.dart';
 import '../domain/models.dart';
+import 'ble_section.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
@@ -77,7 +78,7 @@ class DevicesScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final devices = state.workspace.devices;
+    final devices = state.workspace.devices.where((d) => d.transport == 'TCP').toList();
     return ListenableBuilder(
       listenable: state.wearable,
       builder: (context, _) {
@@ -89,6 +90,10 @@ class DevicesScreen extends StatelessWidget {
               'Tu ecosistema',
               'Vincula tu wearable para ver tus métricas mientras te concentras.',
             ),
+            BleSection(state: state),
+            const SizedBox(height: 8),
+            Text('Wearable por Wi-Fi (TCP/IP)', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 10),
             const Panel(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -97,8 +102,8 @@ class DevicesScreen extends StatelessWidget {
                   SizedBox(width: 14),
                   Expanded(
                     child: Text(
-                      'La conexión con el wearable usa TCP/IP en tu red local (el dispositivo envía una línea JSON por lectura). '
-                      'BLE queda como respaldo documentado. Las vinculaciones se guardan en tu cuenta.',
+                      'Alternativa por red local: el wearable envía una línea JSON por lectura a IP:puerto. '
+                      'Las vinculaciones (TCP y BLE) se guardan en tu cuenta.',
                       style: TextStyle(color: Cosmos.muted),
                     ),
                   ),

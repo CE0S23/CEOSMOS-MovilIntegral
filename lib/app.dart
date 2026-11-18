@@ -71,7 +71,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   int _tab = 0, _exploreVersion = 0;
   FocusMode? _mode;
   bool _favorites = false;
-  bool _previousSession = false;
+  bool _previousSession = false, _previousRunning = false;
+  String? _previousMedia;
   static const _labels = [
     'Inicio',
     'Explorar',
@@ -97,8 +98,17 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   }
 
   void _sessionChanged() {
-    if (_previousSession && !widget.state.hasSession) unawaited(_sound.stop());
-    _previousSession = widget.state.hasSession;
+    final s = widget.state;
+    // También cubre la pausa, el fin o el cambio de ambiente pedidos desde el
+    // reloj o la TV por BLE (no pasan por los botones de esta pantalla).
+    if ((_previousSession && !s.hasSession) ||
+        (_previousRunning && s.hasSession && !s.running) ||
+        (_previousMedia != null && s.currentMedia?.id != _previousMedia)) {
+      unawaited(_sound.stop());
+    }
+    _previousSession = s.hasSession;
+    _previousRunning = s.running;
+    _previousMedia = s.currentMedia?.id;
     final aviso = widget.state.notice;
     // Si la sesión terminó, el aviso lo muestra la pantalla de acceso.
     if (aviso != null && mounted && widget.state.user != null) {
