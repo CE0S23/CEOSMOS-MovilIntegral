@@ -54,5 +54,14 @@ flutter test integration_test/critical_flow_test.dart -d emulator-5554 `
   --dart-define=E2E_EMAIL=<correo> --dart-define=E2E_PASSWORD=<contraseña>
 ```
 
-Documentos: `PLAN_INTEGRACION.md`, `ANALISIS_FALTANTES.md`, `REPORTE_FINAL.md`,
-`docs/ARQUITECTURA.md` y las capturas en `capturas/`.
+## Reloj y TV por Bluetooth LE
+
+- Apps compañeras en `companion/` (Kotlin + Compose): `cd companion && ./gradlew assembleRelojDebug assembleTvDebug`
+  e instalar `app/build/outputs/apk/{reloj,tv}/debug/*.apk` en la tablet. Cada una muestra su PIN.
+- En CEOSMOS: pestaña **Equipos › Reloj y TV por Bluetooth › Conectar** y escribir el PIN (solo la primera vez).
+- UUID y protocolo: `lib/core/ble/ble_protocolo.dart` y `companion/app/src/main/java/com/ceosmos/companion/ble/Protocolo.kt`.
+
+## Memoria y evidencias
+
+Memoria del proyecto (Obsidian): `memoria/00 - Índice CEOSMOS.md`. Evidencias de la revisión
+del 18/11/2026 en `evidencias/`; capturas anteriores en `capturas/`.
