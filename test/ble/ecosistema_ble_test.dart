@@ -248,4 +248,29 @@ void main() {
     expect(ble[RolBle.reloj].estado, EstadoEnlace.desconectado);
     expect(radio.conexiones, 1);
   });
+
+  test('el periférico pierde la autorización sin caer el enlace → se reautentica solo', () async {
+    var n = 0;
+    ble.estadoSesion = () => EstadoSesionBle(estado: 'running', restante: 100 - n++, total: 300);
+    await ble.conectar(RolBle.tv, pin: '123456');
+    tablet.autenticados.clear(); // la app TV se reinició; el enlace sigue arriba
+    ble.publicarSesion();
+    await esperar(100);
+    expect(ble[RolBle.tv].estado, EstadoEnlace.conectado);
+    expect(tablet.autenticados, contains(RolBle.tv));
+    ble.publicarSesion();
+    await esperar();
+    expect(tablet.recibidos[RolBle.tv]!.last['t'], 'session');
+  });
+
+  test('Bluetooth vuelve: Reloj y TV reconectan aunque escaneen a la vez (escaneo en serie)', () async {
+    await ble.conectar(RolBle.reloj, pin: '123456');
+    await ble.conectar(RolBle.tv, pin: '123456');
+    radio.cambiarAdaptador(AdaptadorBle.apagado);
+    await esperar();
+    radio.cambiarAdaptador(AdaptadorBle.encendido);
+    await esperar(400);
+    expect(ble[RolBle.reloj].estado, EstadoEnlace.conectado);
+    expect(ble[RolBle.tv].estado, EstadoEnlace.conectado);
+  });
 }

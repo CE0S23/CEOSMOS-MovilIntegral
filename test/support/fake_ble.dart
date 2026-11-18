@@ -49,6 +49,7 @@ class TransporteFalso implements BleTransporte {
   bool permisoDenegado = false;
   bool falloAlConectar = false, falloAlEncender = false;
   int escaneos = 0, conexiones = 0;
+  int _generacion = 0;
 
   void cambiarAdaptador(AdaptadorBle a) {
     estado = a;
@@ -74,7 +75,12 @@ class TransporteFalso implements BleTransporte {
   Stream<HallazgoBle> escanear(String servicio, Duration duracion) async* {
     if (permisoDenegado) throw const PermisoBleDenegado();
     escaneos++;
+    // Como Android/flutter_blue_plus: un solo escaneo a la vez por app; empezar
+    // otro detiene el anterior (que termina sin resultados).
+    final g = ++_generacion;
+    await Future<void>.delayed(const Duration(milliseconds: 3));
     for (final p in perifericos) {
+      if (g != _generacion) return;
       final rol = RolBle.values.firstWhereOrNull((r) => r.servicio == servicio);
       if (rol != null && p.anunciando && p.roles.contains(rol)) {
         yield HallazgoBle(remoteId: p.remoteId, rssi: -50, datosFabricante: {fabricanteCeosmos: p.manufacturer(rol)});
@@ -83,7 +89,7 @@ class TransporteFalso implements BleTransporte {
   }
 
   @override
-  Future<void> detenerEscaneo() async {}
+  Future<void> detenerEscaneo() async => _generacion++; // detiene cualquier escaneo en curso
 
   @override
   Future<ConexionBle> conectar(String remoteId) async {

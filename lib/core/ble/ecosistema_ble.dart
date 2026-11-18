@@ -98,6 +98,14 @@ class EcosistemaBle extends ChangeNotifier {
   final _ultimoEnviado = <RolBle, String>{};
   final _ventana = <RolBle, List<int>>{};
   bool _disposed = false;
+  Future<void> _candado = Future.value();
+
+  /// Ejecuta [f] cuando termine la operación de radio anterior (sin bloquear la cola si falla).
+  Future<T> _enSerie<T>(Future<T> Function() f) {
+    final r = _candado.then((_) => f());
+    _candado = r.then<void>((_) {}, onError: (Object _) {});
+    return r;
+  }
 
   /// Datos del reloj.
   WearableLectura? ultimaLectura;
@@ -185,35 +193,41 @@ class EcosistemaBle extends ChangeNotifier {
     try {
       // 1. Siempre se escanea el servicio del rol: el anuncio trae el id del compañero
       //    (Reloj y TV pueden ser apps distintas en la misma tablet, con PIN e id propios).
-      e.estado = EstadoEnlace.buscando;
-      _cambio();
-      HallazgoBle? elegido;
-      await for (final h in transporte.escanear(rol.servicio, duracionEscaneo)) {
-        final hid = leerIdCompanero(h.datosFabricante, rol);
-        if (id == null || hid == id) {
-          elegido = h;
-          break;
+      // Android permite un solo escaneo por app y detenerlo corta el de otro rol:
+      // escaneo y conexión van en serie (Reloj y TV reconectan a la vez al volver el BT).
+      final hallado = await _enSerie(() async {
+        e.estado = EstadoEnlace.buscando;
+        _cambio();
+        HallazgoBle? elegido;
+        await for (final h in transporte.escanear(rol.servicio, duracionEscaneo)) {
+          final hid = leerIdCompanero(h.datosFabricante, rol);
+          if (id == null || hid == id) {
+            elegido = h;
+            break;
+          }
         }
-      }
-      await transporte.detenerEscaneo();
-      if (elegido == null) {
+        await transporte.detenerEscaneo();
+        if (elegido == null) return null;
+        final idHallado = leerIdCompanero(elegido.datosFabricante, rol) ?? id;
+        var en = _activos[elegido.remoteId] ??
+            _activos.values.where((a) => a.servicios.contains(rol.servicio)).firstOrNull;
+        if (en == null) {
+          e.estado = EstadoEnlace.conectando;
+          _cambio();
+          final c = await transporte.conectar(elegido.remoteId);
+          final servicios = await c.servicios();
+          en = _Enlace(c, servicios);
+          _activos[c.remoteId] = en;
+          unawaited(c.perdida.then((_) => _alPerder(c.remoteId)));
+        }
+        return (en, idHallado);
+      });
+      if (hallado == null) {
         e.error = 'No se encontró el ${rol.nombre} CEOSMOS. Ábrelo en la tablet y revisa que anuncie.';
         return ResultadoConexion.noEncontrado;
       }
-      id = leerIdCompanero(elegido.datosFabricante, rol) ?? id;
-      // 2. Reutiliza el enlace físico si ya hay uno con ese equipo (Android rota la MAC de
-      //    cada anuncio, así que también vale un enlace abierto que exponga el servicio).
-      enlace = _activos[elegido.remoteId] ??
-          _activos.values.where((a) => a.servicios.contains(rol.servicio)).firstOrNull;
-      if (enlace == null) {
-        e.estado = EstadoEnlace.conectando;
-        _cambio();
-        final c = await transporte.conectar(elegido.remoteId);
-        final servicios = await c.servicios();
-        enlace = _Enlace(c, servicios);
-        _activos[c.remoteId] = enlace;
-        unawaited(c.perdida.then((_) => _alPerder(c.remoteId)));
-      }
+      enlace = hallado.$1;
+      id = hallado.$2;
       if (!enlace.servicios.contains(rol.servicio)) {
         e.error = 'El dispositivo no expone el servicio de ${rol.nombre}.';
         await _soltar(enlace, rol);
@@ -305,6 +319,16 @@ class EcosistemaBle extends ChangeNotifier {
     if (id != null) await pines.borrar(id);
     this[rol].idCompanero = null;
     _cambio();
+  }
+
+  /// El periférico reinició su servidor GATT sin que se cayera el enlace físico
+  /// (p. ej. la app TV se cerró y se abrió mientras el Reloj mantenía la conexión):
+  /// rechaza las escrituras por falta de autorización. Se vuelve a autenticar ese rol.
+  void _autorizacionPerdida(RolBle rol, _Enlace enlace) {
+    final e = this[rol];
+    if (_disposed || _manual.contains(rol) || e.estado != EstadoEnlace.conectado) return;
+    e.error = 'El ${rol.nombre} se reinició. Autenticando de nuevo…';
+    unawaited(_soltar(enlace, rol).then((_) => _reconectar(rol)));
   }
 
   void _alPerder(String remoteId) {
@@ -405,6 +429,9 @@ class EcosistemaBle extends ChangeNotifier {
       try {
         await enlace.conexion.escribir(rol.servicio, rol.aDispositivo, bytes);
         ok.complete(true);
+      } on FalloBle catch (f) {
+        ok.complete(false);
+        if (f.autorizacion) _autorizacionPerdida(rol, enlace);
       } catch (_) {
         ok.complete(false);
       }
