@@ -55,3 +55,16 @@ for n in re.findall(r"<node [^>]*>", x):
     if c.strip(): sys.stdout.buffer.write((html.unescape(c)[:70]+" "+re.search(r"bounds=\"([^\"]*)\"",n).group(1)+"\n").encode("utf-8"))
 '; rm -f .ui_tmp.xml
 }
+# Toca el nodo cuyo texto es EXACTAMENTE el indicado.
+ui_tapx() {
+  ui_dump > .ui_tmp.xml; local p; p=$(python -c '
+import re,html,sys
+t=sys.argv[1]; x=open(".ui_tmp.xml","rb").read().decode("utf-8","replace")
+for n in re.findall(r"<node [^>]*>", x):
+    v=[html.unescape(a) for a in re.findall(r"(?:text|content-desc)=\"([^\"]*)\"", n)]
+    if t in v:
+        b=re.search(r"bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"", n); x1,y1,x2,y2=map(int,b.groups()); print((x1+x2)//2,(y1+y2)//2); break
+' "$1"); rm -f .ui_tmp.xml
+  [ -z "$p" ] && { echo "NO ENCONTRADO: $1" >&2; return 1; }
+  adb -s "$SERIAL" shell input tap $p; sleep "${2:-1}"
+}
