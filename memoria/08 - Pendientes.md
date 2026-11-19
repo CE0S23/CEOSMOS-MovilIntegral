@@ -1,7 +1,7 @@
 ---
 tags: [ceosmos, pendientes]
 estado: abierto
-actualizado: 2026-11-18
+actualizado: 2026-11-19
 ---
 
 # Pendientes
@@ -21,8 +21,13 @@ actualizado: 2026-11-18
 ## 2. Requieren al usuario (permiso o acceso)
 - [ ] Cuenta ADMIN en Neon (escritura en producción). → [[02 - Requerimientos]]
 - [x] Push de `main` (este repo) a https://github.com/CE0S23/CEOSMOS-MovilIntegral (18/11, P13-14).
-- [ ] Fusionar el PR #1 (`practica-13-14` → `main`). → [[Práctica 13-14 - Automatización de pruebas y CI]]
-- [ ] Rotar el `JWT_SECRET` y la contraseña de `neondb_owner` que aparecían en la nota histórica de la web (ya redactados del historial) si siguen vigentes. → [[Histórico - CEOSMOS Web (auditoría)]]
+- [x] PR #1 fusionado a `main`; CI de main en verde (18/11). → [[Práctica 13-14 - Automatización de pruebas y CI]]
+- [x] Entregables P13-14 cerrados (19/11): logs de los runs de main, #7 y #8, captura de Actions con main en verde, Word completado y push a `main`. → [[Práctica 13-14 - Automatización de pruebas y CI]]
+- [x] Borrado el `.bundle` de respaldo con secretos y purgado el `.git` local (18/11).
+- [ ] Rotar el `JWT_SECRET` y la contraseña de `neondb_owner` (**siguen vigentes**; los hace el usuario en Neon/Vercel, pasos en la nota de la práctica) y verificar API, 401 del token viejo y login en el S24. → [[Práctica 13-14 - Automatización de pruebas y CI]]
+- [ ] Claves Firebase: practica7-8 y reportes-movil restringidas [x]; falta restringir la clave de `mesaayuda-p7` (otra cuenta).
+- [ ] Cerrar las 4 alertas de secret scanning de GitHub.
+- [ ] P7: terminarla y probarla con la clave restringida. → [[Práctica 13-14 - Automatización de pruebas y CI]]
 - [ ] Push de `movil-integral` (WEBANGULAR, repo CEOSMOSV2). → [[10 - Bitácora]]
 - [ ] Frontend Angular (`ceosmos-t8ee.vercel.app`) apuntando a `https://ceosmos-api.vercel.app/api`. → [[03 - Arquitectura y stack]]
 - [ ] Passkeys WebAuthn en móvil (`assetlinks.json` en el dominio). → [[02 - Requerimientos]]

@@ -1,7 +1,7 @@
 ---
 tags: [ceosmos, bitacora]
 estado: vigente
-actualizado: 2026-11-18
+actualizado: 2026-11-19
 ---
 
 # Bitácora
@@ -22,6 +22,13 @@ actualizado: 2026-11-18
   - 15:10 — Cuentas P7 creadas en Firebase Auth; falta su documento de rol (pausado por el usuario).
 
 - **18/11/2026 (tarde)** — Prácticas 13-14: 27 pruebas Flutter + 5 Kotlin nuevas, regresión DEF-BLE-01 demostrada, 3 errores de lint corregidos, CI en GitHub Actions. Historial redactado (secreto antiguo; respaldo `C:/CESAR10cuatri/CEOSMOS.MovilIntegral_respaldo_pre_redaccion_2026-11-18.bundle`), repo público `CE0S23/CEOSMOS-MovilIntegral`, PR #1, runs #1–#4 en verde. → [[Práctica 13-14 - Automatización de pruebas y CI]]
+- **18/11/2026 (~19:55)** — Cierre P13-14 en pausa: PR #1 fusionado (CI de main verde), inventario de secretos, `.bundle` borrado, claves de practica7-8 y reportes-movil restringidas y probadas (reportes OK). Falta: rotación (usuario), verificación en el S24, P7, mesaayuda-p7, alertas, logs, Word. → [[Práctica 13-14 - Automatización de pruebas y CI]]
+- **19/11/2026** — Entregables P13-14 terminados:
+  - [x] Logs de los runs de main (44438169735), #7 y #8 en `evidencias/p13_14/`.
+  - [x] Captura de Actions con main en verde.
+  - [x] Word completado (URLs de los 9 runs, tiempo total, matriz AUT-01–08), 2 páginas.
+  - [x] Commit y push a `main` con evidencias, Word, memoria y captura `firebase_01` (`firebase_02` vacía, fuera de git).
+  - [ ] Siguen pendientes: rotación de secretos, clave de `mesaayuda-p7`, alertas de GitHub y P7.
 
 ## Estado de las tareas pedidas (18/11)
 - [x] Tarea 1 · Actividades 4–12 validadas (P7 parcial: ver [[08 - Pendientes]]).
