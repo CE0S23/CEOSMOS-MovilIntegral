@@ -16,7 +16,9 @@ en el código, en las pruebas automatizadas o en los dispositivos (Samsung S24 y
 - [x] Requerimientos de los 3 parciales (salvo passkeys) → [[02 - Requerimientos]]
 - [x] Reloj y TV por BLE, probados en S24 + Tab S9 → [[06 - BLE Wearable y TV]]
 - [x] Prácticas 3–6, 8–12, Examen 1, BD Firestore y Evaluación 2 → sección Prácticas
-- [x] Black/White/Red Box: 188 + 9 pruebas, Red Box 13/13 → [[07 - Pruebas (Black, White, Red Box)]]
+- [x] Black/White/Red Box: 215 + 14 pruebas, Red Box 13/13 → [[07 - Pruebas (Black, White, Red Box)]]
+- [x] P13-14: pruebas automatizadas + CI en GitHub Actions (verde en push y PR) → [[Práctica 13-14 - Automatización de pruebas y CI]]
+- [x] Repositorio público: https://github.com/CE0S23/CEOSMOS-MovilIntegral (PR #1 abierto)
 - [x] Reporte de avances (Word) actualizado; memoria reestructurada con respaldo
 
 **Falta** (detalle en [[08 - Pendientes]])
@@ -38,7 +40,7 @@ en el código, en las pruebas automatizadas o en los dispositivos (Samsung S24 y
 ## Prácticas (05 - Prácticas)
 - [[Práctica 03 - Consumo de servicio web]] · [[Práctica 04 - Almacenamiento estructurado]] · [[Práctica 05 - Código seguro (AccesoSeguro)]] · [[Práctica 06 - Interacción entre dispositivos (MobileConnect)]]
 - [[Examen 1 - Incidencias de soporte]] · [[Práctica BD - Reportes Firestore]] · [[Práctica 07 - Roles y mensajería (Sistema de tickets)]] · [[Práctica 08 - Pruebas de caja negra]]
-- [[Práctica 09 - Base de datos compartida entre dispositivos]] · [[Práctica 10 - Seguridad y control de acceso]] · [[Práctica 11 - Pruebas White Box]] · [[Práctica 12 - Optimización, estrés y resiliencia]] · [[Evaluación 2 - MediConnect]]
+- [[Práctica 09 - Base de datos compartida entre dispositivos]] · [[Práctica 10 - Seguridad y control de acceso]] · [[Práctica 11 - Pruebas White Box]] · [[Práctica 12 - Optimización, estrés y resiliencia]] · [[Práctica 13-14 - Automatización de pruebas y CI]] · [[Evaluación 2 - MediConnect]]
 
 ## Histórico (11 - Histórico)
 Auditorías anteriores a la integración, conservadas tal cual (ya no describen el código actual):
@@ -48,7 +50,7 @@ Auditorías anteriores a la integración, conservadas tal cual (ya no describen 
 
 ## Documentos de entrega (fuera de la memoria)
 - `README.md` del repositorio (cómo ejecutar).
-- `docs/PRACTICA_8_BLACK_BOX_TESTING.md`, `p11yp12/p11/REPORTE_P11_WHITEBOX.md`, `p11yp12/p12/REPORTE_P12_OPTIMIZACION.md`.
+- `docs/PRACTICA_8_BLACK_BOX_TESTING.md`, `p11yp12/p11/REPORTE_P11_WHITEBOX.md`, `p11yp12/p12/REPORTE_P12_OPTIMIZACION.md`, `evidencias/p13_14/REPORTE_P13_14_AUTOMATIZACION.md` (+ Word en la misma carpeta).
 - `lib/practicas/README.md` (adaptaciones `[CEOSMOS]` de cada práctica).
 - `Reporte de avances - CEOSMOS revicion.docx`.
 - Evidencias de esta revisión: carpeta `evidencias/`.

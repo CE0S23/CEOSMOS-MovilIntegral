@@ -20,7 +20,10 @@ actualizado: 2026-11-18
 
 ## 2. Requieren al usuario (permiso o acceso)
 - [ ] Cuenta ADMIN en Neon (escritura en producción). → [[02 - Requerimientos]]
-- [ ] Push de `main` (este repo) y de `movil-integral` (WEBANGULAR). → [[10 - Bitácora]]
+- [x] Push de `main` (este repo) a https://github.com/CE0S23/CEOSMOS-MovilIntegral (18/11, P13-14).
+- [ ] Fusionar el PR #1 (`practica-13-14` → `main`). → [[Práctica 13-14 - Automatización de pruebas y CI]]
+- [ ] Rotar el `JWT_SECRET` y la contraseña de `neondb_owner` que aparecían en la nota histórica de la web (ya redactados del historial) si siguen vigentes. → [[Histórico - CEOSMOS Web (auditoría)]]
+- [ ] Push de `movil-integral` (WEBANGULAR, repo CEOSMOSV2). → [[10 - Bitácora]]
 - [ ] Frontend Angular (`ceosmos-t8ee.vercel.app`) apuntando a `https://ceosmos-api.vercel.app/api`. → [[03 - Arquitectura y stack]]
 - [ ] Passkeys WebAuthn en móvil (`assetlinks.json` en el dominio). → [[02 - Requerimientos]]
 - [ ] Keystore propio para firmar el release (hoy llave de depuración). → [[07 - Pruebas (Black, White, Red Box)]]
@@ -31,6 +34,7 @@ actualizado: 2026-11-18
 - [ ] Limitador de la API en Redis (Upstash). → [[07 - Pruebas (Black, White, Red Box)]]
 - [ ] P10: cesión con aceptación del receptor. → [[Práctica 10 - Seguridad y control de acceso]]
 - [ ] BLE con bonding cifrado (LE Secure Connections). → [[06 - BLE Wearable y TV]]
+- [ ] Lint del companion: 14 advertencias por app (dependencias, `StaticFieldLeak`, `UseKtx`). → [[Práctica 13-14 - Automatización de pruebas y CI]]
 
 ---
 Navegación: [[00 - Índice CEOSMOS]] · [[10 - Bitácora]] · [[07 - Pruebas (Black, White, Red Box)]]

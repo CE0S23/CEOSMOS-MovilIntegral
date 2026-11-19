@@ -9,7 +9,7 @@ on:
   pull_request:
   workflow_dispatch:
 
-# Acciones en versiones con Node 24 (v4 generaba avisos de deprecación en el run 1).
+# Acciones en versiones con Node 24 (v4 y upload-artifact v5 generaban avisos de Node 20 en los runs 1-4).
 permissions:
   contents: read
 
@@ -69,7 +69,7 @@ jobs:
 
       - name: Subir reportes de pruebas
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: flutter-test-reports
           path: |
@@ -79,7 +79,7 @@ jobs:
 
       - name: Subir cobertura (lcov)
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: flutter-coverage
           path: coverage/lcov.info
@@ -126,7 +126,7 @@ jobs:
 
       - name: Subir reportes (JUnit XML, HTML y lint)
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: kotlin-${{ matrix.flavor }}-reports
           path: |
