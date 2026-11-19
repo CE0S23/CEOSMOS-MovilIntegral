@@ -20,8 +20,8 @@ actualizado: 2026-11-18
 
 - [[Histórico - CEOSMOS Web (auditoría)]] — Reporte de auditoría de CEOSMOS WEB (Angular 18 + NestJS 11 + Neon).
 - [[Histórico - CEOSMOS Flutter (auditoría)]] — Reporte de auditoría del ecosistema CEOSMOS móvil / wearable / TV (Firestore y sincronización realtime).
-- Esta arquitectura se rige por las normas definidas en [[Reglas-Clean-Code]].
-- Nodo de entrada a la bóveda: [[00-Dashboard]].
+- Esta arquitectura se rige por las normas definidas en «Reglas-Clean-Code» (nota de la bóveda anterior, no se conservó).
+- Nodo de entrada a la bóveda: hoy [[00 - Índice CEOSMOS]] (antes «00-Dashboard»).
 
 ---
 

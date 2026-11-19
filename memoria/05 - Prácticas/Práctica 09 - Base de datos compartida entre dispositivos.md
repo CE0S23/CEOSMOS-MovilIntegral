@@ -1,7 +1,7 @@
 ---
 tags: [ceosmos, practica]
 estado: cumple
-actualizado: 2026-11-18
+actualizado: 2026-11-19
 ---
 
 # Práctica 09 · Base de datos compartida entre dispositivos
@@ -10,6 +10,7 @@ actualizado: 2026-11-18
 - [x] DB-01 conexión compartida · DB-02/03 A escribe, B la ve en tiempo real · DB-04/05 B escribe, A la ve.
 - [x] DB-06 actualización cruzada (A «En proceso», B «Crítica») · DB-07 edición concurrente: se conservan los dos campos (v3).
 - [x] DB-08 persistencia tras reiniciar · DB-09 sin red: «SIN confirmar / Pendiente de sincronizar» y sincroniza al volver.
+- [x] 19/11: confirmación rápida — alta `PRUEBA_A_1119` en el S24 confirmada por el servidor en 406 ms y vista en la tablet en tiempo real (`p09_07`).
 - Evidencias S24 (A) + tablet (B): `evidencias/p09_*`.
 
 

@@ -10,13 +10,14 @@ actualizado: 2026-11-19
 
 ## 1. Para cerrar la revisión (lo siguiente que se hace)
 - [x] Cuentas P7 nuevas en Firebase Auth `practica7-8-941cb` (`admin|agente|usuario1|usuario2.ceosmos.p7@example.com`; contraseña en `.devdb/CUENTAS_DEV.txt`).
-- [ ] Crear en Firebase Console › practica7-8 › Firestore › `dispositivos` un documento por cuenta (ID = UID; campos `rol`, `nombre`, `conectado: false`). Las reglas solo permiten crearlo desde la consola:
+- [x] Documento de rol en Firestore › `dispositivos` para las 4 cuentas (19/11, desde la consola; ID = UID; `rol`, `nombre`, `conectado: false`):
   - `eWgOEvECUeUpay6x7DBAxGmp6Hf2` → `admin` · `Administrador`
   - `ExbVHgydDjRABO4xCGYx5eKNv8J2` → `agente` · `Agente`
   - `YX9spcWR4vg7rZoye679FKO3cF82` → `usuario1` · `Usuario 1`
   - `0VXUbHkzoxSpQk3tcCVYlh2uqD42` → `usuario2` · `Usuario 2`
-- [ ] Recorrido de la P7 con los 4 roles en S24 + tablet y matriz TC01–TC08 (capturas `evidencias/p07_*`). → [[Práctica 07 - Roles y mensajería (Sistema de tickets)]]
-- [ ] Marcar la P7 como cumplida en su nota, en [[07 - Pruebas (Black, White, Red Box)]] y en el Word (quitar «No aplicado por completo»).
+- [x] Recorrido de la P7 con los 4 roles en S24 + tablet y matriz TC01–TC08 aprobada (19/11; capturas `evidencias/p07_01…29`; 4 fallas corregidas). → [[Práctica 07 - Roles y mensajería (Sistema de tickets)]]
+- [x] P7 marcada como cumplida en su nota, en [[07 - Pruebas (Black, White, Red Box)]] y en el Word (sin «No aplicado por completo»; respaldo en `C:/CESAR10cuatri/memoria_respaldo_2026-11-19/`).
+- [ ] **Usuario:** decidir si se borran los 4 documentos viejos de `dispositivos` (cuentas originales `*.p7@example.com`, sin contraseña conocida); hoy salen duplicados como «desconectado» en la presencia de la P7. → [[Práctica 07 - Roles y mensajería (Sistema de tickets)]]
 
 ## 2. Requieren al usuario (permiso o acceso)
 - [ ] Cuenta ADMIN en Neon (escritura en producción). → [[02 - Requerimientos]]
@@ -27,7 +28,7 @@ actualizado: 2026-11-19
 - [ ] Rotar el `JWT_SECRET` y la contraseña de `neondb_owner` (**siguen vigentes**; los hace el usuario en Neon/Vercel, pasos en la nota de la práctica) y verificar API, 401 del token viejo y login en el S24. → [[Práctica 13-14 - Automatización de pruebas y CI]]
 - [ ] Claves Firebase: practica7-8 y reportes-movil restringidas [x]; falta restringir la clave de `mesaayuda-p7` (otra cuenta).
 - [ ] Cerrar las 4 alertas de secret scanning de GitHub.
-- [ ] P7: terminarla y probarla con la clave restringida. → [[Práctica 13-14 - Automatización de pruebas y CI]]
+- [x] P7 terminada y probada con la clave restringida (19/11). → [[Práctica 07 - Roles y mensajería (Sistema de tickets)]]
 - [ ] Push de `movil-integral` (WEBANGULAR, repo CEOSMOSV2). → [[10 - Bitácora]]
 - [ ] Frontend Angular (`ceosmos-t8ee.vercel.app`) apuntando a `https://ceosmos-api.vercel.app/api`. → [[03 - Arquitectura y stack]]
 - [ ] Passkeys WebAuthn en móvil (`assetlinks.json` en el dominio). → [[02 - Requerimientos]]

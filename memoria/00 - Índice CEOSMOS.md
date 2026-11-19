@@ -1,7 +1,7 @@
 ---
 tags: [ceosmos, moc]
 estado: vigente
-actualizado: 2026-11-18
+actualizado: 2026-11-19
 ---
 
 # CEOSMOS · Índice (Map of Content)
@@ -10,19 +10,20 @@ Memoria única del proyecto **CEOSMOS Móvil Integral** (Flutter + API NestJS + 
 con Reloj y TV compañeros por BLE). Revisión completa del 2026-11-18: lo marcado `- [x]` se comprobó
 en el código, en las pruebas automatizadas o en los dispositivos (Samsung S24 y Galaxy Tab S9).
 
-## Estado de un vistazo (18/11/2026)
+## Estado de un vistazo (19/11/2026)
 **Funciona y está verificado**
 - [x] App real contra la API de producción y Neon (S24) → [[01 - Visión general]] · [[04 - Módulos de la app]]
 - [x] Requerimientos de los 3 parciales (salvo passkeys) → [[02 - Requerimientos]]
 - [x] Reloj y TV por BLE, probados en S24 + Tab S9 → [[06 - BLE Wearable y TV]]
-- [x] Prácticas 3–6, 8–12, Examen 1, BD Firestore y Evaluación 2 → sección Prácticas
+- [x] Prácticas 3–12, Examen 1, BD Firestore y Evaluación 2 → sección Prácticas (P7 cerrada el 19/11 con los 4 roles)
 - [x] Black/White/Red Box: 215 + 14 pruebas, Red Box 13/13 → [[07 - Pruebas (Black, White, Red Box)]]
 - [x] P13-14: pruebas automatizadas + CI en GitHub Actions (verde en push y PR) → [[Práctica 13-14 - Automatización de pruebas y CI]]
-- [x] Repositorio público: https://github.com/CE0S23/CEOSMOS-MovilIntegral (PR #1 abierto)
+- [x] Repositorio público: https://github.com/CE0S23/CEOSMOS-MovilIntegral (PR #1 fusionado; CI en `main`)
 - [x] Reporte de avances (Word) actualizado; memoria reestructurada con respaldo
 
 **Falta** (detalle en [[08 - Pendientes]])
-- [ ] Cerrar la P7 (documento de rol de 4 cuentas + recorrido con roles)
+- [x] P7 cerrada (documentos de rol, 4 roles en S24 + tablet, TC01–TC08) → [[Práctica 07 - Roles y mensajería (Sistema de tickets)]]
+- [ ] Rotación de Neon/`JWT_SECRET`, clave de `mesaayuda-p7` y alertas de GitHub (los hace el usuario)
 - [ ] Tareas que requieren al usuario y mejoras opcionales
 
 ## Notas

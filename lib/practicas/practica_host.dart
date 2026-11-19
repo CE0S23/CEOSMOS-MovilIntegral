@@ -87,6 +87,10 @@ class _PracticaHostState extends State<PracticaHost> {
       },
       child: Scaffold(
         backgroundColor: const Color(0xFF141725),
+        // [CEOSMOS] La práctica tiene su propio Scaffold y ya se ajusta al
+        // teclado; si este también lo hiciera, el teclado se restaría dos
+        // veces y el formulario quedaría sin altura (P7, 19/11).
+        resizeToAvoidBottomInset: false,
         body: Column(
           children: [
             Material(

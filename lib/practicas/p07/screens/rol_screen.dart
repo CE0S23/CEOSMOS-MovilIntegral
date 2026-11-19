@@ -15,10 +15,10 @@ class RolScreen extends StatefulWidget {
 
 class _RolScreenState extends State<RolScreen> {
   static const _correosPorRol = {
-    'admin': 'admin.p7@example.com',
-    'agente': 'agente.p7@example.com',
-    'usuario1': 'usuario1.p7@example.com',
-    'usuario2': 'usuario2.p7@example.com',
+    'admin': 'admin.ceosmos.p7@example.com',
+    'agente': 'agente.ceosmos.p7@example.com',
+    'usuario1': 'usuario1.ceosmos.p7@example.com',
+    'usuario2': 'usuario2.ceosmos.p7@example.com',
   };
 
   final _url = TextEditingController();

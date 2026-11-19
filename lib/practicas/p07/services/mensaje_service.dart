@@ -11,7 +11,10 @@ class MensajeService {
       _db.collection('conversaciones').doc(reporteId).collection('mensajes');
 
   Stream<QuerySnapshot<Map<String, dynamic>>> escucharRaw(String reporteId) =>
-      _mensajes(reporteId).orderBy('hora').snapshots();
+      // [CEOSMOS] Con los cambios de metadatos llega también la confirmación
+      // del servidor: sin ellos, un mensaje propio podía quedarse en
+      // «Pendiente» aunque ya estuviera guardado (P7, 19/11).
+      _mensajes(reporteId).orderBy('hora').snapshots(includeMetadataChanges: true);
 
   Future<List<Mensaje>> consultar(String reporteId) async {
     final s = await _mensajes(reporteId).orderBy('hora').get();

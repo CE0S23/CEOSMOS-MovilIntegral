@@ -1,7 +1,7 @@
 ---
 tags: [ceosmos, pruebas]
 estado: vigente
-actualizado: 2026-11-18
+actualizado: 2026-11-19
 ---
 
 # Pruebas (Black, White, Red Box)
@@ -15,7 +15,8 @@ actualizado: 2026-11-18
 ## Black Box
 - [x] Suite de la [[Práctica 08 - Pruebas de caja negra]] (12 requisitos, CP-01…CP-18).
 - [x] En el S24: P4 (CRUD + correo + persistencia), P5 (7 requisitos, Logcat sin credenciales), BLE (todos los escenarios de [[06 - BLE Wearable y TV]]), Atrás en prácticas.
-- [x] Entre S24 y tablet: P6 por Wi-Fi, matriz DB-01…DB-09 de la [[Práctica 09 - Base de datos compartida entre dispositivos]], SEG de la [[Práctica 10 - Seguridad y control de acceso]].
+- [x] Entre S24 y tablet: P6 por Wi-Fi, matriz DB-01…DB-09 de la [[Práctica 09 - Base de datos compartida entre dispositivos]], SEG de la [[Práctica 10 - Seguridad y control de acceso]] (las dos reconfirmadas el 19/11).
+- [x] P7 con los 4 roles entre S24 y tablet: matriz TC01–TC08 aprobada, chat en tiempo real, adjuntos ≤ 300 KB, asignación agente ↔ admin y presencia (19/11) → [[Práctica 07 - Roles y mensajería (Sistema de tickets)]].
 
 ## White Box — cobertura (`flutter test --coverage --branch-coverage`)
 | Módulo | Líneas | Ramas |
@@ -38,6 +39,7 @@ actualizado: 2026-11-18
 - [x] APK release: no depurable, `allowBackup=false`, solo `MainActivity` (y las de Firebase Auth) exportadas, texto claro solo a `localhost`/`10.0.2.2`, sin tokens ni contraseñas en logs.
 - [x] BLE: dispositivo no autorizado no puede escribir ni suscribirse (prueba automatizada y en hardware: «Escritura rechazada: central no autenticado»).
 - [x] P10: suplantación pura de propietario, lectura/modificación/eliminación ajena y acceso sin sesión rechazados por las reglas de Firestore.
+- [x] P7: usuario2 no puede leer el ticket de usuario1; la cuenta debe tener documento de rol y coincidir con la URL; la API key restringida a paquete + SHA-1 sigue funcionando.
 
 ## Riesgos que quedan (con mitigación)
 - [ ] APK firmado con llave de depuración → crear keystore propio (ver [[08 - Pendientes]]).

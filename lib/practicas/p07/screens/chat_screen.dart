@@ -175,6 +175,9 @@ class _ChatScreenState extends State<ChatScreen> {
         ).showSnackBar(const SnackBar(content: Text('Archivo enviado')));
       }
       if (!_tiempoReal) await _actualizar();
+    } on ArgumentError catch (e) {
+      // [CEOSMOS] Sin el prefijo «Invalid argument(s)» (P7, 19/11).
+      _error('No se pudo adjuntar: ${e.message}');
     } catch (e) {
       _error('No se pudo adjuntar: $e');
     } finally {
