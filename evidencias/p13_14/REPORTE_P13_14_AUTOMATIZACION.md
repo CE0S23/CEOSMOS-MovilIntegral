@@ -38,6 +38,8 @@ Demostración (`scripts/p13_14_regresion.sh`):
 | CI run #2 (PR) · [44433707000](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44433707000) | 215 + 14 × 3 | todas | 0 | 2 min 36 s |
 | CI run #3 (push corrección) · [44434252590](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44434252590) | 215 + 14 × 3 | todas | 0 | 2 min 18 s |
 | CI run #4 (PR corrección) · [44434260779](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44434260779) | 215 + 14 × 3 | todas | 0 | 3 min 10 s |
+| CI run #5 (push mejora: sin avisos) · [44435739612](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44435739612) | 215 + 14 × 3 | todas | 0 | 3 min 01 s |
+| CI run #6 (PR mejora) · [44435747347](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44435747347) | 215 + 14 × 3 | todas | 0 | 2 min 43 s |
 
 Cobertura de líneas: 49.5 % del proyecto (incluye pantallas de las prácticas); en los componentes críticos: `api_client` 100 %, `ble_protocolo` 100 %, `ecosistema_ble` 94.4 %, `usuarios_page` 94.8 %, base Floor 91.8 %, `auth_repository` 86.9 %, `auth_screen` 83.0 % (`local_resumen_flutter.md`).
 
@@ -47,7 +49,7 @@ Cobertura de líneas: 49.5 % del proyecto (incluye pantallas de las prácticas);
 | E1 | Lint Android: 3 errores (`UnsupportedTvHardware`, `WrongConstant` en `notifyCharacteristicChanged`, `PropertyEscape`) | `bluetooth_le required=true` excluye televisores; la sobrecarga API 33 devuelve `BluetoothStatusCodes`, no `GATT_SUCCESS` (ambos valen 0); `local.properties` sin escapar | `required="false"` + `uses-feature bluetooth`; `BluetoothStatusCodes.SUCCESS`; `local.properties` escapado (solo local, no se versiona) |
 | E2 | `Bluetooth apagado: …reconecta solo` falló 1 de 215 en la suite completa con cobertura | Espera fija de 100 ms; bajo carga la reconexión tardó más | Espera por condición (`esperarHasta`, máx. 3 s) en las 4 pruebas BLE positivas |
 | E3 | `companion/gradlew` sin permiso de ejecución en git | Repo creado en Windows (modo 100644): en Linux «Permission denied» | `git update-index --chmod=+x` y `chmod +x` en el workflow |
-| E4 | Runs #1–#2: avisos «Node.js 20 is deprecated» y «setup-java v4 is deprecated» | Acciones v4 | Acciones a v5 (run #3–#4) y `upload-artifact` a v6 (último push) |
+| E4 | Runs #1–#2: avisos «Node.js 20 is deprecated» y «setup-java v4 is deprecated» | Acciones v4 | Acciones a v5 (runs #3–#4; quedaba el aviso de `upload-artifact@v5`) y `upload-artifact` a v6: runs #5–#6 sin avisos |
 | E5 | El historial contenía un `JWT_SECRET` y la contraseña de Neon en una nota histórica | Copia de una auditoría antigua | Redactado en todo el historial antes de publicar (respaldo `.bundle` local) |
 
 ## 6. Matriz de automatización
@@ -60,10 +62,10 @@ Cobertura de líneas: 49.5 % del proyecto (incluye pantallas de las prácticas);
 | AUT-05 | Integración (widget) | Sin servidor: conexión rechazada y tiempo límite → texto en pantalla | `aut05_servidor_sin_respuesta_test.dart` (2) | Mensaje de red/tiempo; botón habilitado; sin sesión | 2/2 aprobadas | Aprobado |
 | AUT-06 | Persistencia | P4 en SQLite (FFI): CRUD en memoria, duplicado, migración v1→v2 | `aut06_persistencia_p04_test.dart` (5) | Datos releídos iguales; migración sin pérdida | 5/5 aprobadas | Aprobado |
 | AUT-07 | CI | Workflow en push | `.github/workflows/ci.yml` · run #1 | 4 jobs en verde | Éxito, 2 min 55 s | Aprobado |
-| AUT-08 | CI | Workflow en PR y en el nuevo push tras la corrección | runs #2, #3, #4 | Verde en PR y tras la corrección | Éxito: 2 min 36 s, 2 min 18 s, 3 min 10 s | Aprobado |
+| AUT-08 | CI | Workflow en PR y en el nuevo push tras la corrección | runs #2–#6 | Verde en PR y tras la corrección | Éxito: #2 2:36, #3 2:18, #4 3:10, #5 3:01, #6 2:43 | Aprobado |
 
 ## 7. Evidencias (esta carpeta)
-`local_flutter_analyze.txt`, `local_flutter_test.txt`, `local_resumen_flutter.md`, `local_kotlin.txt`, `local_kotlin_lint_antes.txt`, `regresion_codigo_viejo.txt`, `regresion_codigo_nuevo.txt`, `ci_run_<id>.log` (logs completos de cada run), `ci_01_actions_lista_verde.jpg`, `ci_02_run3_push_verde.jpg`.
+`local_flutter_analyze.txt`, `local_flutter_test.txt`, `local_resumen_flutter.md`, `local_kotlin.txt`, `local_kotlin_lint_antes.txt`, `regresion_codigo_viejo.txt`, `regresion_codigo_nuevo.txt`, `ci_run_<id>.txt` (logs completos de los runs #1–#6), `ci_01_actions_lista_verde.jpg`, `ci_02_run3_push_verde.jpg`, `ci_03_actions_6_runs_verde.jpg`. GitHub marcó en «Security» 4 alertas de *secret scanning* por las claves cliente de Firebase de las prácticas (riesgo ya aceptado: son públicas por diseño y las protegen las reglas; conviene restringirlas en Google Cloud).
 
 ## 8. Conclusión
 Cada push y cada PR ejecutan en menos de 4 minutos 215 pruebas de Flutter, 42 de Kotlin (14 por app), el análisis estático y el lint de las tres apps, sin tocar producción y sin secretos. Un cambio que reintroduzca DEF-BLE-01, rompa la migración de la P4, cambie un código HTTP o desincronice el HMAC entre Dart y Kotlin deja el PR en rojo antes de llegar a los dispositivos. El primer uso ya dio resultado: el lint encontró 3 errores reales del companion y la suite con cobertura destapó una prueba que dependía del tiempo.

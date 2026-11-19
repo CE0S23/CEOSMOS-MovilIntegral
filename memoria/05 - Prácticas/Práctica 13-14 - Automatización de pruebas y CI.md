@@ -26,15 +26,15 @@ pr: https://github.com/CE0S23/CEOSMOS-MovilIntegral/pull/1
 - [x] AUT-05 Integración · sin servidor → mensaje en pantalla (2/2, widget)
 - [x] AUT-06 Persistencia · CRUD en memoria + migración (5/5)
 - [x] AUT-07 CI · push (run #1, 2 min 55 s)
-- [x] AUT-08 CI · PR (run #2) y nuevo push tras la corrección (runs #3–#4)
+- [x] AUT-08 CI · PR (run #2) y nuevos push tras las correcciones (runs #3–#6; #5–#6 sin avisos)
 
 ## Resultados
 - [x] Local: Flutter 215/215 (analyze 42 s, test 69 s), Kotlin 14/14 por variante (107 s con lint de 3 apps). Cobertura 49.5 % total; `api_client` y `ble_protocolo` 100 %.
-- [x] CI verde en push y PR: [run #1](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44433685785), [#2](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44433707000), [#3](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44434252590), [#4](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44434260779).
+- [x] CI verde en push y PR: [run #1](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44433685785), [#2](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44433707000), [#3](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44434252590), [#4](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44434260779), [#5](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44435739612), [#6](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/44435747347).
 - [x] Errores corregidos: 3 de lint del companion, prueba BLE dependiente del tiempo, `gradlew` sin permiso de ejecución, acciones obsoletas (Node 20), secreto antiguo redactado del historial.
 - [x] Reporte Word `evidencias/p13_14/Practicas 13-14 - Automatizacion de pruebas - CEOSMOS.docx` y entrada en el Reporte de avances.
 - [ ] Fusionar el PR #1 a `main` (decisión del usuario).
-- [ ] Las prácticas de pruebas (P8, P11, P12, P13-14) no tienen entrada en la ventana Prácticas: no tienen pantalla propia.
+- Nota: las prácticas de pruebas (P8, P11, P12, P13-14) no tienen entrada en la ventana Prácticas: no tienen pantalla propia.
 
 - Informe completo: [[REPORTE_P13_14_AUTOMATIZACION]]
 
