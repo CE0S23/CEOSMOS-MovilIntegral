@@ -9,6 +9,7 @@ on:
   pull_request:
   workflow_dispatch:
 
+# Acciones en versiones con Node 24 (v4 generaba avisos de deprecación en el run 1).
 permissions:
   contents: read
 
@@ -25,7 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: subosito/flutter-action@v2
         with:
@@ -68,7 +69,7 @@ jobs:
 
       - name: Subir reportes de pruebas
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: flutter-test-reports
           path: |
@@ -78,7 +79,7 @@ jobs:
 
       - name: Subir cobertura (lcov)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: flutter-coverage
           path: coverage/lcov.info
@@ -102,15 +103,15 @@ jobs:
       run:
         working-directory: companion
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-java@v4
+      - uses: actions/setup-java@v5
         with:
           distribution: temurin
           java-version: '17'
 
       - name: Caché de Gradle
-        uses: gradle/actions/setup-gradle@v4
+        uses: gradle/actions/setup-gradle@v5
 
       - name: Pruebas unitarias (JVM)
         run: |
@@ -125,7 +126,7 @@ jobs:
 
       - name: Subir reportes (JUnit XML, HTML y lint)
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: kotlin-${{ matrix.flavor }}-reports
           path: |
