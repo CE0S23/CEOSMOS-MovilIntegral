@@ -2,7 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- Periférico BLE (servidor GATT + anuncio). Android 12+: ADVERTISE y CONNECT en tiempo
          de ejecución. No escanea, así que no pide BLUETOOTH_SCAN ni ubicación. -->
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
+    <!-- P13-14 (lint UnsupportedTvHardware): no se exige el hardware en la instalación para
+         no excluir televisores; sin BLE el servidor GATT muestra el error en pantalla. -->
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
+    <uses-feature android:name="android.hardware.bluetooth" android:required="false" />
     <uses-feature android:name="android.hardware.touchscreen" android:required="false" />
     <uses-feature android:name="android.software.leanback" android:required="false" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADVERTISE" />

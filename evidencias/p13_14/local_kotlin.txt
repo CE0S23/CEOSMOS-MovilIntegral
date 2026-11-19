@@ -1,0 +1,38 @@
+== Kotlin companion DESPUÉS (./gradlew test lint{Reloj,Tv,Companion}Debug) ==
+> Task :app:testCompanionReleaseUnitTest
+> Task :app:testCompanionDebugUnitTest
+> Task :app:testRelojDebugUnitTest
+> Task :app:testRelojReleaseUnitTest
+> Task :app:lintAnalyzeRelojDebugAndroidTest
+> Task :app:lintAnalyzeRelojDebugUnitTest
+> Task :app:testTvDebugUnitTest
+> Task :app:lintAnalyzeRelojDebug
+> Task :app:testTvReleaseUnitTest
+> Task :app:test
+> Task :app:lintReportRelojDebug
+> Task :app:lintRelojDebug
+> Task :app:lintAnalyzeTvDebugAndroidTest
+> Task :app:lintAnalyzeTvDebugUnitTest
+> Task :app:lintAnalyzeCompanionDebugAndroidTest
+> Task :app:lintAnalyzeTvDebug
+> Task :app:lintReportTvDebug
+> Task :app:lintTvDebug
+> Task :app:lintAnalyzeCompanionDebug
+> Task :app:lintAnalyzeCompanionDebugUnitTest
+> Task :app:lintReportCompanionDebug
+> Task :app:lintCompanionDebug
+BUILD SUCCESSFUL in 1m 45s
+exit=0 segundos=107
+testCompanionDebugUnitTest: 14 pruebas, 14 aprobadas, 0 fallidas, 0.16 s
+testCompanionReleaseUnitTest: 14 pruebas, 14 aprobadas, 0 fallidas, 0.14 s
+testRelojDebugUnitTest: 14 pruebas, 14 aprobadas, 0 fallidas, 0.12 s
+testRelojReleaseUnitTest: 14 pruebas, 14 aprobadas, 0 fallidas, 0.14 s
+testTvDebugUnitTest: 14 pruebas, 14 aprobadas, 0 fallidas, 0.91 s
+testTvReleaseUnitTest: 14 pruebas, 14 aprobadas, 0 fallidas, 0.18 s
+  lint warning       3 ConstantLocale
+  lint warning       3 DataExtractionRules
+  lint warning       9 GradleDependency
+  lint warning       3 InlinedApi
+  lint warning       6 NewerVersionAvailable
+  lint warning       9 StaticFieldLeak
+  lint warning       9 UseKtx

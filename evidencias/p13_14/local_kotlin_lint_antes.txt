@@ -1,0 +1,46 @@
+== Kotlin companion ANTES de las correcciones P13-14 (./gradlew test lint{Reloj,Tv,Companion}Debug) ==
+> Task :app:testCompanionDebugUnitTest
+> Task :app:testCompanionReleaseUnitTest
+> Task :app:testRelojDebugUnitTest
+> Task :app:testRelojReleaseUnitTest
+> Task :app:testTvDebugUnitTest
+> Task :app:testTvReleaseUnitTest
+> Task :app:test
+> Task :app:lintAnalyzeRelojDebug
+> Task :app:lintAnalyzeRelojDebugAndroidTest
+> Task :app:lintAnalyzeRelojDebugUnitTest
+> Task :app:lintAnalyzeTvDebugAndroidTest
+> Task :app:lintAnalyzeTvDebugUnitTest
+> Task :app:lintAnalyzeTvDebug
+> Task :app:lintReportRelojDebug
+Lint found 3 errors and 16 warnings. First failure:
+C:\CESAR10cuatri\CEOSMOS.MovilIntegral\companion\local.properties:1: Error: Windows file separators (\) and drive letter separators (':') must be escaped (\\) in property files; use C\:\\Users\\cesar\\AppData\\Local\\Android\\sdk [PropertyEscape]
+> Task :app:lintRelojDebug FAILED
+Lint found 3 errors, 16 warnings. First failure:
+C:\CESAR10cuatri\CEOSMOS.MovilIntegral\companion\local.properties:1: Error: Windows file separators (\) and drive letter separators (':') must be escaped (\\) in property files; use C\:\\Users\\cesar\\AppData\\Local\\Android\\sdk [PropertyEscape]
+> Task :app:lintReportTvDebug
+Lint found 3 errors and 16 warnings. First failure:
+C:\CESAR10cuatri\CEOSMOS.MovilIntegral\companion\local.properties:1: Error: Windows file separators (\) and drive letter separators (':') must be escaped (\\) in property files; use C\:\\Users\\cesar\\AppData\\Local\\Android\\sdk [PropertyEscape]
+> Task :app:lintTvDebug FAILED
+Lint found 3 errors, 16 warnings. First failure:
+C:\CESAR10cuatri\CEOSMOS.MovilIntegral\companion\local.properties:1: Error: Windows file separators (\) and drive letter separators (':') must be escaped (\\) in property files; use C\:\\Users\\cesar\\AppData\\Local\\Android\\sdk [PropertyEscape]
+> Task :app:lintAnalyzeCompanionDebugAndroidTest
+> Task :app:lintAnalyzeCompanionDebugUnitTest
+> Task :app:lintAnalyzeCompanionDebug
+> Task :app:lintReportCompanionDebug
+Lint found 3 errors and 16 warnings. First failure:
+C:\CESAR10cuatri\CEOSMOS.MovilIntegral\companion\local.properties:1: Error: Windows file separators (\) and drive letter separators (':') must be escaped (\\) in property files; use C\:\\Users\\cesar\\AppData\\Local\\Android\\sdk [PropertyEscape]
+> Task :app:lintCompanionDebug FAILED
+Lint found 3 errors, 16 warnings. First failure:
+C:\CESAR10cuatri\CEOSMOS.MovilIntegral\companion\local.properties:1: Error: Windows file separators (\) and drive letter separators (':') must be escaped (\\) in property files; use C\:\\Users\\cesar\\AppData\\Local\\Android\\sdk [PropertyEscape]
+> Lint found errors in the project; aborting build.
+  Lint found 3 errors, 16 warnings. First failure:
+  C:\CESAR10cuatri\CEOSMOS.MovilIntegral\companion\local.properties:1: Error: Windows file separators (\) and drive letter separators (':') must be escaped (\\) in property files; use C\:\\Users\\cesar\\AppData\\Local\\Android\\sdk [PropertyEscape]
+> Lint found errors in the project; aborting build.
+  Lint found 3 errors, 16 warnings. First failure:
+  C:\CESAR10cuatri\CEOSMOS.MovilIntegral\companion\local.properties:1: Error: Windows file separators (\) and drive letter separators (':') must be escaped (\\) in property files; use C\:\\Users\\cesar\\AppData\\Local\\Android\\sdk [PropertyEscape]
+> Lint found errors in the project; aborting build.
+  Lint found 3 errors, 16 warnings. First failure:
+  C:\CESAR10cuatri\CEOSMOS.MovilIntegral\companion\local.properties:1: Error: Windows file separators (\) and drive letter separators (':') must be escaped (\\) in property files; use C\:\\Users\\cesar\\AppData\\Local\\Android\\sdk [PropertyEscape]
+BUILD FAILED in 3m 36s
+real	3m38.460s
