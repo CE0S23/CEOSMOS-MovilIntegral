@@ -1,0 +1,230 @@
+Resolving dependencies...
+Downloading packages...
+Got dependencies!
+67 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart
+00:00 +0: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart: Login real: normaliza el correo, guarda el token y traduce errores
+00:00 +1: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart: Registro exige verificar el correo antes de entrar
+00:00 +2: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart: El temporizador excluye pausas y guarda una sola sesión completada en el servidor
+00:00 +3: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart: Los datos de cada cuenta vienen del servidor y no se mezclan
+00:00 +4: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart: Un 401 del servidor cierra la sesión y descarta la actividad
+00:00 +5: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart: Restaurar sesión: token válido entra, token revocado se borra
+00:00 +6: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart: Sin red la sesión de enfoque queda pendiente y se envía después
+00:00 +7: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart: Cambiar de ambiente guarda la sesión anterior; duración inválida no la altera
+00:00 +8: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart: Búsqueda combina acentos, tipo, modo y favoritos
+00:00 +9: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart: Wearable por TCP: recibe lecturas reales y las resume para el historial
+00:00 +10: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart: Wearable apagado: error claro, sin excepción
+00:02 +11: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/app_state_test.dart: Caché de imágenes: límite de 2 MB, solo JPEG/WebP y reemplazo LRU
+00:06 +12: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +13: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +14: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +15: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +16: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +17: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +18: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +19: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +20: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +21: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +22: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +23: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +24: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:08 +25: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Equipos: conectar reloj con PIN, ver lecturas y enviar notificación
+00:10 +26: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: Bluetooth apagado se avisa en Equipos
+00:11 +27: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ble_app_test.dart: TV y reloj controlan la sesión; el historial guarda el resumen BLE
+00:11 +28: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: primera conexión pide PIN; con PIN correcto conecta y lo guarda
+00:11 +29: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: PIN incorrecto se rechaza, se borra y no queda conectado
+00:11 +30: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: sin autenticar, el periférico rechaza escrituras (dispositivo no autorizado)
+00:11 +31: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: Reloj y TV comparten el mismo enlace físico de la tablet
+00:11 +32: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: datos del reloj → CEOSMOS: lecturas, botón y resumen de sesión
+00:11 +33: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: CEOSMOS → TV/Reloj: proyección de sesión sin duplicados y notificación
+00:11 +34: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: comandos de la TV y límite de frecuencia (anti-inundación)
+00:11 +35: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: pérdida del enlace → reconexión automática con el PIN guardado
+00:11 +36: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: el periférico desaparece → agota los reintentos y queda en error
+00:13 +37: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: desconexión manual no reconecta
+00:13 +38: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: Bluetooth apagado: no conecta; al encender reconecta solo
+00:13 +39: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: permiso denegado y periférico ausente
+00:13 +40: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: periférico solo con servicio Reloj no sirve como TV; olvidar borra el PIN
+00:13 +41: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: 3 PIN erróneos: el periférico corta el enlace
+00:13 +42: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: conexión concurrente del mismo rol se ignora
+00:13 +43: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: errores GATT al conectar o autenticar → fallo controlado sin enlace abierto
+00:13 +44: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: saludo del periférico, mensaje imposible de codificar y encendido rechazado
+BLE: no se encendió el adaptador (FalloBle)
+00:13 +45: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: al reconectar con un PIN que cambió en el periférico, deja de reintentar
+00:13 +46: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: desconectar durante la reconexión la cancela
+00:13 +47: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: desconectar durante la reconexión la cancela
+00:13 +48: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: desconectar durante la reconexión la cancela
+00:13 +49: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/ble/ecosistema_ble_test.dart: desconectar durante la reconexión la cancela
+00:14 +50: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Reintento automático de escrituras (P12-O3) sin red la sesión queda pendiente y se envía SOLA al volver, con el mismo clientId
+00:14 +51: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Reintento automático de escrituras (P12-O3) sin red la sesión queda pendiente y se envía SOLA al volver, con el mismo clientId
+00:14 +52: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Reintento automático de escrituras (P12-O3) sin red la sesión queda pendiente y se envía SOLA al volver, con el mismo clientId
+00:14 +53: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Reintento automático de escrituras (P12-O3) la respuesta perdida no duplica: el reintento lleva el mismo clientId
+00:14 +54: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Reintento automático de escrituras (P12-O3) al cerrar sesión se cancela el reintento programado
+00:14 +55: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Pendiente rechazada de forma definitiva (P12-D02) un 400 al reintentar descarta esa sesión y los datos se cargan
+00:14 +56: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Pendiente rechazada de forma definitiva (P12-D02) un 400 en el primer envío no se encola ni se muestra como guardada
+00:14 +57: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Sin operaciones duplicadas ante respuestas tardías (P12-O3, RES-08) dos recargas simultáneas hacen UNA sola ronda de peticiones
+00:14 +58: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Sin operaciones duplicadas ante respuestas tardías (P12-O3, RES-08) una pendiente no se envía dos veces aunque coincidan dos recargas
+00:14 +59: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Sin operaciones duplicadas ante respuestas tardías (P12-O3, RES-08) doble pulsación de «Terminar» envía una sola sesión
+00:14 +60: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Historial paginado y totales del servidor (P12-O1) primera página de 20, «ver más» por cursor y totales de las 45
+00:14 +61: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Historial paginado y totales del servidor (P12-O1) guardar una sesión actualiza los totales sin pedirlos de nuevo
+00:14 +62: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Temporizador (P12-O2) el tic avisa solo al reloj, no a todo AppState
+00:14 +63: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p12/p12_optimizaciones_test.dart: Temporizador (P12-O2) al llegar a cero la sesión se guarda y sí se notifica el cambio de estado
+00:15 +64: loading C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart
+00:16 +64: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-01 · Entrada válida y entrada vacía / nula Acceso: correo, contraseña, usuario y código válidos → sin error
+00:16 +65: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-01 · Entrada válida y entrada vacía / nula Acceso: vacío o null → mensaje de campo obligatorio (nunca excepción)
+00:16 +66: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-01 · Entrada válida y entrada vacía / nula P4: alumno válido y campos vacíos / nulos
+00:16 +67: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-01 · Entrada válida y entrada vacía / nula BLE: mensaje vacío del periférico se descarta (null)
+00:16 +68: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-02 · Valores fuera de rango y resultado esperado Contraseña: 7 y 73 caracteres fuera de rango; 8 y 72 dentro
+00:16 +69: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-02 · Valores fuera de rango y resultado esperado Usuario 2/31 y código de 5/7 o no hexadecimal → rechazados
+00:16 +70: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-02 · Valores fuera de rango y resultado esperado P4: edad 0, 121, -5, 2.5 y texto fuera de rango; 1 y 120 en el límite
+00:16 +71: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-02 · Valores fuera de rango y resultado esperado BLE: pulso 29/231 y pasos negativos fuera de rango; 30/230 aceptados
+00:16 +72: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-02 · Valores fuera de rango y resultado esperado HMAC del reto: mismo vector que el periférico Kotlin (resultado esperado)
+00:16 +73: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-02 · Valores fuera de rango y resultado esperado Mensaje de sesión demasiado largo se recorta hasta 180 bytes
+00:16 +74: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-02 · Valores fuera de rango y resultado esperado Las pruebas nunca apuntan a producción: sin --dart-define la API es local
+00:16 +75: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-03 · Manejo de excepciones PIN o reto inválidos lanzan ArgumentError (no se calcula un HMAC débil)
+00:16 +76: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-03 · Manejo de excepciones Bytes que no son UTF-8 / JSON o exceden 180 bytes no lanzan: se descartan
+00:16 +77: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-03 · Manejo de excepciones Mensaje saliente imposible de recortar → ArgumentError controlado
+00:16 +78: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut01_03_unitarias_test.dart: AUT-03 · Manejo de excepciones Errores HTTP del backend se traducen a un mensaje seguro (sin detalles internos)
+00:17 +79: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut03_regresion_tv_reiniciada_test.dart: DEF-BLE-01: la TV reiniciada (enlace arriba, sin autorización) vuelve a recibir la sesión
+00:18 +80: loading C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut04_integracion_api_test.dart
+00:19 +80: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut04_integracion_api_test.dart: 201 registro → 401 sin verificar → 200 login: respuesta válida y token guardado
+00:20 +81: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut04_integracion_api_test.dart: 400 validación y 401 credenciales: ApiException con el código y mensaje para el usuario
+00:20 +82: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut04_integracion_api_test.dart: 201 crear dispositivo, 200 listar y 404 al borrar uno ajeno (IDOR)
+00:20 +83: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut04_integracion_api_test.dart: 401 con token revocado avisa a la app (cierre de sesión) y ruta inexistente → 404
+00:20 +84: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut05_servidor_sin_respuesta_test.dart: Conexión rechazada → mensaje «No hay conexión…» y la app sigue usable
+00:23 +85: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut05_servidor_sin_respuesta_test.dart: Conexión rechazada → mensaje «No hay conexión…» y la app sigue usable
+00:23 +86: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut05_servidor_sin_respuesta_test.dart: Conexión rechazada → mensaje «No hay conexión…» y la app sigue usable
+00:23 +87: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut05_servidor_sin_respuesta_test.dart: Conexión rechazada → mensaje «No hay conexión…» y la app sigue usable
+00:23 +88: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut05_servidor_sin_respuesta_test.dart: Conexión rechazada → mensaje «No hay conexión…» y la app sigue usable
+00:23 +88: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut06_persistencia_p04_test.dart: Migración v1 → v2 (campo correo) sin la migración Floor se niega a abrir (no borra ni corrompe los datos de v1)
+error Bad state: There is no migration supplied to update the database to the current version. Aborting the migration. during open, closing...
+00:23 +89: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut05_servidor_sin_respuesta_test.dart: Conexión rechazada → mensaje «No hay conexión…» y la app sigue usable
+00:24 +90: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut05_servidor_sin_respuesta_test.dart: El servidor acepta pero no responde → tiempo límite y mensaje en pantalla
+00:26 +91: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-01 REQ-VAL-01 nombre de dos caracteres se rechaza
+00:28 +92: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-01 REQ-VAL-01 nombre de dos caracteres se rechaza
+00:28 +93: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-01 REQ-VAL-01 nombre de dos caracteres se rechaza
+00:28 +94: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-01 REQ-VAL-01 nombre de dos caracteres se rechaza
+00:29 +95: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-02 REQ-VAL-01 contraseña sin la política del servidor se rechaza
+00:29 +96: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-03 REQ-VAL-01 correo sin arroba se rechaza
+00:30 +97: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-04 REQ-VAL-01 registro válido normaliza el correo y pide verificación
+00:30 +98: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-05 REQ-VAL-02 correo duplicado se rechaza
+00:31 +99: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-06 REQ-VAL-02 contraseña incorrecta no concede acceso
+00:31 +100: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-07 REQ-OP-02 búsqueda normaliza acentos y muestra vacío
+00:32 +101: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/examen1/widget_test.dart: Muestra los controles requeridos y rechaza campos vacíos o espacios
+00:33 +102: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/examen1/widget_test.dart: Muestra los controles requeridos y rechaza campos vacíos o espacios
+00:34 +103: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/examen1/widget_test.dart: Muestra los controles requeridos y rechaza campos vacíos o espacios
+00:34 +104: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-10 REQ-OP-01 sesión pausa, continúa y termina una vez
+00:35 +105: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-10 REQ-OP-01 sesión pausa, continúa y termina una vez
+00:35 +106: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/examen1/widget_test.dart: Elimina solo el registro seleccionado y conserva el cambio al reabrir
+00:36 +107: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-11 REQ-OP-04 wearable se vincula y desvincula en la cuenta
+00:36 +108: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-11 REQ-OP-04 wearable se vincula y desvincula en la cuenta
+00:36 +109: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/examen1/widget_test.dart: Si eliminar lanza error conserva la incidencia
+00:37 +110: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-12 REQ-DAT-01 espacios de dos cuentas permanecen aislados
+00:37 +111: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-12 REQ-DAT-01 espacios de dos cuentas permanecen aislados
+00:37 +112: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-12 REQ-DAT-01 espacios de dos cuentas permanecen aislados
+00:38 +113: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-12 REQ-DAT-01 espacios de dos cuentas permanecen aislados
+00:38 +114: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-12 REQ-DAT-01 espacios de dos cuentas permanecen aislados
+00:38 +115: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-13 REQ-DAT-02 historial conserva una finalización
+00:39 +116: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-14 REQ-NAV-01 acceso privado se revoca cuando el servidor invalida la sesión
+00:40 +117: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-15-320 REQ-NAV-02 navegación sin overflow a 320 px
+00:40 +118: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-15-390 REQ-NAV-02 navegación sin overflow a 390 px
+00:40 +119: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-15-768 REQ-NAV-02 navegación sin overflow a 768 px
+00:41 +120: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-15-1440 REQ-NAV-02 navegación sin overflow a 1440 px
+00:41 +121: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practica8_black_box_test.dart: CP-16 REQ-ERR-01 fallo de audio muestra aviso y conserva sesión
+00:41 +122: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p03_04/usuarios_page_test.dart: Valida nombre, edad y profesión antes de insertar
+00:42 +123: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p03_04/usuarios_page_test.dart: Valida nombre, edad y profesión antes de insertar
+00:42 +124: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p03_04/usuarios_page_test.dart: Valida nombre, edad y profesión antes de insertar
+00:44 +125: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p03_04/usuarios_page_test.dart: Consulta explícita y refresco al insertar, editar y eliminar
+00:45 +126: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p03_04/usuarios_page_test.dart: P4 caso 4: el correo se muestra en la consulta y se actualiza
+00:46 +127: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p03_04/usuarios_page_test.dart: P4 caso 4: el correo se muestra en la consulta y se actualiza
+00:46 +128: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p03_04/usuarios_page_test.dart: P4 caso 4: el correo se muestra en la consulta y se actualiza
+00:46 +129: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p03_04/usuarios_page_test.dart: P4 caso 4: el correo se muestra en la consulta y se actualiza
+00:46 +130: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p03_04/usuarios_page_test.dart: P4 caso 4: el correo se muestra en la consulta y se actualiza
+00:46 +131: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p03_04/usuarios_page_test.dart: P4 caso 4: el correo se muestra en la consulta y se actualiza
+00:46 +132: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p03_04/usuarios_page_test.dart: P4 caso 4: el correo se muestra en la consulta y se actualiza
+00:47 +133: loading C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p06/local_network_test.dart
+00:48 +133: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p06/local_network_test.dart: acepta IP Wi-Fi de la interfaz y no inventa IP sin red
+00:48 +134: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p06/local_network_test.dart: rechaza direcciones inválidas, localhost, multicast y dirección propia
+00:48 +135: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/practicas/p06/local_network_test.dart: sin IP Wi-Fi no permite iniciar conexión a otro teléfono
+00:49 +136: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: resumenSesion: caminos independientes CB1 C1=V: sin muestras → {} (no se guarda resumen vacío)
+00:49 +137: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: resumenSesion: caminos independientes CB2 C1=F C2=V: muestras sin dispositivo → {}
+00:49 +138: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: resumenSesion: caminos independientes CB3 una muestra: promedio = mín = máx; sin pasos (C5=F)
+00:49 +139: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: resumenSesion: caminos independientes CB4 varias muestras: C3 y C4 toman V y F; con pasos (C5=V)
+00:49 +140: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: resumenSesion: caminos independientes Redondeo del promedio a 1 decimal: 60,61,61 → 60.7
+00:49 +141: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: resumenSesion: caminos independientes Límite superior del búfer: 3600 muestras
+00:49 +142: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 401 Invalid credentials
+00:49 +143: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 401 Password mismatch
+00:49 +144: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 401 Email not verified
+00:49 +145: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 403 Account disabled
+00:49 +146: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 401 Account locked
+00:49 +147: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 429 ThrottlerException: Too Many Requests
+00:49 +148: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 429 null
+00:49 +149: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 400 Email or username already in use
+00:49 +150: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 400 Invalid or expired code
+00:49 +151: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 400 Email already verified
+00:49 +152: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 404 User not found
+00:49 +153: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 401 Invalid or expired session
+00:49 +154: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 400 Invalid or expired reset token
+00:49 +155: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 400 [Password must contain one uppercase]
+00:49 +156: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 401 Unauthorized
+00:49 +157: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 403 Forbidden resource
+00:49 +158: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 404 Cannot GET /api/x
+00:49 +159: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 409 Ese dispositivo ya está vinculado.
+00:49 +160: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 409 null
+00:49 +161: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 409 This YouTube video is already saved
+00:49 +162: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 500 Internal server error
+00:49 +163: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 503 <html>Bad gateway</html>
+00:49 +164: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 400 [name must be shorter, address inválida]
+00:49 +165: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: traducirError: una prueba por rama (decisiones) 400 null
+00:49 +166: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: Temporizador: valores límite de remaining/progress 0 s, mitad, exacto y excedido
+00:49 +167: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_calculo_test.dart: Temporizador: valores límite de remaining/progress Excepciones: sesión sin usuario y duración fuera del catálogo
+00:49 +168: loading C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart
+00:51 +168: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB1 D1=F D2=F D3=V: GET sin token → JSON decodificado, sin Authorization
+00:51 +169: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB2 D1=V D2=V: POST con token y cuerpo → cabeceras y JSON enviados
+00:51 +170: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB3 204 sin cuerpo → null; cuerpo no JSON → texto (FormatException controlada)
+00:51 +171: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB4 E1: el servidor no responde a tiempo → ApiException de tiempo
+00:51 +172: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +173: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +174: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +175: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +176: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +177: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +178: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +179: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +180: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +181: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +182: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +183: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +184: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +185: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +186: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +187: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +188: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +189: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +190: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +191: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +192: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +193: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:51 +194: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_comunicacion_test.dart: _send: caminos independientes CB5 E2: puerto cerrado real (SocketException → ClientException)
+00:53 +195: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-04 _alRecibir: excepciones del protocolo TCP real Puerto cerrado → estado error con mensaje (SocketException controlada)
+00:53 +196: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-04 _alRecibir: excepciones del protocolo TCP real Puerto cerrado → estado error con mensaje (SocketException controlada)
+00:53 +197: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-04 _alRecibir: excepciones del protocolo TCP real Puerto cerrado → estado error con mensaje (SocketException controlada)
+00:53 +198: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-04 _alRecibir: excepciones del protocolo TCP real Puerto cerrado → estado error con mensaje (SocketException controlada)
+00:53 +199: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-04 _alRecibir: excepciones del protocolo TCP real Puerto cerrado → estado error con mensaje (SocketException controlada)
+00:53 +200: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-04 _alRecibir: excepciones del protocolo TCP real Puerto cerrado → estado error con mensaje (SocketException controlada)
+00:53 +201: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-04 _alRecibir: excepciones del protocolo TCP real Puerto cerrado → estado error con mensaje (SocketException controlada)
+00:53 +202: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-04 _alRecibir: excepciones del protocolo TCP real Puerto cerrado → estado error con mensaje (SocketException controlada)
+00:53 +203: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-04 _alRecibir: excepciones del protocolo TCP real Puerto cerrado → estado error con mensaje (SocketException controlada)
+00:53 +204: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-04 _alRecibir: excepciones del protocolo TCP real El dispositivo cierra la conexión → error y socket liberado
+00:53 +205: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-05 Validaciones de acceso: valores límite Contraseña: 7 rechazada, 8 aceptada, 72 aceptada, 73 rechazada
+00:53 +206: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-05 Validaciones de acceso: valores límite Contraseña: falta cada clase de carácter (una condición a la vez)
+00:53 +207: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-05 Validaciones de acceso: valores límite Correo: vacío, con espacios, sin dominio y válido
+00:53 +208: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/whitebox/wb_validacion_test.dart: WB-05 Validaciones de acceso: valores límite Usuario: 2 y 31 rechazados; 3 y 30 aceptados
+00:54 +209: loading C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/widget_test.dart
+00:55 +209: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/widget_test.dart: Acceso valida campos y ya no ofrece modo demo
+00:56 +210: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/widget_test.dart: Recorrido: entrar, favorito, sesión, pausa, terminar, historial y salir
+00:58 +211: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/widget_test.dart: La sección de administración solo aparece para ADMIN
+00:59 +212: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/widget_test.dart: Navegación y dispositivos sin desbordes a 320.0 px
+00:59 +213: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/widget_test.dart: Navegación y dispositivos sin desbordes a 768.0 px
+01:00 +214: C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/widget_test.dart: Navegación y dispositivos sin desbordes a 1440.0 px
+01:01 +215: All tests passed!

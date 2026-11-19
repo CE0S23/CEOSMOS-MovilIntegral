@@ -1,0 +1,19 @@
+== Código VIEJO (1a8f98c^): se espera FALLO ==
+Resolving dependencies...
+Downloading packages...
+Got dependencies!
+67 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+00:00 +0: loading C:/CESAR10cuatri/CEOSMOS.MovilIntegral/test/p13_14/aut03_regresion_tv_reiniciada_test.dart
+00:00 +0: DEF-BLE-01: la TV reiniciada (enlace arriba, sin autorización) vuelve a recibir la sesión
+00:03 +0 -1: DEF-BLE-01: la TV reiniciada (enlace arriba, sin autorización) vuelve a recibir la sesión [E]
+  Expected: contains RolBle:<RolBle.tv>
+    Actual: Set:[RolBle:RolBle.reloj]
+     Which: does not contain RolBle:<RolBle.tv>
+  CEOSMOS debe volver a responder el reto HMAC con el PIN guardado
+  
+  package:matcher                                           expect
+  package:flutter_test/src/widget_tester.dart 473:18        expect
+  test\p13_14\aut03_regresion_tv_reiniciada_test.dart 62:5  main.<fn>
+  
+00:03 +0 -1: Some tests failed.

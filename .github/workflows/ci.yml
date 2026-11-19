@@ -1,0 +1,135 @@
+# P13-14 · Validación continua de CEOSMOS Integral (Flutter + apps Kotlin Reloj/TV).
+# Se ejecuta en cada push y pull request. Falla si falla el análisis, cualquier prueba
+# o el lint de Android. No usa secretos: las pruebas corren contra servidores HTTP
+# locales, MockClient, BLE simulado y SQLite en memoria; nunca contra Vercel/Neon/Firebase.
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+# Acciones en versiones con Node 24 (v4 y upload-artifact v5 generaban avisos de Node 20 en los runs 1-4).
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  FLUTTER_VERSION: '3.41.9' # misma versión que el proyecto (Dart 3.11.5)
+
+jobs:
+  flutter:
+    name: Flutter · analyze + test + cobertura
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+          pub-cache: true
+
+      - name: Versión de Flutter
+        run: flutter --version
+
+      - name: Dependencias
+        run: flutter pub get
+
+      - name: Análisis estático
+        run: flutter analyze
+
+      - name: Pruebas (unitarias, widget, integración y regresión) con cobertura
+        run: |
+          mkdir -p build/reportes
+          flutter test --coverage --reporter expanded \
+            --file-reporter json:build/reportes/flutter-test-results.json
+
+      - name: Reporte JUnit (machine → XML)
+        if: always()
+        run: |
+          dart pub global activate junitreport 2.0.2
+          if [ -s build/reportes/flutter-test-results.json ]; then
+            dart pub global run junitreport:tojunit \
+              --input build/reportes/flutter-test-results.json \
+              --output build/reportes/flutter-junit.xml
+          fi
+
+      - name: Resumen de pruebas y cobertura
+        if: always()
+        run: |
+          echo "### Flutter" >> "$GITHUB_STEP_SUMMARY"
+          python3 scripts/resumen_pruebas.py build/reportes/flutter-test-results.json coverage/lcov.info \
+            | tee -a "$GITHUB_STEP_SUMMARY" || true
+
+      - name: Subir reportes de pruebas
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: flutter-test-reports
+          path: |
+            build/reportes/flutter-test-results.json
+            build/reportes/flutter-junit.xml
+          if-no-files-found: warn
+
+      - name: Subir cobertura (lcov)
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: flutter-coverage
+          path: coverage/lcov.info
+          if-no-files-found: warn
+
+  kotlin:
+    name: Kotlin · ${{ matrix.app }} (test + lint)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - app: Reloj
+            flavor: reloj
+          - app: TV
+            flavor: tv
+          - app: Companion
+            flavor: companion
+    defaults:
+      run:
+        working-directory: companion
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Caché de Gradle
+        uses: gradle/actions/setup-gradle@v5
+
+      - name: Pruebas unitarias (JVM)
+        run: |
+          chmod +x gradlew
+          F=${{ matrix.flavor }}; F=${F^}
+          ./gradlew --no-daemon --console=plain "test${F}DebugUnitTest"
+
+      - name: Android lint
+        run: |
+          F=${{ matrix.flavor }}; F=${F^}
+          ./gradlew --no-daemon --console=plain "lint${F}Debug"
+
+      - name: Subir reportes (JUnit XML, HTML y lint)
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: kotlin-${{ matrix.flavor }}-reports
+          path: |
+            companion/app/build/test-results/
+            companion/app/build/reports/
+          if-no-files-found: warn

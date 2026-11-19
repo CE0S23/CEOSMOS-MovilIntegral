@@ -15,6 +15,19 @@ String? validarCorreoUsuario(String? valor) {
   return null;
 }
 
+/// Edad entera entre 1 y 120 (extraída del formulario para probarla sin la UI, P13-14).
+String? validarEdadUsuario(String? valor) {
+  final edad = int.tryParse(valor?.trim() ?? '');
+  if (edad == null || edad < 1 || edad > 120) {
+    return 'Ingresa una edad entera entre 1 y 120.';
+  }
+  return null;
+}
+
+/// Campo de texto obligatorio (nombre, profesión).
+String? Function(String?) validarObligatorio(String mensaje) =>
+    (valor) => valor == null || valor.trim().isEmpty ? mensaje : null;
+
 class UsuariosPage extends StatefulWidget {
   const UsuariosPage({super.key, required this.baseDeDatos});
 
@@ -176,9 +189,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
                 enabled: habilitado,
                 decoration: const InputDecoration(labelText: 'Nombre'),
                 textCapitalization: TextCapitalization.words,
-                validator: (valor) => valor == null || valor.trim().isEmpty
-                    ? 'Ingresa el nombre.'
-                    : null,
+                validator: validarObligatorio('Ingresa el nombre.'),
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -186,13 +197,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
                 enabled: habilitado,
                 decoration: const InputDecoration(labelText: 'Edad'),
                 keyboardType: TextInputType.number,
-                validator: (valor) {
-                  final edad = int.tryParse(valor?.trim() ?? '');
-                  if (edad == null || edad < 1 || edad > 120) {
-                    return 'Ingresa una edad entera entre 1 y 120.';
-                  }
-                  return null;
-                },
+                validator: validarEdadUsuario,
               ),
               const SizedBox(height: 12),
               TextFormField(
@@ -200,9 +205,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
                 enabled: habilitado,
                 decoration: const InputDecoration(labelText: 'Profesión'),
                 textCapitalization: TextCapitalization.sentences,
-                validator: (valor) => valor == null || valor.trim().isEmpty
-                    ? 'Ingresa la profesión.'
-                    : null,
+                validator: validarObligatorio('Ingresa la profesión.'),
               ),
               const SizedBox(height: 12),
               TextFormField(

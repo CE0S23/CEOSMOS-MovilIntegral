@@ -8,8 +8,9 @@ actualizado: 2026-11-18
 
 ## Resumen (18/11/2026)
 - [x] `flutter analyze`: sin observaciones.
-- [x] `flutter test`: **188/188** (unidad, widgets, Black Box P8, White Box P11/P12, BLE, prácticas).
-- [x] Kotlin (compañeros): 9/9 (`ProtocoloTest`, vectores HMAC iguales a los de Dart).
+- [x] `flutter test`: **215/215** (unidad, widgets, Black Box P8, White Box P11/P12, BLE, prácticas y 27 de la P13-14).
+- [x] Kotlin (compañeros): 14/14 por app (`ProtocoloTest` + `AutomatizacionProtocoloTest`); lint de Reloj, TV y Companion sin errores.
+- [x] CI en GitHub Actions en cada push y PR → [[Práctica 13-14 - Automatización de pruebas y CI]].
 
 ## Black Box
 - [x] Suite de la [[Práctica 08 - Pruebas de caja negra]] (12 requisitos, CP-01…CP-18).
@@ -27,6 +28,11 @@ actualizado: 2026-11-18
 
 `ble_transporte_fbp.dart` (0 %) es el adaptador de la radio: se valida en hardware, no con pruebas unitarias.
 
+## Automatización y CI (P13-14)
+- [x] Matriz AUT-01…AUT-08 aprobada; regresión DEF-BLE-01 demostrada (falla con el código viejo).
+- [x] Integración con red real local (servidor HTTP en 127.0.0.1), mensaje sin servidor en pantalla y SQLite FFI con migración de la P4.
+- [x] Riesgo resuelto: pruebas BLE con espera fija fallaban bajo `--coverage` → espera por condición.
+
 ## Red Box
 - [x] API local, `scripts/redbox_api.sh` → **13/13** (`evidencias/redbox_api.txt`): sin token/alterado/`alg:none` → 401, inyección SQL en login, IDOR (leer/modificar/borrar dispositivo ajeno → 404), asignación masiva y validación → 400, cuerpo de 2 MB rechazado, USER en `/admin` → 403, sin hash en respuestas, token tras logout → 401.
 - [x] APK release: no depurable, `allowBackup=false`, solo `MainActivity` (y las de Firebase Auth) exportadas, texto claro solo a `localhost`/`10.0.2.2`, sin tokens ni contraseñas en logs.
@@ -41,4 +47,4 @@ actualizado: 2026-11-18
 - [ ] P10 «cesión»: A puede crear una incidencia a nombre de B si registra `cedidoPor` → exigir aceptación de B (ver [[08 - Pendientes]]).
 
 ---
-Navegación: [[00 - Índice CEOSMOS]] · [[Práctica 08 - Pruebas de caja negra]] · [[Práctica 11 - Pruebas White Box]] · [[Práctica 12 - Optimización, estrés y resiliencia]] · [[08 - Pendientes]]
+Navegación: [[00 - Índice CEOSMOS]] · [[Práctica 08 - Pruebas de caja negra]] · [[Práctica 11 - Pruebas White Box]] · [[Práctica 12 - Optimización, estrés y resiliencia]] · [[Práctica 13-14 - Automatización de pruebas y CI]] · [[08 - Pendientes]]

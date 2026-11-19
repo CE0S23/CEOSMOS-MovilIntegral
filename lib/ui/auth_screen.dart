@@ -144,7 +144,7 @@ class _AuthScreenState extends State<AuthScreen> {
     ),
     validator: nueva
         ? AuthRepository.validarContrasenaNueva
-        : (v) => (v ?? '').isEmpty ? 'Escribe tu contraseña.' : null,
+        : AuthRepository.validarContrasenaLogin,
   );
 
   @override
@@ -187,9 +187,7 @@ class _AuthScreenState extends State<AuthScreen> {
             labelText: 'Código de verificación',
             prefixIcon: Icon(Icons.pin_outlined),
           ),
-          validator: (v) => RegExp(r'^[0-9A-Fa-f]{6}$').hasMatch(v?.trim() ?? '')
-              ? null
-              : 'El código tiene 6 caracteres (0-9, A-F).',
+          validator: AuthRepository.validarCodigoVerificacion,
         ),
       if (_paso == _Paso.restablecer) ...[
         TextFormField(
@@ -198,7 +196,7 @@ class _AuthScreenState extends State<AuthScreen> {
             labelText: 'Código del enlace',
             prefixIcon: Icon(Icons.key_outlined),
           ),
-          validator: (v) => (v?.trim().length ?? 0) < 10 ? 'Pega el código completo del enlace.' : null,
+          validator: AuthRepository.validarTokenRestablecer,
         ),
         const SizedBox(height: 14),
       ],

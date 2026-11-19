@@ -10,6 +10,7 @@ import android.bluetooth.BluetoothGattServerCallback
 import android.bluetooth.BluetoothGattService
 import android.bluetooth.BluetoothManager
 import android.bluetooth.BluetoothProfile
+import android.bluetooth.BluetoothStatusCodes
 import android.bluetooth.le.AdvertiseCallback
 import android.bluetooth.le.AdvertiseData
 import android.bluetooth.le.AdvertiseSettings
@@ -114,7 +115,8 @@ class ServidorGatt(
         for (clave in suscritos.filter { it.rol == rol && it in autenticados }) {
             val d = conectados[clave.direccion] ?: continue
             val ok = if (Build.VERSION.SDK_INT >= 33) {
-                s.notifyCharacteristicChanged(d, c, false, bytes) == BluetoothGatt.GATT_SUCCESS
+                // P13-14 (lint WrongConstant): esta sobrecarga devuelve BluetoothStatusCodes, no GATT_*.
+                s.notifyCharacteristicChanged(d, c, false, bytes) == BluetoothStatusCodes.SUCCESS
             } else {
                 @Suppress("DEPRECATION")
                 c.value = bytes

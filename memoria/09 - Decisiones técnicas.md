@@ -19,6 +19,8 @@ actualizado: 2026-11-18
 | 18/11 | Autenticación BLE por reto + HMAC con PIN de 6 dígitos | No enviar el PIN por el aire; sin diálogo de emparejamiento del sistema |
 | 18/11 | La dirección BLE guardada en la API es `CE:05:<id>` | La MAC del periférico rota (privacidad) |
 | 18/11 | Prácticas Flutter informan `onNavigationNotification` a favor de CEOSMOS | En Android 14+ (atrás predictivo) el `MaterialApp` interno cerraba la app al pulsar Atrás |
+| 18/11 | Repo propio y público para la app (`CEOSMOS-MovilIntegral`), no `CEOSMOSV2` | CEOSMOSV2 es la web/API con historia distinta y despliegue a Vercel/Neon; el profesor ve el repo sin invitación |
+| 18/11 | CI sin secretos: servidor HTTP local, MockClient, BLE simulado y SQLite FFI | Las pruebas nunca deben tocar producción ([[Práctica 13-14 - Automatización de pruebas y CI]]) |
 | 18/11 | Escaneo BLE en serie y reautenticación al recibir «sin autorización» | Defectos encontrados en hardware (ver [[06 - BLE Wearable y TV]]) |
 
 ---

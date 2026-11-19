@@ -12,6 +12,16 @@ import '../support/fake_ble.dart';
 
 Future<void> esperar([int ms = 20]) => Future<void>.delayed(Duration(milliseconds: ms));
 
+/// P13-14: espera por CONDICIÓN (máx. [maxMs]) en lugar de un tiempo fijo. Con
+/// `flutter test --coverage` en paralelo (CI) la reconexión tardó más de 100 ms y la
+/// prueba fallaba de forma intermitente aunque el código fuera correcto.
+Future<void> esperarHasta(bool Function() condicion, {int maxMs = 3000}) async {
+  final reloj = Stopwatch()..start();
+  while (!condicion() && reloj.elapsedMilliseconds < maxMs) {
+    await esperar(10);
+  }
+}
+
 void main() {
   late PerifericoFalso tablet;
   late TransporteFalso radio;
@@ -126,7 +136,7 @@ void main() {
     tablet.conexion!.cortar();
     await esperar(5);
     expect(ble[RolBle.reloj].estado, isIn([EstadoEnlace.reconectando, EstadoEnlace.conectado]));
-    await esperar(100);
+    await esperarHasta(() => ble[RolBle.reloj].estado == EstadoEnlace.conectado);
     expect(ble[RolBle.reloj].estado, EstadoEnlace.conectado);
     expect(radio.conexiones, 2);
   });
@@ -160,7 +170,7 @@ void main() {
     await esperar(50);
     expect(radio.conexiones, 1, reason: 'no gasta intentos sin Bluetooth');
     await ble.encenderBluetooth();
-    await esperar(100);
+    await esperarHasta(() => ble[RolBle.tv].estado == EstadoEnlace.conectado);
     expect(ble[RolBle.tv].estado, EstadoEnlace.conectado);
   });
 
@@ -231,7 +241,7 @@ void main() {
     await ble.conectar(RolBle.reloj, pin: '123456');
     tablet.pin = '777777'; // «Nuevo PIN» en el reloj revoca el acceso
     tablet.conexion!.cortar();
-    await esperar(200);
+    await esperarHasta(() => ble[RolBle.reloj].estado == EstadoEnlace.error);
     expect(ble[RolBle.reloj].estado, EstadoEnlace.error);
     expect(pines.valores, isEmpty);
     expect(radio.conexiones, 2, reason: 'un solo intento: con PIN rechazado no se insiste');
@@ -255,7 +265,7 @@ void main() {
     await ble.conectar(RolBle.tv, pin: '123456');
     tablet.autenticados.clear(); // la app TV se reinició; el enlace sigue arriba
     ble.publicarSesion();
-    await esperar(100);
+    await esperarHasta(() => tablet.autenticados.contains(RolBle.tv) && ble[RolBle.tv].estado == EstadoEnlace.conectado);
     expect(ble[RolBle.tv].estado, EstadoEnlace.conectado);
     expect(tablet.autenticados, contains(RolBle.tv));
     ble.publicarSesion();
@@ -269,7 +279,8 @@ void main() {
     radio.cambiarAdaptador(AdaptadorBle.apagado);
     await esperar();
     radio.cambiarAdaptador(AdaptadorBle.encendido);
-    await esperar(400);
+    await esperarHasta(() =>
+        ble[RolBle.reloj].estado == EstadoEnlace.conectado && ble[RolBle.tv].estado == EstadoEnlace.conectado);
     expect(ble[RolBle.reloj].estado, EstadoEnlace.conectado);
     expect(ble[RolBle.tv].estado, EstadoEnlace.conectado);
   });

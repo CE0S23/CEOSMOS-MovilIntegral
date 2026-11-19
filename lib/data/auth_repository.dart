@@ -35,6 +35,22 @@ class AuthRepository {
     return null;
   }
 
+  /// Contraseña del inicio de sesión: solo se exige que no esté vacía (la política
+  /// completa se aplica al crearla; una cuenta antigua puede no cumplirla).
+  static String? validarContrasenaLogin(String? v) =>
+      (v ?? '').isEmpty ? 'Escribe tu contraseña.' : null;
+
+  static final _codigo = RegExp(r'^[0-9A-Fa-f]{6}$');
+
+  /// Código de verificación de correo: 6 caracteres hexadecimales.
+  static String? validarCodigoVerificacion(String? v) => _codigo.hasMatch(v?.trim() ?? '')
+      ? null
+      : 'El código tiene 6 caracteres (0-9, A-F).';
+
+  /// Token del enlace para restablecer la contraseña (se pega completo).
+  static String? validarTokenRestablecer(String? v) =>
+      (v?.trim().length ?? 0) < 10 ? 'Pega el código completo del enlace.' : null;
+
   static String normalizar(String email) => email.trim().toLowerCase();
 
   /// Restaura la sesión guardada; devuelve null si no hay token o ya no es válido.
