@@ -1,0 +1,11 @@
+200 0.112637s conexión, 0.343680s total, TLS 0
+200 0.034712s conexión, 1.757577s total, TLS 0
+200 0.034992s conexión, 0.221628s total, TLS 0
+200 0.034665s conexión, 0.214103s total, TLS 0
+200 0.034442s conexión, 0.215967s total, TLS 0
+Server: Vercel
+Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+X-Vercel-Cache: MISS
+X-Vercel-Id: cle1::iad1::kfldv-1795301704211-f5a7b53ff977
+sin token /devices ? 401
+http plano ? 308 https://ceosmos-api.vercel.app/api/health

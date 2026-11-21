@@ -1,0 +1,16 @@
+Tokens obtenidos: A=sí B=sí
+PASA  RB-01 sin token → 401 (esperado 401, obtenido 401)
+PASA  RB-02 token alterado → 401 (esperado 401, obtenido 401)
+PASA  RB-03 JWT 'alg:none' → 401 (esperado 401, obtenido 401)
+PASA  RB-04 inyección SQL en login → 401/400 (no 200/500) (esperado 1, obtenido 1)
+Dispositivo de B: 2a881544-d829-47ee-aad9-61858cc92699
+PASA  RB-05 A modifica dispositivo de B → 404 (esperado 404, obtenido 404)
+PASA  RB-06 A borra dispositivo de B → 404 (esperado 404, obtenido 404)
+PASA  RB-07 A no ve el dispositivo de B en su lista (esperado 0, obtenido 0)
+PASA  RB-08 asignación masiva (userId ajeno / campo extra) → 400 (esperado 400, obtenido 400)
+PASA  RB-09 dirección inválida → 400 (esperado 400, obtenido 400)
+PASA  RB-10 cuerpo enorme (2 MB) → 413/400 (esperado 1, obtenido 1)
+PASA  RB-11 USER entra a /admin → 403 (esperado 403, obtenido 403)
+PASA  RB-12 la respuesta de /users/me no expone el hash (esperado 0, obtenido 0)
+PASA  RB-13 token tras logout → 401 (esperado 401, obtenido 401)
+Resultado: 13 pasan, 0 fallan
