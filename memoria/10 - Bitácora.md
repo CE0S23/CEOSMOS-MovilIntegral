@@ -48,7 +48,7 @@ actualizado: 2026-11-19
   - [x] Botón ⓘ «Referencia académica» centralizado en `lib/core/referencias_academicas.dart` (`mostrarReferenciasAcademicas`).
   - [x] Word «Reporte de avances - CEOSMOS revicion.docx» reescrito por funciones + «Calidad y pruebas»; respaldo en `C:/CESAR10cuatri/memoria_respaldo_2026-11-21/`.
   - [x] 216/216 pruebas, analyze limpio, companion verde, capturas en `evidencias/reestructura/`.
-  - [ ] Recorrido en S24 / Tab S9 (sigue sin equipos en adb).
+  - [x] Recorrido en S24 / Tab S9 hecho por la tarde (ver [[12 - Mapa de funciones]]); quedan agente y usuarios de Soporte (contraseñas del usuario).
 
 ## Estado de las tareas pedidas (18/11)
 - [x] Tarea 1 · Actividades 4–12 validadas (P7 completada el 19/11).

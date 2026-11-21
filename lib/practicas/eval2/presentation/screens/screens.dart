@@ -46,7 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
           const SizedBox(height: 48),
           Icon(Icons.local_hospital_outlined, size: 56, color: c.primary),
           const SizedBox(height: 12),
-          Text('MediConnect', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headlineMedium),
+          Text('Citas de bienestar', textAlign: TextAlign.center, style: Theme.of(context).textTheme.headlineMedium),
           const Text('Inicia sesión para consultar y agendar tus citas', textAlign: TextAlign.center),
           const SizedBox(height: 32),
           TextField(controller: _email, keyboardType: TextInputType.emailAddress,

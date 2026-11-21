@@ -80,9 +80,9 @@ fun PantallaConexion(vm: IncidenciasViewModel) {
     LazyColumn(contentPadding = PaddingValues(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         item {
             Seccion("Base de datos compartida (Cloud Firestore)") {
-                Dato("Proyecto", vm.proyecto)
+                Dato("Proyecto", proyectoVisible(vm.proyecto))
                 Dato("App ID", vm.appId)
-                Dato("Colección", COLECCION)
+                Dato("Colección", COLECCION_VISIBLE)
                 Dato("Red", if (vm.enLinea) "En línea" else "Sin conexión")
                 Dato("Origen de los datos", if (vm.desdeCache) "Caché local (sin confirmar con el servidor)" else "Servidor")
                 Dato("Última lectura", hora(vm.ultimaLectura))
@@ -167,7 +167,7 @@ fun PantallaMatriz(vm: IncidenciasViewModel) {
     LazyColumn(contentPadding = PaddingValues(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
         item {
             Text(
-                "Los resultados se guardan en \"$COLECCION_MATRIZ\" y se ven en ambos dispositivos.",
+                "Los resultados se guardan en \"$MATRIZ_VISIBLE\" y se ven en ambos dispositivos.",
                 style = MaterialTheme.typography.bodySmall,
             )
         }

@@ -74,7 +74,7 @@ Espaciado 4/8/12/16/24/32 (`Espacio`), radios 12/16/20 + píldora (`Radios`), so
 ## Verificación (21/11/2026)
 - [x] `flutter analyze` sin issues · `flutter test` 215/215 · `./gradlew test lint` (companion) verde · `flutter build apk --debug` OK.
 - [x] Capturas antes/después (claro y oscuro) generadas con la API simulada.
-- [ ] Recorrido en S24 y Tab S9: no se pudo; ningún equipo aparecía en `adb devices` durante el trabajo. → [[08 - Pendientes]]
+- [x] Recorrido en S24 y Tab S9 (21/11, claro y oscuro) junto con la reestructura; ajustes de TV y tema nativo oscuro detallados en [[12 - Mapa de funciones]].
 
 ---
 Navegación: [[00 - Índice CEOSMOS]] · [[10 - Bitácora]] · [[09 - Decisiones técnicas]]

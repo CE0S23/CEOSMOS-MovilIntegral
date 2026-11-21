@@ -153,9 +153,9 @@ fun PantallaCuenta(vm: IncidenciasViewModel) {
         }
         item {
             Seccion("Base de datos") {
-                Dato("Proyecto", vm.proyecto)
+                Dato("Proyecto", proyectoVisible(vm.proyecto))
                 Dato("App ID", vm.appId)
-                Dato("Colección", COLECCION)
+                Dato("Colección", COLECCION_VISIBLE)
                 Dato("Red", if (vm.enLinea) "En línea" else "Sin conexión")
             }
         }

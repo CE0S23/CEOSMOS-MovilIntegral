@@ -520,7 +520,7 @@ class _ConversationPageState extends State<ConversationPage> with WidgetsBinding
       },
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('MobileConnect'),
+          title: const Text('Conversación'),
           leading: _started ? IconButton(
             tooltip: 'Regresar', icon: const Icon(Icons.arrow_back),
             onPressed: _returnToSetup,

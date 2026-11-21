@@ -145,7 +145,7 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('ACCESO SEGURO',
+                  Text('SEGURIDAD DE LA CUENTA',
                       style: t.labelMedium?.copyWith(color: p.enlace, fontWeight: FontWeight.w700, letterSpacing: 1.2)),
                   const SizedBox(height: Espacio.m),
                   Text('Inicia sesión',

@@ -62,7 +62,7 @@ fun PantallaIncidencias(vm: IncidenciasViewModel) {
             if (!vm.cargando && vm.incidencias.isEmpty()) {
                 item {
                     Text(
-                        "La colección \"$COLECCION\" está vacía. Registra la primera incidencia con el botón Nueva.",
+                        "La colección \"$COLECCION_VISIBLE\" está vacía. Registra la primera incidencia con el botón Nueva.",
                         modifier = Modifier.padding(24.dp),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )

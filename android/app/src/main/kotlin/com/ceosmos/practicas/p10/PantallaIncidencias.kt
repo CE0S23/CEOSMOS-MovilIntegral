@@ -66,7 +66,7 @@ fun PantallaIncidencias(vm: IncidenciasViewModel) {
             item {
                 Encabezado(
                     "Asignadas a mí (${vm.asignadas.size})",
-                    "Consulta: $COLECCION where asignadoA == ${vm.uid}",
+                    "Consulta: $COLECCION_VISIBLE where asignadoA == ${vm.uid}",
                     "Las reglas te dejan verlas y cambiar su estado. Si intentas cambiar otra cosa o eliminarlas, Firestore lo rechaza (SEG-14).",
                 )
             }
@@ -103,7 +103,7 @@ private fun BarraConsulta(vm: IncidenciasViewModel) {
         Column(Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp)) {
             Text("Mis incidencias (${vm.incidencias.size})", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
             Text(
-                "Consulta: $COLECCION where creadoPor == ${vm.uid}",
+                "Consulta: $COLECCION_VISIBLE where creadoPor == ${vm.uid}",
                 style = MaterialTheme.typography.labelSmall,
                 fontFamily = FontFamily.Monospace,
             )

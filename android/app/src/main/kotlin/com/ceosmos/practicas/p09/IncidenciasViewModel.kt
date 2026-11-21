@@ -211,7 +211,7 @@ class IncidenciasViewModel(app: Application) : AndroidViewModel(app) {
 
         if (previas == null) {
             val fuente = if (instantanea.desdeCache) "caché" else "servidor"
-            registrar("Estado inicial de \"$COLECCION\": ${nuevas.size} documentos ($fuente, $origen)", TipoEvento.LOCAL)
+            registrar("Estado inicial de \"$COLECCION_VISIBLE\": ${nuevas.size} documentos ($fuente, $origen)", TipoEvento.LOCAL)
             return
         }
         for (b in nuevas) {

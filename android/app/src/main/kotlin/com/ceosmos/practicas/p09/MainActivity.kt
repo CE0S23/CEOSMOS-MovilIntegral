@@ -143,7 +143,7 @@ private fun PantallaPrincipal(vm: IncidenciasViewModel, snackbar: SnackbarHostSt
                                 PuntoEstado(vm.enLinea)
                                 Spacer(Modifier.width(5.dp))
                                 Text(
-                                    "${if (vm.enLinea) "En línea" else "Sin conexión"} · ${vm.proyecto}",
+                                    "${if (vm.enLinea) "En línea" else "Sin conexión"} · ${proyectoVisible(vm.proyecto)}",
                                     style = MaterialTheme.typography.bodySmall,
                                     maxLines = 1,
                                 )
@@ -212,7 +212,7 @@ private fun PantallaNombre(vm: IncidenciasViewModel, snackbar: SnackbarHostState
             Spacer(Modifier.height(24.dp))
             Text("Incidencias técnicas", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Text("Identifica este teléfono. El nombre se guarda solo en este dispositivo (almacenamiento local); las incidencias se guardan en la nube y las ven todos.")
-            Text("Proyecto de Firebase: ${vm.proyecto}", fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall)
+            Text("Proyecto de Firebase: ${proyectoVisible(vm.proyecto)}", fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall)
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                 listOf("Dispositivo A", "Dispositivo B").forEach {
                     Button(onClick = { vm.cambiarNombre(it) }, modifier = Modifier.weight(1f).height(56.dp)) { Text(it) }

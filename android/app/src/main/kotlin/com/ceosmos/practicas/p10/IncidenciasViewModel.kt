@@ -152,16 +152,16 @@ class IncidenciasViewModel(app: Application) : AndroidViewModel(app) {
         autenticando = true
         viewModelScope.launch {
             val lectura = try {
-                Respuesta.Permitida("Lectura de $COLECCION sin sesión: PERMITIDA (${repo.leerTodas().size()} documentos)")
+                Respuesta.Permitida("Lectura de $COLECCION_VISIBLE sin sesión: PERMITIDA (${repo.leerTodas().size()} documentos)")
             } catch (e: Exception) {
-                respuestaDe(e, "Lectura de $COLECCION sin sesión")
+                respuestaDe(e, "Lectura de $COLECCION_VISIBLE sin sesión")
             }
             val escritura = try {
                 val r = repo.crear(repo.nuevoId(), "SIN_SESION", "Intento sin iniciar sesión", Prioridad.BAJA, "sin-sesion", "", "sin-sesion")
                 if (r == Escritura.CONFIRMADA) Respuesta.Permitida("Escritura sin sesión: PERMITIDA")
                 else Respuesta.SinRespuesta("Escritura sin sesión: sin respuesta del servidor")
             } catch (e: Exception) {
-                respuestaDe(e, "Escritura en $COLECCION sin sesión")
+                respuestaDe(e, "Escritura en $COLECCION_VISIBLE sin sesión")
             }
             pruebaSinSesion = "${lectura.detalle}\n${escritura.detalle}"
             anotar("SEG-10", combinar(lectura, escritura), "sin sesión")
@@ -493,7 +493,7 @@ class IncidenciasViewModel(app: Application) : AndroidViewModel(app) {
         // SEG-12: al abrir una incidencia asignada se lee directamente del servidor.
         if (incidencia.creadoPor != uid) {
             viewModelScope.launch {
-                val op = "get $COLECCION/${incidencia.id} (propietario ${incidencia.creadoPorCorreo}, asignada a ti)"
+                val op = "get $COLECCION_VISIBLE/${incidencia.id} (propietario ${incidencia.creadoPorCorreo}, asignada a ti)"
                 anotar("SEG-12", try {
                     repo.leer(incidencia.id)
                     Respuesta.Permitida("$op: leída del servidor")
@@ -591,7 +591,7 @@ class IncidenciasViewModel(app: Application) : AndroidViewModel(app) {
 
     fun leerAjena() {
         val a = ajena ?: return
-        val op = "Lectura de $COLECCION/${a.id} (propietario ${a.propietario.correo})"
+        val op = "Lectura de $COLECCION_VISIBLE/${a.id} (propietario ${a.propietario.correo})"
         guardando = true
         viewModelScope.launch {
             val inicio = SystemClock.elapsedRealtime()
@@ -613,14 +613,14 @@ class IncidenciasViewModel(app: Application) : AndroidViewModel(app) {
 
     fun modificarAjena(estado: Estado) {
         val a = ajena ?: return
-        operacion("Actualización de $COLECCION/${a.id} (propietario ${a.propietario.correo}): estado → ${estado.texto}", listOf("SEG-06"), {}) {
+        operacion("Actualización de $COLECCION_VISIBLE/${a.id} (propietario ${a.propietario.correo}): estado → ${estado.texto}", listOf("SEG-06"), {}) {
             repo.actualizar(a.id, mapOf("estado" to estado.texto), uid)
         }
     }
 
     fun eliminarAjena() {
         val a = ajena ?: return
-        operacion("Eliminación de $COLECCION/${a.id} (propietario ${a.propietario.correo})", listOf("SEG-07"), {}) {
+        operacion("Eliminación de $COLECCION_VISIBLE/${a.id} (propietario ${a.propietario.correo})", listOf("SEG-07"), {}) {
             repo.eliminar(a.id)
         }
     }

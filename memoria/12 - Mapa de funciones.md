@@ -49,7 +49,9 @@ La sección **Administración** de Perfil sigue siendo solo para cuentas ADMIN d
 ## Verificación (21/11/2026)
 - [x] `flutter analyze` sin issues · `flutter test` 216/216 (nueva `test/navegacion_funciones_test.dart`) · companion `./gradlew test lint` verde · APK debug compila.
 - [x] Capturas en `evidencias/reestructura/` (menús, admin y cada función Flutter con su ⓘ abierto).
-- [ ] Recorrido en S24 + Tab S9 (4 roles de Soporte, Reportes entre equipos, mensajería, Directorio, Seguridad, Reloj y TV, claro/oscuro): no había equipos en `adb devices`. → [[08 - Pendientes]]
+- [x] Recorrido en S24 + Tab S9 (21/11, APK release, capturas `evidencias/reestructura/dispositivos/`): Soporte como admin (menú lateral con asignados, todos y dispositivos; ⓘ; Atrás vuelve a Soporte), Incidencias sin conexión, Reportes compartidos (Flutter y Android), Incidencias en tiempo real (alta en la tablet → aparece al instante en el S24), Mis incidencias y acceso, Mensajería entre equipos por Wi-Fi (mensaje S24 → tablet), Seguridad de la cuenta, Directorio, Citas, Reloj y TV conectados a la vez por BLE, claro y oscuro; menú ADMIN en la tablet.
+- [x] Corregido en el recorrido: botón «Siguiente» de la TV partido en 3 líneas (ahora FlowRow), tarjetas grises en pantallas nativas en oscuro (faltaban `surfaceContainer*`), identificadores con «p7/p9/p10» visibles (proyecto y colecciones) y títulos internos «MobileConnect», «MediConnect», «ACCESO SEGURO».
+- [ ] Agente y los 2 usuarios de Soporte: requieren que el usuario escriba sus contraseñas (pendiente del usuario).
 
 ---
 Navegación: [[00 - Índice CEOSMOS]] · [[04 - Módulos de la app]] · [[11 - Sistema de diseño]]

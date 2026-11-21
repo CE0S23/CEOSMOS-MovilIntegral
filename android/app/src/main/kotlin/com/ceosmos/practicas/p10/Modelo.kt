@@ -25,6 +25,12 @@ const val COLECCION_USUARIOS = "usuarios_p10"
 const val COLECCION_MATRIZ = "matriz_p10"
 const val COLECCION_SESIONES = "sesiones_p10"
 
+// [CEOSMOS] Nombres que se MUESTRAN en pantalla (sin el sufijo interno de la práctica).
+// Las consultas a Firestore siguen usando las constantes reales de arriba.
+const val COLECCION_VISIBLE = "incidencias"
+const val MATRIZ_VISIBLE = "matriz de pruebas"
+fun proyectoVisible(id: String): String = id.replace(Regex("-p\\d+$"), "")
+
 /** Una cuenta solo puede tener una sesión activa: la instalación que la tiene y su último latido. */
 data class SesionActiva(val instalacion: String, val equipo: String, val inicio: Long?, val latido: Long?)
 

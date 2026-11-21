@@ -223,7 +223,7 @@ private fun PantallaLogin(vm: IncidenciasViewModel, snackbar: SnackbarHostState)
             Icon(Icons.Filled.Lock, contentDescription = null, modifier = Modifier.size(40.dp), tint = MaterialTheme.colorScheme.primary)
             Text("Incidencias Seguras", style = MaterialTheme.typography.headlineSmall, fontWeight = FontWeight.Bold)
             Text("Inicia sesión con tu cuenta. Solo podrás ver y modificar las incidencias que tú registraste.")
-            Text("Proyecto de Firebase: ${vm.proyecto}", fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall)
+            Text("Proyecto de Firebase: ${proyectoVisible(vm.proyecto)}", fontFamily = FontFamily.Monospace, style = MaterialTheme.typography.bodySmall)
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
                 CUENTAS_PRUEBA.forEach { (nombre, c) ->
                     OutlinedButton(onClick = { correo = c }, modifier = Modifier.weight(1f)) { Text(nombre) }
@@ -248,7 +248,7 @@ private fun PantallaLogin(vm: IncidenciasViewModel, snackbar: SnackbarHostState)
             HorizontalDivider(Modifier.padding(vertical = 8.dp))
             Text("Prueba SEG-10 (sin sesión)", style = MaterialTheme.typography.labelLarge, fontWeight = FontWeight.Bold)
             Text(
-                "Intenta leer la colección $COLECCION y crear un documento sin haber iniciado sesión. Firestore debe rechazar ambas operaciones.",
+                "Intenta leer la colección $COLECCION_VISIBLE y crear un documento sin haber iniciado sesión. Firestore debe rechazar ambas operaciones.",
                 style = MaterialTheme.typography.bodySmall,
             )
             OutlinedButton(onClick = vm::probarSinSesion, enabled = !vm.autenticando, modifier = Modifier.fillMaxWidth()) {

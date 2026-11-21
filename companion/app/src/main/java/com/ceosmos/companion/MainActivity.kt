@@ -19,6 +19,8 @@ import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -254,6 +256,7 @@ private fun Registro(e: Estado, modifier: Modifier) {
 // TV: panel horizontal de pantalla grande, navegable con D-pad
 // ---------------------------------------------------------------------------
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PantallaTv(e: Estado, cambiarModo: (() -> Unit)?) {
     val p = LocalPaleta.current
@@ -288,7 +291,8 @@ private fun PantallaTv(e: Estado, cambiarModo: (() -> Unit)?) {
                 s.hr?.let { Text("♥ $it bpm (reloj)", color = p.exito, style = t.headlineSmall, modifier = Modifier.padding(top = 16.dp)) }
             }
             Spacer(Modifier.height(36.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
+            // Los botones pasan a otra fila si no caben (tablet en horizontal, escala TV).
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(20.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 val ok = Rol.TV in e.suscrito
                 BotonTv("◀ Anterior", ok, Modifier.focusRequester(primero)) { Nucleo.enviarComando(Rol.TV, "prev") }
                 BotonTv(if (e.sesion?.estado == "running") "❚❚ Pausar" else "▶ Reanudar", ok) { Nucleo.enviarComando(Rol.TV, "toggle") }
@@ -351,6 +355,8 @@ private fun BotonTv(texto: String, habilitado: Boolean, modifier: Modifier = Mod
             texto,
             style = if (chico) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
             color = contenido,
+            maxLines = 1,
+            softWrap = false,
             modifier = Modifier.padding(if (chico) 4.dp else 12.dp),
         )
     }

@@ -12,6 +12,12 @@ import com.google.firebase.firestore.FieldValue
 const val COLECCION = "incidencias"
 const val COLECCION_MATRIZ = "matriz_p9"
 
+// [CEOSMOS] Nombres que se MUESTRAN en pantalla (sin el sufijo interno de la práctica).
+// Las consultas a Firestore siguen usando las constantes reales de arriba.
+const val COLECCION_VISIBLE = "incidencias"
+const val MATRIZ_VISIBLE = "matriz de pruebas"
+fun proyectoVisible(id: String): String = id.replace(Regex("-p\\d+$"), "")
+
 enum class Estado(val texto: String) {
     PENDIENTE("Pendiente"), EN_PROCESO("En proceso"), RESUELTA("Resuelta");
 
