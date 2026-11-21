@@ -93,7 +93,7 @@ class _RolScreenState extends State<RolScreen> {
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Entrar a Práctica 7')),
+    appBar: AppBar(title: const Text('Entrar a Soporte')),
     body: Center(
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: 480),

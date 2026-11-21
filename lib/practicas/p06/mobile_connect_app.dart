@@ -14,7 +14,7 @@ class MobileConnectApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
-        title: 'MobileConnect',
+        title: 'Mensajería entre equipos',
         debugShowCheckedModeBanner: false,
         // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
         theme: CeosmosTema.claro,

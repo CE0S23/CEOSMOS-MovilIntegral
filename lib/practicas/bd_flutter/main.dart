@@ -15,7 +15,7 @@ class ReportesApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
-    title: 'Reportes Firestore',
+    title: 'Reportes compartidos',
     debugShowCheckedModeBanner: false,
     // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
     theme: CeosmosTema.claro,
@@ -206,7 +206,7 @@ class _ReportesPageState extends State<ReportesPage> {
   Widget build(BuildContext context) {
     final puedeOperar = _uid != null && !_ocupado;
     return Scaffold(
-      appBar: AppBar(title: const Text('Reportes Firestore')),
+      appBar: AppBar(title: const Text('Reportes compartidos')),
       body: SafeArea(
         child: ListView(
           padding: const EdgeInsets.all(20),

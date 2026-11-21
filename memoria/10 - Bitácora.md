@@ -42,6 +42,13 @@ actualizado: 2026-11-19
   - [x] 6 combinaciones ajustadas a WCAG AA (`tool/contraste/`); 215/215 pruebas, analyze limpio, gradle test + lint verde.
   - [x] Capturas antes/después en `evidencias/rediseno/`.
   - [ ] Recorrido en S24 / Tab S9 pendiente: no había equipos conectados por adb.
+- **21/11/2026 (tarde)** — Reestructura: prácticas → funciones de CEOSMOS. → [[12 - Mapa de funciones]]
+  - [x] Pestaña «Prácticas» reemplazada por **Soporte**; Mensajería en Equipos; Seguridad, Directorio y Citas en Perfil › Cuenta y herramientas.
+  - [x] Sin «Práctica/P#/Examen/Eval.» visible (Flutter, títulos de MaterialApp, etiquetas del manifest y barra nativa); prueba `navegacion_funciones_test.dart`.
+  - [x] Botón ⓘ «Referencia académica» centralizado en `lib/core/referencias_academicas.dart` (`mostrarReferenciasAcademicas`).
+  - [x] Word «Reporte de avances - CEOSMOS revicion.docx» reescrito por funciones + «Calidad y pruebas»; respaldo en `C:/CESAR10cuatri/memoria_respaldo_2026-11-21/`.
+  - [x] 216/216 pruebas, analyze limpio, companion verde, capturas en `evidencias/reestructura/`.
+  - [ ] Recorrido en S24 / Tab S9 (sigue sin equipos en adb).
 
 ## Estado de las tareas pedidas (18/11)
 - [x] Tarea 1 · Actividades 4–12 validadas (P7 completada el 19/11).

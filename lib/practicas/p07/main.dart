@@ -75,6 +75,9 @@ class _Practica7EntradaState extends State<Practica7Entrada> {
     return MaterialApp(
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
       debugShowCheckedModeBanner: false,
+      theme: CeosmosTema.claro,
+      darkTheme: CeosmosTema.oscuro,
+      themeMode: ThemeMode.system,
       home: Scaffold(
         body: Center(
           child: _error == null
@@ -106,7 +109,7 @@ class Practica7App extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
-    title: 'Práctica 7',
+    title: 'Soporte',
     // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
     theme: CeosmosTema.claro,
     darkTheme: CeosmosTema.oscuro,

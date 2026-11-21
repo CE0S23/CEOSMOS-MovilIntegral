@@ -18,7 +18,7 @@ class ConsultaWebApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
-      title: 'ConsultaWeb',
+      title: 'Directorio de alumnos',
       debugShowCheckedModeBanner: false,
       // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
       theme: CeosmosTema.claro,

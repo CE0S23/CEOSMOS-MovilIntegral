@@ -135,9 +135,9 @@ void main() {
       await tester.pumpAndSettle();
       expect(find.text('Sin dispositivos vinculados'), findsOneWidget);
       expect(find.textContaining('FICTICIOS'), findsNothing);
-      await tester.tap(find.byIcon(Icons.science_outlined).last);
+      await tester.tap(find.byIcon(Icons.support_agent_outlined).last);
       await tester.pumpAndSettle();
-      expect(find.text('ConsultaWeb'), findsOneWidget);
+      expect(find.text('Tickets y chat interno'), findsOneWidget);
       expect(tester.takeException(), isNull);
       await tester.pumpWidget(const SizedBox());
       await tester.pumpAndSettle();

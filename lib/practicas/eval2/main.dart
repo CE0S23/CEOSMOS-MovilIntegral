@@ -13,7 +13,7 @@ class MediConnectApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
-      title: 'MediConnect',
+      title: 'Citas de bienestar',
       debugShowCheckedModeBanner: false,
       // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
       theme: CeosmosTema.claro,

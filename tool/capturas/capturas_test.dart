@@ -150,8 +150,8 @@ void main() {
       await _navegar(tester, Icons.devices_other_outlined);
       await _capturar(tester, '06_equipos$sufijo');
 
-      await _navegar(tester, Icons.science_outlined);
-      await _capturar(tester, '07_practicas$sufijo');
+      await _navegar(tester, Icons.support_agent_outlined);
+      await _capturar(tester, '07_soporte$sufijo');
 
       await _navegar(tester, Icons.person_outline_rounded);
       await _capturar(tester, '08_perfil$sufijo');

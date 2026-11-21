@@ -12,7 +12,7 @@ class AccesoSeguroApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => MaterialApp(
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
-        title: 'AccesoSeguro',
+        title: 'Seguridad de la cuenta',
         debugShowCheckedModeBanner: false,
         // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
         theme: CeosmosTema.claro,

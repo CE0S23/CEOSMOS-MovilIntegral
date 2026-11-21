@@ -45,7 +45,7 @@ class IncidenciasApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
-      title: 'Incidencias de Soporte',
+      title: 'Incidencias sin conexión',
       debugShowCheckedModeBanner: false,
       // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
       theme: CeosmosTema.claro,

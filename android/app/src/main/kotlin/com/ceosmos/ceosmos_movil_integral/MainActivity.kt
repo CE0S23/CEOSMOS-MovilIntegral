@@ -53,10 +53,13 @@ class MainActivity : FlutterActivity() {
                     val titulo = call.argument<String>("titulo").orEmpty()
                     val destino = BarraPracticas.actividades[id]
                     if (destino == null) {
-                        result.error("PRACTICA_DESCONOCIDA", "No existe la práctica nativa $id", null)
+                        result.error("PRACTICA_DESCONOCIDA", "No existe la función $id", null)
                     } else {
                         startActivity(
-                            Intent(this, destino).putExtra(BarraPracticas.EXTRA_TITULO, titulo)
+                            Intent(this, destino)
+                                .putExtra(BarraPracticas.EXTRA_TITULO, titulo)
+                                .putExtra(BarraPracticas.EXTRA_VOLVER, call.argument<String>("volver"))
+                                .putExtra(BarraPracticas.EXTRA_REFERENCIA, call.argument<String>("referencia"))
                         )
                         result.success(true)
                     }

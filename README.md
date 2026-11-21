@@ -1,9 +1,9 @@
 # CEOSMOS · Móvil Integral
 
 App Flutter de CEOSMOS (concentración, relajación e inspiración) conectada a la
-API real de CEOSMOS (NestJS + Prisma + PostgreSQL), con wearable por TCP/IP y la
-ventana **Prácticas**, que ejecuta dentro de la app las prácticas del curso, cada
-una con su propia base de datos.
+API real de CEOSMOS (NestJS + Prisma + PostgreSQL), con wearable por TCP/IP y
+funciones derivadas de las prácticas del curso (Soporte, Mensajería entre equipos,
+Seguridad de la cuenta, Directorio, Citas), cada una con su propia base de datos.
 
 ## Requisitos
 
@@ -42,8 +42,11 @@ del protocolo, no parte de la app).
 - Wearable por TCP/IP: métricas en vivo y resumen guardado en cada sesión.
 - Perfil: nombre, preferencias, sesiones activas, caché, eliminar cuenta.
 - Administración para cuentas ADMIN: usuarios, estado, rol y bitácora.
-- **Prácticas**: P3-4, P5, P6, Examen 1, P7, Reportes Firestore (Flutter y
-  nativo), P9, P10 y Evaluación 2 (MediConnect). Ver `lib/practicas/README.md`.
+- **Soporte**: tickets y chat interno por rol, incidencias sin conexión y reportes e
+  incidencias compartidos (Flutter y nativo). **Equipos**: mensajería entre equipos.
+  **Perfil › Cuenta y herramientas**: seguridad de la cuenta, directorio de alumnos y
+  citas de bienestar. Mapa completo en `memoria/12 - Mapa de funciones.md`; el botón ⓘ
+  se apaga con `mostrarReferenciasAcademicas` en `lib/core/referencias_academicas.dart`.
 
 ## Verificar
 

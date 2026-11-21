@@ -17,7 +17,8 @@ actualizado: 2026-11-19
   - `0VXUbHkzoxSpQk3tcCVYlh2uqD42` → `usuario2` · `Usuario 2`
 - [x] Recorrido de la P7 con los 4 roles en S24 + tablet y matriz TC01–TC08 aprobada (19/11; capturas `evidencias/p07_01…29`; 4 fallas corregidas). → [[Práctica 07 - Roles y mensajería (Sistema de tickets)]]
 - [x] P7 marcada como cumplida en su nota, en [[07 - Pruebas (Black, White, Red Box)]] y en el Word (sin «No aplicado por completo»; respaldo en `C:/CESAR10cuatri/memoria_respaldo_2026-11-19/`).
-- [ ] Rediseño (21/11): instalar en S24 (`R5CXA1DRLAF`) y Tab S9 (`R52W80BXQHP`) y recorrer pantallas y prácticas en claro/oscuro, incluidas P9/P10/BD nativas y Reloj/TV (no había equipos en adb). → [[11 - Sistema de diseño]]
+- [ ] Rediseño + reestructura (21/11): instalar en S24 (`R5CXA1DRLAF`) y Tab S9 (`R52W80BXQHP`) y recorrer en claro/oscuro: Soporte con los 4 roles, Reportes entre los dos equipos, Mensajería entre equipos, Directorio, Seguridad de la cuenta, ⓘ en pantallas nativas, Reloj y TV (no había equipos en adb). → [[11 - Sistema de diseño]] · [[12 - Mapa de funciones]]
+- [ ] **Antes de la entrega final:** `mostrarReferenciasAcademicas = false` en `lib/core/referencias_academicas.dart`. → [[12 - Mapa de funciones]]
 - [ ] **Usuario:** decidir si se borran los 4 documentos viejos de `dispositivos` (cuentas originales `*.p7@example.com`, sin contraseña conocida); hoy salen duplicados como «desconectado» en la presencia de la P7. → [[Práctica 07 - Roles y mensajería (Sistema de tickets)]]
 
 ## 2. Requieren al usuario (permiso o acceso)

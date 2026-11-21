@@ -6,7 +6,9 @@ import '../data/api_client.dart';
 import '../data/auth_repository.dart';
 import '../data/catalog.dart';
 import '../domain/models.dart';
+import '../practicas/registro_practicas.dart' show Seccion;
 import 'admin_screen.dart';
+import 'funciones.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
@@ -206,6 +208,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               ),
             ],
           ),
+        ),
+        const SizedBox(height: 28),
+        const GrupoFunciones(
+          titulo: 'Cuenta y herramientas',
+          descripcion: 'Protege tu acceso y usa las herramientas incluidas en CEOSMOS.',
+          seccion: Seccion.perfil,
         ),
         const SizedBox(height: 28),
         Row(

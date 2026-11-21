@@ -14,3 +14,5 @@ actualizado: 2026-11-19
 - Informe completo: [[REPORTE_P12_OPTIMIZACION]]
 
 Volver: [[00 - Índice CEOSMOS]] · Pruebas: [[07 - Pruebas (Black, White, Red Box)]]
+
+En la app (desde el 21/11/2026) esta práctica es una función con nombre propio: ver [[12 - Mapa de funciones]].

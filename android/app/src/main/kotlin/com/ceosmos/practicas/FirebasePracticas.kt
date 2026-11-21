@@ -44,7 +44,7 @@ object FirebasePracticas {
     private fun opciones(nombre: String): FirebaseOptions = when (nombre) {
         BD_FLUTTER, BD_NATIVO -> reportes
         P09, P10 -> mesaAyuda
-        else -> throw IllegalArgumentException("Práctica sin Firebase: $nombre")
+        else -> throw IllegalArgumentException("Función sin Firebase: $nombre")
     }
 
     /** Devuelve (creándola la primera vez) la app de Firebase de la práctica. */

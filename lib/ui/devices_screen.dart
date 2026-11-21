@@ -4,7 +4,9 @@ import '../core/app_state.dart';
 import '../core/wearable.dart';
 import '../data/api_client.dart';
 import '../domain/models.dart';
+import '../practicas/registro_practicas.dart' show Seccion;
 import 'ble_section.dart';
+import 'funciones.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
@@ -139,6 +141,12 @@ class DevicesScreen extends StatelessWidget {
                 label: const Text('Vincular otro wearable'),
               ),
             ],
+            const SizedBox(height: 32),
+            const GrupoFunciones(
+              titulo: 'Mensajería entre equipos',
+              descripcion: 'Habla con otro teléfono de tu red local, sin internet.',
+              seccion: Seccion.equipos,
+            ),
           ],
         );
       },

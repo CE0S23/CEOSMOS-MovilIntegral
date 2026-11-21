@@ -10,7 +10,7 @@ import 'ui/explore_screen.dart';
 import 'ui/session_screen.dart';
 import 'ui/devices_screen.dart';
 import 'ui/profile_screen.dart';
-import 'practicas/practicas_screen.dart';
+import 'ui/funciones.dart';
 import 'ui/theme.dart';
 import 'ui/widgets.dart';
 
@@ -80,7 +80,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     'Explorar',
     'Mi sesión',
     'Equipos', // «Dispositivos» no cabe con 6 pestañas en 360 dp
-    'Prácticas',
+    'Soporte',
     'Perfil',
   ];
   static const _icons = [
@@ -88,7 +88,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     Icons.explore_outlined,
     Icons.timelapse_rounded,
     Icons.devices_other_outlined,
-    Icons.science_outlined,
+    Icons.support_agent_outlined,
     Icons.person_outline_rounded,
   ];
 
@@ -258,7 +258,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
         onExplore: () => _explore(null),
       ),
       3 => DevicesScreen(state: state),
-      4 => const PracticasScreen(),
+      4 => const SoporteScreen(),
       _ => ProfileScreen(
         state: state,
         onFavorites: () => _explore(null, favorites: true),

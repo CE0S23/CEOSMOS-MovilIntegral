@@ -1,31 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../core/referencias_academicas.dart';
 import '../core/theme/theme.dart';
+import '../ui/funciones.dart' show BotonReferenciaAcademica;
 import 'registro_practicas.dart';
 
 const _canal = MethodChannel('ceosmos/practicas');
 
-/// Abre una práctica: las Flutter en una ruta propia de CEOSMOS y las nativas
+/// Abre una función: las Flutter en una ruta propia de CEOSMOS y las nativas
 /// como actividad Android incluida en el APK.
 Future<void> abrirPractica(BuildContext context, Practica practica) async {
   if (practica.tipo == TipoPractica.nativa) {
     try {
       await _canal.invokeMethod<bool>('abrirNativa', {
         'id': practica.id,
-        'titulo': '${practica.numero} · ${practica.titulo}',
+        'titulo': practica.titulo,
+        'volver': practica.seccion.volver,
+        // Texto del ⓘ en la barra nativa; null oculta el botón.
+        'referencia': mostrarReferenciasAcademicas
+            ? referenciasAcademicas[practica.id]?.textoPlano
+            : null,
       });
     } on PlatformException catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('No se pudo abrir la práctica: ${e.message}')),
+          SnackBar(content: Text('No se pudo abrir ${practica.titulo}: ${e.message}')),
         );
       }
     } on MissingPluginException {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Esta práctica nativa solo se ejecuta en Android.'),
+            content: Text('Esta función solo está disponible en Android.'),
           ),
         );
       }
@@ -35,13 +42,13 @@ Future<void> abrirPractica(BuildContext context, Practica practica) async {
   await Navigator.of(context).push(
     MaterialPageRoute<void>(
       builder: (_) => PracticaHost(practica: practica),
-      settings: RouteSettings(name: '/practicas/${practica.id}'),
+      settings: RouteSettings(name: practica.ruta),
     ),
   );
 }
 
-/// Contenedor de una práctica Flutter: barra «← Prácticas» y debajo la app de
-/// la práctica con su propio MaterialApp (Navigator, tema y estado propios).
+/// Contenedor de una función Flutter: barra «← sección · función · ⓘ» y debajo
+/// la función con su propio MaterialApp (Navigator, tema y estado propios).
 class PracticaHost extends StatefulWidget {
   const PracticaHost({super.key, required this.practica});
   final Practica practica;
@@ -113,19 +120,23 @@ class _PracticaHostState extends State<PracticaHost> {
                           overlayColor: CeosmosColores.cian,
                         ),
                         icon: const Icon(Icons.arrow_back),
-                        label: const Text('Prácticas'),
+                        label: Text(p.seccion.volver),
                       ),
                       Expanded(
                         child: Text(
-                          '${p.numero} · ${p.titulo}',
+                          p.titulo,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: context.texto.bodyMedium?.copyWith(
+                          style: context.texto.titleSmall?.copyWith(
                             color: CeosmosColores.blanco,
                           ),
                         ),
                       ),
-                      const SizedBox(width: Espacio.l),
+                      BotonReferenciaAcademica(
+                        id: p.id,
+                        color: CeosmosColores.cian,
+                      ),
+                      const SizedBox(width: Espacio.xs),
                     ],
                   ),
                 ),
