@@ -48,6 +48,8 @@ Future<void> _cargarFuentes() async {
 }
 
 void _mocks() {
+  // Arnés fuera de test/: el analizador no lo reconoce como prueba.
+  // ignore: invalid_use_of_visible_for_testing_member
   SharedPreferences.setMockInitialValues({});
   final m = TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger;
   for (final c in [
