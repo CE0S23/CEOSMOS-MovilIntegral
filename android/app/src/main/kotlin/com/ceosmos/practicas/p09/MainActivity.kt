@@ -1,5 +1,7 @@
 package com.ceosmos.practicas.p09
 
+import com.ceosmos.practicas.CeosmosTema
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -45,8 +47,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -241,35 +241,35 @@ fun inicial(nombre: String): String = nombre.trim().split(" ").last().take(1).up
 
 /** A en azul, B en verde; cualquier otro nombre en gris. */
 fun colorDispositivo(nombre: String): Color = when (inicial(nombre)) {
-    "A" -> Color(0xFF1E5AA8)
-    "B" -> Color(0xFF2E7D32)
-    else -> Color(0xFF616161)
+    "A" -> Color(0xFF08708F)
+    "B" -> Color(0xFF17805A)
+    else -> Color(0xFF6B5A60)
 }
 
 fun colorEstado(estado: Estado): Color = when (estado) {
-    Estado.PENDIENTE -> Color(0xFF8D6E00)
-    Estado.EN_PROCESO -> Color(0xFF1565C0)
-    Estado.RESUELTA -> Color(0xFF2E7D32)
+    Estado.PENDIENTE -> Color(0xFF9A5800)
+    Estado.EN_PROCESO -> Color(0xFF08708F)
+    Estado.RESUELTA -> Color(0xFF17805A)
 }
 
 fun colorPrioridad(prioridad: Prioridad): Color = when (prioridad) {
-    Prioridad.BAJA -> Color(0xFF607D8B)
-    Prioridad.MEDIA -> Color(0xFF00838F)
-    Prioridad.ALTA -> Color(0xFFE65100)
-    Prioridad.CRITICA -> Color(0xFFB71C1C)
+    Prioridad.BAJA -> Color(0xFF6B5A60)
+    Prioridad.MEDIA -> Color(0xFF0A7FA3)
+    Prioridad.ALTA -> Color(0xFF9A5800)
+    Prioridad.CRITICA -> Color(0xFFC42A3F)
 }
 
 fun colorEvento(tipo: TipoEvento): Color = when (tipo) {
-    TipoEvento.LOCAL -> Color(0xFF1E5AA8)
-    TipoEvento.REMOTO -> Color(0xFF2E7D32)
-    TipoEvento.AVISO -> Color(0xFFE65100)
-    TipoEvento.ERROR -> Color(0xFFB71C1C)
+    TipoEvento.LOCAL -> Color(0xFF08708F)
+    TipoEvento.REMOTO -> Color(0xFF17805A)
+    TipoEvento.AVISO -> Color(0xFF9A5800)
+    TipoEvento.ERROR -> Color(0xFFC42A3F)
 }
 
 /** Punto verde (en línea) o gris (sin conexión). */
 @Composable
 fun PuntoEstado(enLinea: Boolean) {
-    Box(Modifier.size(8.dp).background(if (enLinea) Color(0xFF2E7D32) else Color(0xFF9E9E9E), CircleShape))
+    Box(Modifier.size(8.dp).background(if (enLinea) Color(0xFF17805A) else Color(0xFF8C7880), CircleShape))
 }
 
 @Composable
@@ -288,10 +288,7 @@ fun Progreso() = CircularProgressIndicator(Modifier.size(20.dp), strokeWidth = 2
 
 @Composable
 fun IncidenciasTheme(content: @Composable () -> Unit) {
-    val esquema = if (isSystemInDarkTheme()) {
-        darkColorScheme(primary = Color(0xFFFFB59A), onPrimary = Color(0xFF5A1A00), primaryContainer = Color(0xFF8A3311))
-    } else {
-        lightColorScheme(primary = Color(0xFFB5471B), onPrimary = Color.White, primaryContainer = Color(0xFFFFDBCF))
-    }
-    MaterialTheme(colorScheme = esquema, content = content)
+    // [CEOSMOS] Paleta, fuentes y escala del sistema de diseño compartido.
+    val esquema = if (isSystemInDarkTheme()) CeosmosTema.oscuro else CeosmosTema.claro
+    MaterialTheme(colorScheme = esquema, typography = CeosmosTema.tipografia, content = content)
 }

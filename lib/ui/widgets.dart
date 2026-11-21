@@ -3,11 +3,21 @@ import 'package:flutter/material.dart';
 import '../domain/models.dart';
 import 'theme.dart';
 
-Color modeColor(FocusMode mode) => switch (mode) {
-  FocusMode.focus => Cosmos.lavender,
-  FocusMode.relax => Cosmos.mint,
-  FocusMode.inspire => Cosmos.peach,
-};
+
+/// Color de cada intención en su variante legible del tema activo:
+/// guinda (enfoque), cian (calma) y ámbar (inspiración).
+Color modeColor(BuildContext context, FocusMode mode) {
+  final p = context.paleta;
+  return switch (mode) {
+    FocusMode.focus => p.marca,
+    FocusMode.relax => p.enlace,
+    FocusMode.inspire =>
+      Theme.of(context).brightness == Brightness.dark
+          ? p.acento
+          : CeosmosColores.advertenciaTexto,
+  };
+}
+
 IconData modeIcon(FocusMode mode) => switch (mode) {
   FocusMode.focus => Icons.blur_on_rounded,
   FocusMode.relax => Icons.spa_outlined,
@@ -27,26 +37,26 @@ class Brand extends StatelessWidget {
         width: 38,
         height: 38,
         decoration: BoxDecoration(
-          color: Cosmos.lavender.withValues(alpha: .12),
-          borderRadius: BorderRadius.circular(12),
+          color: CeosmosColores.cian,
+          borderRadius: Radios.bordeS,
         ),
         child: const Icon(
           Icons.all_inclusive,
-          color: Cosmos.lavender,
+          color: CeosmosColores.guinda,
           size: 25,
         ),
       ),
       if (!compact) ...[
-        const SizedBox(width: 12),
-        const Flexible(
+        const SizedBox(width: Espacio.m),
+        Flexible(
           child: FittedBox(
             fit: BoxFit.scaleDown,
             child: Text(
               'CEOSMOS',
-              style: TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-                letterSpacing: 2.4,
+              style: context.texto.titleLarge?.copyWith(
+                color: context.paleta.marca,
+                fontWeight: FontWeight.w800,
+                letterSpacing: 1.2,
               ),
             ),
           ),
@@ -60,56 +70,58 @@ class Panel extends StatelessWidget {
   const Panel({
     super.key,
     required this.child,
-    this.padding = const EdgeInsets.all(22),
-    this.color = Cosmos.surface,
+    this.padding = const EdgeInsets.all(Espacio.xl),
+    this.color,
   });
   final Widget child;
   final EdgeInsetsGeometry padding;
-  final Color color;
+  final Color? color;
   @override
   Widget build(BuildContext context) => Container(
     padding: padding,
     decoration: BoxDecoration(
-      color: color,
-      borderRadius: BorderRadius.circular(22),
-      border: Border.all(color: Cosmos.border),
+      color: color ?? context.paleta.superficie,
+      borderRadius: Radios.bordeL,
+      border: Border.all(color: context.paleta.borde),
+      boxShadow: Theme.of(context).brightness == Brightness.light
+          ? Sombra.suave
+          : null,
     ),
     child: child,
   );
 }
 
 class Tag extends StatelessWidget {
-  const Tag(this.label, {super.key, this.color = Cosmos.lavender, this.icon});
+  const Tag(this.label, {super.key, this.color, this.icon});
   final String label;
-  final Color color;
+  final Color? color;
   final IconData? icon;
   @override
-  Widget build(BuildContext context) => Container(
-    padding: const EdgeInsets.symmetric(horizontal: 11, vertical: 6),
-    decoration: BoxDecoration(
-      color: color.withValues(alpha: .12),
-      borderRadius: BorderRadius.circular(30),
-    ),
-    child: Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        if (icon != null) ...[
-          Icon(icon, size: 13, color: color),
-          const SizedBox(width: 5),
-        ],
-        Flexible(
-          child: Text(
-            label,
-            style: TextStyle(
-              color: color,
-              fontSize: 11,
-              fontWeight: FontWeight.w600,
+  Widget build(BuildContext context) {
+    final color = this.color ?? context.paleta.enlace;
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: Espacio.m, vertical: 6),
+      decoration: BoxDecoration(
+        color: color.withValues(alpha: .12),
+        borderRadius: BorderRadius.circular(Radios.pildora),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(icon, size: 14, color: color),
+            const SizedBox(width: Espacio.xs + 1),
+          ],
+          Flexible(
+            child: Text(
+              label,
+              style: context.texto.labelSmall?.copyWith(color: color),
             ),
           ),
-        ),
-      ],
-    ),
-  );
+        ],
+      ),
+    );
+  }
 }
 
 class PageHeading extends StatelessWidget {
@@ -117,13 +129,23 @@ class PageHeading extends StatelessWidget {
   final String title, subtitle;
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.only(bottom: 26),
+    padding: const EdgeInsets.only(bottom: Espacio.xl),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(title, style: Theme.of(context).textTheme.headlineMedium),
-        const SizedBox(height: 8),
-        Text(subtitle, style: const TextStyle(color: Cosmos.muted)),
+        Text(
+          title,
+          style: context.texto.headlineMedium?.copyWith(
+            color: context.paleta.marca,
+          ),
+        ),
+        const SizedBox(height: Espacio.s),
+        Text(
+          subtitle,
+          style: context.texto.bodyLarge?.copyWith(
+            color: context.paleta.textoSecundario,
+          ),
+        ),
       ],
     ),
   );
@@ -144,28 +166,77 @@ class EmptyState extends StatelessWidget {
   Widget build(BuildContext context) => Panel(
     child: Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 28),
+        padding: const EdgeInsets.symmetric(vertical: Espacio.xl),
         child: Column(
           children: [
-            Icon(icon, size: 40, color: Cosmos.lavender),
-            const SizedBox(height: 18),
+            Container(
+              width: 72,
+              height: 72,
+              decoration: BoxDecoration(
+                color: context.paleta.cianSuave,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, size: 34, color: context.paleta.enlace),
+            ),
+            const SizedBox(height: Espacio.l),
             Text(
               title,
-              style: Theme.of(context).textTheme.titleLarge,
+              style: context.texto.titleLarge,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: Espacio.s),
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(color: Cosmos.muted),
+              style: TextStyle(color: context.paleta.textoSecundario),
             ),
-            if (action != null) ...[const SizedBox(height: 22), action!],
+            if (action != null) ...[
+              const SizedBox(height: Espacio.xl),
+              action!,
+            ],
           ],
         ),
       ),
     ),
   );
+}
+
+/// Mensaje de estado con ícono + texto: el color nunca va solo, y el error
+/// se distingue del guinda de marca por el ícono y su tono rojo.
+enum TipoAviso { error, advertencia, exito, info }
+
+class Aviso extends StatelessWidget {
+  const Aviso(this.texto, {super.key, this.tipo = TipoAviso.error, this.style});
+  final String texto;
+  final TipoAviso tipo;
+  final TextStyle? style;
+
+  @override
+  Widget build(BuildContext context) {
+    final p = context.paleta;
+    final (icono, color) = switch (tipo) {
+      TipoAviso.error => (Icons.error_outline, p.error),
+      TipoAviso.advertencia => (Icons.warning_amber_rounded, p.advertencia),
+      TipoAviso.exito => (Icons.check_circle_outline, p.exito),
+      TipoAviso.info => (Icons.info_outline, p.info),
+    };
+    final estilo = (style ?? context.texto.bodyMedium)?.copyWith(
+      color: color,
+      fontWeight: FontWeight.w500,
+    );
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 1),
+          child: Icon(icono, size: (estilo?.fontSize ?? 14) + 4, color: color),
+        ),
+        const SizedBox(width: Espacio.s),
+        Flexible(child: Text(texto, style: estilo)),
+      ],
+    );
+  }
 }
 
 /// Original vector scenery: bundled, deterministic and available offline.
@@ -177,7 +248,7 @@ class CosmosScene extends StatelessWidget {
   @override
   Widget build(BuildContext context) => RepaintBoundary(
     child: ClipRRect(
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: Radios.bordeL,
       child: SizedBox(
         height: height,
         child: CustomPaint(
@@ -195,13 +266,15 @@ class _ScenePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final rect = Offset.zero & size;
-    final palettes = [
-      [const Color(0xFF1B173A), const Color(0xFF524774)],
-      [const Color(0xFF102D30), const Color(0xFF4E8673)],
-      [const Color(0xFF37253C), const Color(0xFFCD987E)],
-      [const Color(0xFF121E43), const Color(0xFF80649E)],
-      [const Color(0xFF103344), const Color(0xFF568F9F)],
-      [const Color(0xFF222443), const Color(0xFFAD8895)],
+    // Escenas derivadas de la paleta (guindas profundos y cianes nocturnos),
+    // siempre lo bastante oscuras para llevar texto blanco encima.
+    const palettes = [
+      [Color(0xFF2A0010), CeosmosColores.guindaMedio],
+      [Color(0xFF032631), CeosmosColores.cianTexto],
+      [Color(0xFF3A0716), Color(0xFFA0425E)],
+      [CeosmosColores.tinta, CeosmosColores.guinda],
+      [Color(0xFF04303D), Color(0xFF2C8FB0)],
+      [Color(0xFF2C0A18), Color(0xFF8E3E5C)],
     ];
     final colors = palettes[scene % palettes.length];
     canvas.drawRect(
@@ -222,7 +295,7 @@ class _ScenePainter extends CustomPainter {
         ),
         random.nextDouble() * 1.2 + .3,
         Paint()
-          ..color = Colors.white.withValues(
+          ..color = CeosmosColores.blanco.withValues(
             alpha: random.nextDouble() * .5 + .1,
           ),
       );
@@ -247,7 +320,10 @@ class _ScenePainter extends CustomPainter {
         ..shader = LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [Color.lerp(colors.last, Colors.white, .5)!, colors.first],
+          colors: [
+            Color.lerp(colors.last, CeosmosColores.cianClaro, .5)!,
+            colors.first,
+          ],
         ).createShader(Rect.fromCircle(center: center, radius: radius)),
     );
     if (scene == 0 || scene == 3) {
@@ -261,7 +337,7 @@ class _ScenePainter extends CustomPainter {
           height: radius * .8,
         ),
         Paint()
-          ..color = Cosmos.lavender.withValues(alpha: .6)
+          ..color = CeosmosColores.cian.withValues(alpha: .75)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 2,
       );
@@ -282,7 +358,7 @@ class _ScenePainter extends CustomPainter {
         Paint()
           ..color = Color.lerp(
             colors.first,
-            const Color(0xFF080D1B),
+            CeosmosColores.tinta,
             layer / 3,
           )!.withValues(alpha: .75),
       );
@@ -298,7 +374,7 @@ class _ScenePainter extends CustomPainter {
             ..lineTo(x - h * .35, y)
             ..lineTo(x + h * .35, y)
             ..close(),
-          Paint()..color = const Color(0xFF0B2625),
+          Paint()..color = const Color(0xFF021C24),
         );
       }
     }
@@ -321,8 +397,11 @@ class MediaCard extends StatelessWidget {
   final VoidCallback onOpen, onFavorite;
   @override
   Widget build(BuildContext context) => Material(
-    color: Cosmos.surface,
-    borderRadius: BorderRadius.circular(20),
+    color: context.paleta.superficie,
+    shape: RoundedRectangleBorder(
+      borderRadius: Radios.bordeL,
+      side: BorderSide(color: context.paleta.borde),
+    ),
     clipBehavior: Clip.antiAlias,
     child: InkWell(
       onTap: onOpen,
@@ -337,14 +416,14 @@ class MediaCard extends StatelessWidget {
                 child: const SizedBox(width: double.infinity),
               ),
               Positioned(
-                left: 12,
-                bottom: 12,
+                left: Espacio.m,
+                bottom: Espacio.m,
                 child: Tag(
                   item.kind == MediaKind.audio ? 'Audio' : 'Paisaje',
                   icon: item.kind == MediaKind.audio
                       ? Icons.headphones
                       : Icons.landscape_outlined,
-                  color: Colors.white,
+                  color: CeosmosColores.blanco,
                 ),
               ),
               Positioned(
@@ -360,37 +439,33 @@ class MediaCard extends StatelessWidget {
                     size: 19,
                   ),
                   style: IconButton.styleFrom(
-                    backgroundColor: Cosmos.background.withValues(alpha: .65),
-                    foregroundColor: favorite ? Cosmos.lavender : Colors.white,
+                    backgroundColor: CeosmosColores.tinta.withValues(
+                      alpha: .55,
+                    ),
+                    foregroundColor: favorite
+                        ? CeosmosColores.cian
+                        : CeosmosColores.blanco,
                   ),
                 ),
               ),
             ],
           ),
           Padding(
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(Espacio.l),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   item.mode.label.toUpperCase(),
-                  style: TextStyle(
-                    fontSize: 10,
-                    letterSpacing: 1.5,
-                    color: modeColor(item.mode),
-                    fontWeight: FontWeight.w700,
+                  style: context.texto.labelSmall?.copyWith(
+                    letterSpacing: 1.2,
+                    color: modeColor(context, item.mode),
                   ),
                 ),
-                const SizedBox(height: 7),
-                Text(
-                  item.title,
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 5),
-                Text(
-                  item.subtitle,
-                  style: const TextStyle(fontSize: 12, color: Cosmos.muted),
-                ),
+                const SizedBox(height: Espacio.s),
+                Text(item.title, style: context.texto.titleLarge),
+                const SizedBox(height: Espacio.xs),
+                Text(item.subtitle, style: context.texto.bodySmall),
               ],
             ),
           ),

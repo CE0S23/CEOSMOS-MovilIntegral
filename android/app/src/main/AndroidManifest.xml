@@ -46,18 +46,18 @@
             android:name="com.ceosmos.practicas.bdnativo.MainActivity"
             android:exported="false"
             android:label="Reportes Firestore (nativo)"
-            android:theme="@android:style/Theme.Material.Light.NoActionBar" />
+            android:theme="@style/CeosmosPracticas" />
         <activity
             android:name="com.ceosmos.practicas.p09.MainActivity"
             android:exported="false"
             android:label="Práctica 9 · Incidencias"
-            android:theme="@android:style/Theme.Material.Light.NoActionBar"
+            android:theme="@style/CeosmosPracticas"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name="com.ceosmos.practicas.p10.MainActivity"
             android:exported="false"
             android:label="Práctica 10 · Incidencias seguras"
-            android:theme="@android:style/Theme.Material.Light.NoActionBar"
+            android:theme="@style/CeosmosPracticas"
             android:windowSoftInputMode="adjustResize" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->

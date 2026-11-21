@@ -86,7 +86,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
         actions: [
           TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Cancelar')),
           FilledButton(
-            style: FilledButton.styleFrom(backgroundColor: Cosmos.peach),
+            // Acción destructiva: rojo de error (distinto del guinda de marca).
+            style: FilledButton.styleFrom(
+              backgroundColor: CeosmosColores.error,
+              foregroundColor: CeosmosColores.blanco,
+            ),
             onPressed: () => Navigator.pop(context, true),
             child: const Text('Eliminar cuenta'),
           ),
@@ -114,11 +118,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
             children: [
               CircleAvatar(
                 radius: 30,
-                backgroundColor: Cosmos.lavender,
-                foregroundColor: Cosmos.background,
+                backgroundColor: CeosmosColores.cian,
+                foregroundColor: CeosmosColores.guinda,
                 child: Text(
                   user.username.characters.first.toUpperCase(),
-                  style: const TextStyle(fontSize: 24, fontWeight: FontWeight.w600),
+                  style: context.texto.headlineSmall?.copyWith(
+                    color: CeosmosColores.guinda,
+                  ),
                 ),
               ),
               const SizedBox(width: 18),
@@ -126,15 +132,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(user.username, style: Theme.of(context).textTheme.titleLarge),
-                    Text(user.email, style: const TextStyle(color: Cosmos.muted)),
+                    Text(user.username, style: context.texto.headlineSmall),
+                    Text(user.email, style: TextStyle(color: context.paleta.textoSecundario)),
                     const SizedBox(height: 8),
                     Wrap(
                       spacing: 8,
                       runSpacing: 6,
                       children: [
-                        Tag(user.isAdmin ? 'Administrador' : 'Usuario', color: Cosmos.lavender),
-                        if (user.emailVerified) const Tag('Correo verificado', color: Cosmos.mint),
+                        Tag(user.isAdmin ? 'Administrador' : 'Usuario', color: context.paleta.enlace),
+                        if (user.emailVerified) Tag('Correo verificado', color: context.paleta.exito),
                       ],
                     ),
                   ],
@@ -154,7 +160,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 6),
             child: ListTile(
               contentPadding: EdgeInsets.zero,
-              leading: const Icon(Icons.admin_panel_settings_outlined, color: Cosmos.peach),
+              leading: Icon(Icons.admin_panel_settings_outlined, color: context.paleta.marca),
               title: const Text('Administración'),
               subtitle: const Text('Usuarios, roles, estado y bitácora'),
               trailing: const Icon(Icons.chevron_right),
@@ -172,9 +178,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('A tu ritmo', style: Theme.of(context).textTheme.titleLarge),
+              Text('A tu ritmo', style: context.texto.headlineSmall),
               const SizedBox(height: 8),
-              const Text('Duración predeterminada de tus sesiones', style: TextStyle(color: Cosmos.muted)),
+              Text('Duración predeterminada de tus sesiones', style: TextStyle(color: context.paleta.textoSecundario)),
               const SizedBox(height: 14),
               Wrap(
                 spacing: 10,
@@ -192,7 +198,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               const SizedBox(height: 16),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                leading: const Icon(Icons.favorite_outline, color: Cosmos.lavender),
+                leading: Icon(Icons.favorite_outline, color: context.paleta.enlace),
                 title: const Text('Mis favoritos'),
                 subtitle: Text('${workspace.favorites.length} experiencias guardadas'),
                 trailing: const Icon(Icons.chevron_right),
@@ -204,7 +210,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         const SizedBox(height: 28),
         Row(
           children: [
-            Expanded(child: Text('Tu historial', style: Theme.of(context).textTheme.titleLarge)),
+            Expanded(child: Text('Tu historial', style: context.texto.headlineSmall)),
             if (state.loadingData)
               const SizedBox(width: 16, height: 16, child: CircularProgressIndicator(strokeWidth: 2))
             else
@@ -213,14 +219,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: state.loadWorkspace,
                 icon: const Icon(Icons.refresh, size: 20),
               ),
-            Text('${state.totalSessions} sesiones', style: const TextStyle(color: Cosmos.muted, fontSize: 12)),
+            Text('${state.totalSessions} sesiones', style: context.texto.bodySmall),
           ],
         ),
         const SizedBox(height: 14),
         if (state.dataError != null)
           Padding(
             padding: const EdgeInsets.only(bottom: 12),
-            child: Text(state.dataError!, style: const TextStyle(color: Cosmos.peach)),
+            child: Aviso(state.dataError!),
           ),
         if (workspace.history.isEmpty && !state.loadingData)
           const EmptyState(
@@ -241,7 +247,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ),
           ),
         const SizedBox(height: 28),
-        Text('Sesiones de acceso activas', style: Theme.of(context).textTheme.titleLarge),
+        Text('Sesiones de acceso activas', style: context.texto.headlineSmall),
         const SizedBox(height: 12),
         FutureBuilder<List<Map<String, dynamic>>>(
           future: _sesiones,
@@ -255,7 +261,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             if (snap.hasError) {
               return Row(
                 children: [
-                  Expanded(child: Text('${snap.error}',style: const TextStyle(color: Cosmos.peach))),
+                  Expanded(child: Aviso('${snap.error}')),
                   TextButton(
                     onPressed: () => setState(() => _sesiones = state.data.activeSessions()),
                     child: const Text('Reintentar'),
@@ -271,7 +277,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   for (final s in lista)
                     ListTile(
                       contentPadding: EdgeInsets.zero,
-                      leading: const Icon(Icons.devices_outlined, color: Cosmos.lavender),
+                      leading: Icon(Icons.devices_outlined, color: context.paleta.enlace),
                       title: Text(_fecha(DateTime.tryParse('${s['createdAt']}')?.toLocal() ?? DateTime.now())),
                       subtitle: Text('IP ${s['ipAddress'] ?? 'desconocida'}'),
                     ),
@@ -292,15 +298,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   : '${(bytes / (1024 * 1024)).toStringAsFixed(1)} MB';
               return Row(
                 children: [
-                  const Icon(Icons.sd_storage_outlined, color: Cosmos.mint),
+                  Icon(Icons.sd_storage_outlined, color: context.paleta.exito),
                   const SizedBox(width: 14),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Caché de imágenes', style: TextStyle(fontWeight: FontWeight.w600)),
+                        Text('Caché de imágenes', style: context.texto.titleSmall),
                         Text('$usado de 150 MB · se liberan primero las menos usadas',
-                            style: const TextStyle(color: Cosmos.muted, fontSize: 12)),
+                            style: context.texto.bodySmall),
                       ],
                     ),
                   ),
@@ -342,7 +348,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         const SizedBox(height: 8),
         TextButton.icon(
           onPressed: _eliminarCuenta,
-          style: TextButton.styleFrom(foregroundColor: Cosmos.peach),
+          style: TextButton.styleFrom(foregroundColor: context.paleta.error),
           icon: const Icon(Icons.delete_forever_outlined, size: 18),
           label: const Text('Eliminar mi cuenta'),
         ),
@@ -365,21 +371,21 @@ class _SesionTile extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Icon(modeIcon(session.mode), color: modeColor(session.mode)),
+            Icon(modeIcon(session.mode), color: modeColor(context, session.mode)),
             const SizedBox(width: 14),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(tituloContenido(state, session.contentKey), style: const TextStyle(fontWeight: FontWeight.w600)),
-                  Text(_fecha(session.endedAt), style: const TextStyle(color: Cosmos.muted, fontSize: 12)),
+                  Text(tituloContenido(state, session.contentKey), style: context.texto.titleSmall),
+                  Text(_fecha(session.endedAt), style: context.texto.bodySmall),
                   if (wearable is Map)
                     Text(
                       '♥ ${wearable['avgHeartRate']} bpm promedio · ${wearable['samples']} lecturas',
-                      style: const TextStyle(color: Cosmos.mint, fontSize: 12),
+                      style: context.texto.bodySmall?.copyWith(color: context.paleta.exito),
                     ),
                   if (!session.synced)
-                    const Text('Pendiente de guardar en el servidor', style: TextStyle(color: Cosmos.peach, fontSize: 11)),
+                    Text('Pendiente de guardar en el servidor', style: context.texto.bodySmall?.copyWith(color: context.paleta.advertencia)),
                 ],
               ),
             ),
@@ -387,10 +393,12 @@ class _SesionTile extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Text(clockLabel(Duration(seconds: session.durationSeconds)), style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(clockLabel(Duration(seconds: session.durationSeconds)), style: context.texto.titleSmall),
                 Text(
                   session.completed ? 'Completada' : 'Finalizada',
-                  style: TextStyle(color: session.completed ? Cosmos.mint : Cosmos.muted, fontSize: 11),
+                  style: context.texto.labelSmall?.copyWith(
+                    color: session.completed ? context.paleta.exito : context.paleta.textoSecundario,
+                  ),
                 ),
               ],
             ),

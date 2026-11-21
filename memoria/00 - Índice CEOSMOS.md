@@ -20,6 +20,7 @@ en el código, en las pruebas automatizadas o en los dispositivos (Samsung S24 y
 - [x] P13-14: pruebas automatizadas + CI en GitHub Actions (verde en push y PR) → [[Práctica 13-14 - Automatización de pruebas y CI]]
 - [x] Repositorio público: https://github.com/CE0S23/CEOSMOS-MovilIntegral (PR #1 fusionado; CI en `main`)
 - [x] Reporte de avances (Word) actualizado; memoria reestructurada con respaldo
+- [x] Rediseño estético (21/11): sistema de diseño guinda/cian con modo oscuro, Bricolage + DM Sans → [[11 - Sistema de diseño]]
 
 **Falta** (detalle en [[08 - Pendientes]])
 - [x] P7 cerrada (documentos de rol, 4 roles en S24 + tablet, TC01–TC08) → [[Práctica 07 - Roles y mensajería (Sistema de tickets)]]
@@ -36,6 +37,7 @@ en el código, en las pruebas automatizadas o en los dispositivos (Samsung S24 y
 - [[08 - Pendientes]] — **todo lo que falta**, con enlace a su nota.
 - [[09 - Decisiones técnicas]]
 - [[10 - Bitácora]]
+- [[11 - Sistema de diseño]] — paleta guinda/cian, reglas de contraste, tipografía y escala (app, prácticas, Reloj y TV).
 - [[Notas varias]]
 
 ## Prácticas (05 - Prácticas)

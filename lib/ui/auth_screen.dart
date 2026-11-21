@@ -214,26 +214,32 @@ class _AuthScreenState extends State<AuthScreen> {
             mainAxisSize: MainAxisSize.min,
             children: [
               const Brand(),
-              const SizedBox(height: 36),
+              const SizedBox(height: Espacio.xxl),
               const Align(alignment: Alignment.centerLeft, child: Tag('TU ESPACIO PERSONAL')),
-              const SizedBox(height: 20),
-              Text(titulo, style: Theme.of(context).textTheme.headlineLarge),
-              const SizedBox(height: 12),
-              Text(subtitulo, style: const TextStyle(color: Cosmos.muted)),
-              const SizedBox(height: 30),
+              const SizedBox(height: Espacio.l + 4),
+              Text(
+                titulo,
+                style: context.texto.headlineLarge?.copyWith(color: context.paleta.marca),
+              ),
+              const SizedBox(height: Espacio.m),
+              Text(
+                subtitulo,
+                style: context.texto.bodyLarge?.copyWith(color: context.paleta.textoSecundario),
+              ),
+              const SizedBox(height: Espacio.xxl - 2),
               ...campos,
               if (_info != null) ...[
-                const SizedBox(height: 14),
-                Text(_info!, style: const TextStyle(color: Cosmos.mint)),
+                const SizedBox(height: Espacio.m + 2),
+                Aviso(_info!, tipo: TipoAviso.exito),
               ],
               if (_error != null) ...[
-                const SizedBox(height: 14),
+                const SizedBox(height: Espacio.m + 2),
                 Semantics(
                   liveRegion: true,
-                  child: Text(_error!, style: const TextStyle(color: Cosmos.peach)),
+                  child: Aviso(_error!),
                 ),
               ],
-              const SizedBox(height: 22),
+              const SizedBox(height: Espacio.xl),
               FilledButton(
                 onPressed: _busy ? null : _enviar,
                 child: _busy
@@ -296,33 +302,59 @@ class _AuthScreenState extends State<AuthScreen> {
                   children: [
                     if (wide) ...[
                       Expanded(
-                        child: CosmosScene(
+                        // Patrón de curvas de la paleta; el texto va sobre un
+                        // bloque guinda propio, nunca directamente sobre las líneas.
+                        child: CurvasCeosmos(
                           height: 690,
-                          child: Padding(
-                            padding: const EdgeInsets.all(44),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                const Tag('UN SOLO ECOSISTEMA', color: Colors.white),
-                                const SizedBox(height: 20),
-                                Text(
-                                  'Tu universo.\nA tu ritmo.',
-                                  style: Theme.of(context).textTheme.headlineLarge?.copyWith(fontSize: 56),
-                                ),
-                                const SizedBox(height: 18),
-                                const Text(
-                                  'Concentración, calma e inspiración.\nAhora, en un mismo lugar.',
-                                  style: TextStyle(fontSize: 17, color: Cosmos.muted),
-                                ),
-                              ],
+                          child: Align(
+                            alignment: Alignment.bottomLeft,
+                            child: Container(
+                              margin: const EdgeInsets.all(Espacio.xxl),
+                              padding: const EdgeInsets.all(Espacio.xxl),
+                              decoration: BoxDecoration(
+                                color: CeosmosColores.guinda,
+                                borderRadius: Radios.bordeL,
+                                boxShadow: Sombra.elevada,
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Tag('UN SOLO ECOSISTEMA', color: CeosmosColores.cian),
+                                  const SizedBox(height: Espacio.l + 4),
+                                  Text(
+                                    'Tu universo.\nA tu ritmo.',
+                                    style: context.texto.displayLarge?.copyWith(color: CeosmosColores.blanco),
+                                  ),
+                                  const SizedBox(height: Espacio.l + 2),
+                                  Text(
+                                    'Concentración, calma e inspiración.\nAhora, en un mismo lugar.',
+                                    style: context.texto.bodyLarge?.copyWith(color: CeosmosColores.guindaClaro),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),
                       ),
                       const SizedBox(width: 70),
                     ],
-                    Flexible(child: form),
+                    Flexible(
+                      child: wide
+                          ? form
+                          : Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                // Franja decorativa de la paleta (sin texto encima).
+                                ConstrainedBox(
+                                  constraints: const BoxConstraints(maxWidth: 420),
+                                  child: const CurvasCeosmos(height: 56, radio: Radios.m),
+                                ),
+                                const SizedBox(height: Espacio.l),
+                                form,
+                              ],
+                            ),
+                    ),
                   ],
                 ),
               ),

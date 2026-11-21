@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../services/auth_service.dart';
 import '../utils/rol_url.dart';
+import '../../../ui/widgets.dart' show Aviso;
 
 class RolScreen extends StatefulWidget {
   const RolScreen({super.key});
@@ -144,12 +145,7 @@ class _RolScreenState extends State<RolScreen> {
               if (_error != null)
                 Padding(
                   padding: const EdgeInsets.only(top: 12),
-                  child: Text(
-                    _error!,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                  ),
+                  child: Aviso(_error!),
                 ),
               const SizedBox(height: 24),
               FilledButton(

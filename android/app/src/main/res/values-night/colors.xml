@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="ceosmos_fondo">#16060D</color>
+    <color name="ceosmos_superficie">#24101A</color>
+    <color name="ceosmos_tinta">#FCEFF3</color>
+    <color name="ceosmos_texto_secundario">#C9B3BB</color>
+    <color name="ceosmos_marca">#F2A3BA</color>
+    <color name="ceosmos_enlace">#51D7FD</color>
+</resources>

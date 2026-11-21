@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tokens del sistema de diseño de CEOSMOS (ver lib/core/theme). -->
+<resources>
+    <color name="ceosmos_fondo">#FFF8F3</color>
+    <color name="ceosmos_superficie">#FFFFFF</color>
+    <color name="ceosmos_tinta">#1E0A12</color>
+    <color name="ceosmos_texto_secundario">#6B5A60</color>
+    <color name="ceosmos_marca">#5B011D</color>
+    <color name="ceosmos_enlace">#08708F</color>
+</resources>

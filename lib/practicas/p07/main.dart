@@ -6,6 +6,7 @@ import 'firebase_p07.dart'; // [CEOSMOS]
 import 'screens/home_screen.dart';
 import 'screens/rol_screen.dart';
 import 'services/auth_service.dart';
+import '../../core/theme/theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -106,7 +107,10 @@ class Practica7App extends StatelessWidget {
   Widget build(BuildContext context) => MaterialApp(
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
     title: 'Práctica 7',
-    theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
+    // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
+    theme: CeosmosTema.claro,
+    darkTheme: CeosmosTema.oscuro,
+    themeMode: ThemeMode.system,
     home: Consumer<AuthService>(
       builder: (context, auth, _) =>
           auth.actual == null ? const RolScreen() : const HomeScreen(),

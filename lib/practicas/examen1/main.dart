@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../core/theme/theme.dart';
 
 void main() {
   runApp(const IncidenciasApp());
@@ -46,10 +47,10 @@ class IncidenciasApp extends StatelessWidget {
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
       title: 'Incidencias de Soporte',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
-      ),
+      // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
+      theme: CeosmosTema.claro,
+      darkTheme: CeosmosTema.oscuro,
+      themeMode: ThemeMode.system,
       home: const PantallaPrincipal(),
     );
   }
@@ -225,7 +226,6 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
                         decoration: const InputDecoration(
                           labelText: 'Nombre del equipo',
                           prefixIcon: Icon(Icons.computer),
-                          border: OutlineInputBorder(),
                         ),
                         validator: (v) =>
                             _validarObligatorio(v, 'Nombre del equipo'),
@@ -238,7 +238,6 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
                         decoration: const InputDecoration(
                           labelText: 'Descripción de la incidencia',
                           prefixIcon: Icon(Icons.description),
-                          border: OutlineInputBorder(),
                         ),
                         validator: (v) => _validarObligatorio(
                           v,
@@ -319,7 +318,10 @@ class _PantallaPrincipalState extends State<PantallaPrincipal> {
                       subtitle: Text('${inc.descripcion}\n${inc.fecha}'),
                       isThreeLine: true,
                       trailing: IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
+                        icon: Icon(
+                          Icons.delete,
+                          color: Theme.of(context).colorScheme.error,
+                        ),
                         tooltip: 'Eliminar',
                         onPressed: _ocupado
                             ? null

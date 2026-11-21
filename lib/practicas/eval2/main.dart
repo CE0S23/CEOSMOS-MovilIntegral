@@ -2,6 +2,7 @@ import '../atras_ceosmos.dart'; // [CEOSMOS]
 import 'package:flutter/material.dart';
 
 import 'presentation/screens/screens.dart';
+import '../../core/theme/theme.dart';
 
 void main() => runApp(const MediConnectApp());
 
@@ -14,10 +15,10 @@ class MediConnectApp extends StatelessWidget {
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
       title: 'MediConnect',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        useMaterial3: true,
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1E88E5)),
-      ),
+      // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
+      theme: CeosmosTema.claro,
+      darkTheme: CeosmosTema.oscuro,
+      themeMode: ThemeMode.system,
       home: const LoginScreen(),
     );
   }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'servicio_web.dart';
+import '../../../ui/widgets.dart' show Aviso;
 
 class ConsultaWebPage extends StatefulWidget {
   const ConsultaWebPage({super.key});
@@ -59,10 +60,7 @@ class _ConsultaWebPageState extends State<ConsultaWebPage> {
               ],
             ),
           if (_error != null)
-            Text(
-              _error!,
-              style: TextStyle(color: Theme.of(context).colorScheme.error),
-            ),
+            Aviso(_error!), // [CEOSMOS] ícono + texto
           if (_resultado != null)
             Expanded(
               child: SingleChildScrollView(child: SelectableText(_resultado!)),

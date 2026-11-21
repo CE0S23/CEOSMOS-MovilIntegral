@@ -1,6 +1,8 @@
 import '../atras_ceosmos.dart'; // [CEOSMOS]
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../../core/theme/theme.dart';
+import '../../ui/widgets.dart' show Aviso, TipoAviso;
 
 void main() => runApp(const AccesoSeguroApp());
 
@@ -12,11 +14,10 @@ class AccesoSeguroApp extends StatelessWidget {
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
         title: 'AccesoSeguro',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1769AA)),
-          scaffoldBackgroundColor: const Color(0xFFF4F7FB),
-        ),
+        // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
+        theme: CeosmosTema.claro,
+        darkTheme: CeosmosTema.oscuro,
+        themeMode: ThemeMode.system,
         home: const LoginPage(),
       );
 }
@@ -88,15 +89,14 @@ class _LoginPageState extends State<LoginPage> {
   InputDecoration _field(String hint) => InputDecoration(
         hintText: hint,
         filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+        contentPadding: const EdgeInsets.symmetric(horizontal: Espacio.l, vertical: Espacio.l + 2),
       );
 
   @override
   Widget build(BuildContext context) {
-    const navy = Color(0xFF0D203A);
-    const blue = Color(0xFF1769AA);
+    // [CEOSMOS] Colores y escala del sistema de diseño (antes navy/azul propios).
+    final p = context.paleta;
+    final t = context.texto;
     if (_success) {
       return Scaffold(
         body: SafeArea(
@@ -108,29 +108,23 @@ class _LoginPageState extends State<LoginPage> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.verified_user_outlined,
-                        size: 72, color: Color(0xFF167443)),
-                    const SizedBox(height: 20),
-                    const Text('Acceso concedido',
+                    Icon(Icons.verified_user_outlined,
+                        size: 72, color: p.exito),
+                    const SizedBox(height: Espacio.l + 4),
+                    Text('Acceso concedido',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: navy,
-                            fontSize: 32,
-                            fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 12),
-                    const Text('Acceso simulado correcto. Bienvenido.',
+                        style: t.displaySmall?.copyWith(color: p.marca)),
+                    const SizedBox(height: Espacio.m),
+                    Text('Acceso simulado correcto. Bienvenido.',
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Color(0xFF526277), fontSize: 16)),
-                    const SizedBox(height: 36),
+                        style: t.bodyLarge?.copyWith(color: p.textoSecundario)),
+                    const SizedBox(height: Espacio.xxl + 4),
                     SizedBox(
                       width: double.infinity,
                       height: 54,
                       child: FilledButton(
                         onPressed: _signOut,
-                        style: FilledButton.styleFrom(backgroundColor: blue),
-                        child: const Text('CERRAR SESIÓN',
-                            style: TextStyle(fontWeight: FontWeight.bold)),
+                        child: const Text('CERRAR SESIÓN'),
                       ),
                     ),
                   ],
@@ -151,17 +145,17 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('ACCESO SEGURO',
-                      style: TextStyle(color: blue, fontSize: 13, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 12),
-                  const Text('Inicia sesión',
-                      style: TextStyle(color: navy, fontSize: 34, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  const Text('Ingresa tus datos para continuar.',
-                      style: TextStyle(color: Color(0xFF526277), fontSize: 15)),
-                  const SizedBox(height: 38),
-                  const Text('Usuario', style: TextStyle(color: navy, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
+                  Text('ACCESO SEGURO',
+                      style: t.labelMedium?.copyWith(color: p.enlace, fontWeight: FontWeight.w700, letterSpacing: 1.2)),
+                  const SizedBox(height: Espacio.m),
+                  Text('Inicia sesión',
+                      style: t.displaySmall?.copyWith(color: p.marca)),
+                  const SizedBox(height: Espacio.s),
+                  Text('Ingresa tus datos para continuar.',
+                      style: t.bodyLarge?.copyWith(color: p.textoSecundario)),
+                  const SizedBox(height: Espacio.xxl + 6),
+                  Text('Usuario', style: t.titleSmall),
+                  const SizedBox(height: Espacio.s),
                   TextField(
                     controller: _user,
                     onChanged: (_) => setState(() {
@@ -180,8 +174,8 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: _field('Tu usuario (sin espacios)'),
                   ),
                   const SizedBox(height: 22),
-                  const Text('Contraseña', style: TextStyle(color: navy, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
+                  Text('Contraseña', style: t.titleSmall),
+                  const SizedBox(height: Espacio.s),
                   TextField(
                     controller: _password,
                     onChanged: (_) => setState(() {
@@ -203,27 +197,24 @@ class _LoginPageState extends State<LoginPage> {
                     height: 54,
                     child: FilledButton(
                       onPressed: _busy ? null : _signIn,
-                      style: FilledButton.styleFrom(backgroundColor: blue),
-                      child: Text(_busy ? 'VALIDANDO...' : 'INGRESAR',
-                          style: const TextStyle(fontWeight: FontWeight.bold)),
+                      child: Text(_busy ? 'VALIDANDO...' : 'INGRESAR'),
                     ),
                   ),
                   const SizedBox(height: 18),
                   SizedBox(
                     height: 48,
                     child: Center(
-                      child: Text(_message,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: _notice ? blue : const Color(0xFFB42318),
-                            fontSize: 14,
-                          )),
+                      // [CEOSMOS] Ícono + texto: el error no depende solo del color.
+                      child: _message.isEmpty
+                          ? Text(_message)
+                          : Aviso(_message,
+                              tipo: _notice ? TipoAviso.info : TipoAviso.error),
                     ),
                   ),
                   const SizedBox(height: 24),
-                  const Center(
+                  Center(
                     child: Text('Demostración local · Sin conexión a un servidor',
-                        style: TextStyle(color: Color(0xFF68788D), fontSize: 12)),
+                        style: t.bodySmall),
                   ),
                 ],
               ),

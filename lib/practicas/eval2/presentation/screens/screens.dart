@@ -50,10 +50,10 @@ class _LoginScreenState extends State<LoginScreen> {
           const Text('Inicia sesión para consultar y agendar tus citas', textAlign: TextAlign.center),
           const SizedBox(height: 32),
           TextField(controller: _email, keyboardType: TextInputType.emailAddress,
-              decoration: const InputDecoration(labelText: 'Correo electrónico', border: OutlineInputBorder())),
+              decoration: const InputDecoration(labelText: 'Correo electrónico')),
           const SizedBox(height: 16),
           TextField(controller: _pass, obscureText: true,
-              decoration: const InputDecoration(labelText: 'Contraseña', border: OutlineInputBorder())),
+              decoration: const InputDecoration(labelText: 'Contraseña')),
           const SizedBox(height: 16),
           if (_error != null)
             Card(color: c.errorContainer, child: Padding(padding: const EdgeInsets.all(12),
@@ -281,7 +281,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         const SizedBox(height: 16),
         DropdownButtonFormField<String>(
           initialValue: _doctor,
-          decoration: const InputDecoration(labelText: 'Médico', border: OutlineInputBorder()),
+          decoration: const InputDecoration(labelText: 'Médico'),
           items: [for (final d in _doctors) DropdownMenuItem(value: d.id, child: Text('${d.name} · ${d.specialty}'))],
           onChanged: (v) => setState(() => _doctor = v),
           validator: (v) => v == null ? 'Selecciona un médico' : null,
@@ -289,7 +289,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         const SizedBox(height: 16),
         DropdownButtonFormField<String>(
           initialValue: _slot,
-          decoration: const InputDecoration(labelText: 'Fecha y hora', border: OutlineInputBorder()),
+          decoration: const InputDecoration(labelText: 'Fecha y hora'),
           items: [for (final s in _slots) DropdownMenuItem(value: s, child: Text(_fmt.format(DateTime.parse(s).toLocal())))],
           onChanged: (v) => setState(() => _slot = v),
           validator: (v) => v == null ? 'Selecciona fecha y hora' : null,
@@ -299,7 +299,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           controller: _reason,
           maxLength: 300,
           maxLines: 3,
-          decoration: const InputDecoration(labelText: 'Motivo de la consulta', border: OutlineInputBorder()),
+          decoration: const InputDecoration(labelText: 'Motivo de la consulta'),
           validator: (v) => (v == null || v.trim().isEmpty) ? 'Escribe el motivo' : null,
         ),
         if (_error != null)

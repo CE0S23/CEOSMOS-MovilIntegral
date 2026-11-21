@@ -35,6 +35,13 @@ actualizado: 2026-11-19
   - [x] P8, P11, P12 confirmadas con `flutter test` 215/215 y CI; P9 y P10 con una prueba rápida en los dos equipos.
   - [x] Word: P7 reescrita (sin «No aplicado por completo»); respaldo en `C:/CESAR10cuatri/memoria_respaldo_2026-11-19/`.
   - [ ] Siguen pendientes: rotación de Neon/`JWT_SECRET`, clave de `mesaayuda-p7`, alertas de GitHub. → [[08 - Pendientes]]
+- **21/11/2026** — Rediseño estético (sin cambios de lógica). → [[11 - Sistema de diseño]]
+  - [x] `lib/core/theme/`: tokens, `CeosmosPaleta` (claro/oscuro), escala Bricolage + DM Sans, espaciados, radios, sombras y temas de componentes; `themeMode: system`.
+  - [x] Pantallas de CEOSMOS y las 7 prácticas Flutter sin colores ni tamaños sueltos; errores con ícono + texto (`Aviso`).
+  - [x] Reloj y TV (`TemaCeosmos.kt`, escala compacta/grande, foco D-pad cian) y prácticas nativas P9/P10/BD (`CeosmosTema`, estilo `CeosmosPracticas`).
+  - [x] 6 combinaciones ajustadas a WCAG AA (`tool/contraste/`); 215/215 pruebas, analyze limpio, gradle test + lint verde.
+  - [x] Capturas antes/después en `evidencias/rediseno/`.
+  - [ ] Recorrido en S24 / Tab S9 pendiente: no había equipos conectados por adb.
 
 ## Estado de las tareas pedidas (18/11)
 - [x] Tarea 1 · Actividades 4–12 validadas (P7 completada el 19/11).

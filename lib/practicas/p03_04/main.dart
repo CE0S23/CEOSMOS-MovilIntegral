@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'consulta_web/consulta_web_page.dart';
 import 'usuarios/app_database.dart';
 import 'usuarios/usuarios_page.dart';
+import '../../core/theme/theme.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,10 +20,10 @@ class ConsultaWebApp extends StatelessWidget {
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
       title: 'ConsultaWeb',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.indigo),
-        useMaterial3: true,
-      ),
+      // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
+      theme: CeosmosTema.claro,
+      darkTheme: CeosmosTema.oscuro,
+      themeMode: ThemeMode.system,
       home: const InicioPage(),
     );
   }

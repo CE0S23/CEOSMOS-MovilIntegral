@@ -35,18 +35,19 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'UN MOMENTO PARA TI',
-                    style: TextStyle(
-                      color: Cosmos.muted,
-                      fontSize: 11,
-                      letterSpacing: 2,
+                    style: context.texto.labelSmall?.copyWith(
+                      color: context.paleta.textoSecundario,
+                      letterSpacing: 1.6,
                     ),
                   ),
-                  const SizedBox(height: 9),
+                  const SizedBox(height: Espacio.s),
                   Text(
                     'Hola, ${state.user!.username.split(' ').first} ✦',
-                    style: Theme.of(context).textTheme.headlineMedium,
+                    style: context.texto.headlineLarge?.copyWith(
+                      color: context.paleta.marca,
+                    ),
                   ),
                 ],
               ),
@@ -54,22 +55,23 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(width: 8),
             Tag(
               state.dataError == null ? 'Sincronizado' : 'Sin conexión',
-              color: state.dataError == null ? Cosmos.mint : Cosmos.peach,
+              color: state.dataError == null ? context.paleta.exito : context.paleta.advertencia,
               icon: state.dataError == null ? Icons.cloud_done_outlined : Icons.cloud_off_outlined,
             ),
           ],
         ),
-        const SizedBox(height: 26),
+        const SizedBox(height: Espacio.xl),
         CosmosScene(
           child: Container(
             width: double.infinity,
             constraints: const BoxConstraints(minHeight: 310),
-            padding: const EdgeInsets.all(26),
+            padding: const EdgeInsets.all(Espacio.xl + 2),
             decoration: BoxDecoration(
+              // Velo de tinta para que el texto blanco siempre cumpla AA.
               gradient: LinearGradient(
                 colors: [
-                  Cosmos.background.withValues(alpha: .7),
-                  Colors.transparent,
+                  CeosmosColores.tinta.withValues(alpha: .72),
+                  CeosmosColores.tinta.withValues(alpha: 0),
                 ],
               ),
             ),
@@ -79,23 +81,30 @@ class _HomeScreenState extends State<HomeScreen> {
               children: [
                 const Tag(
                   'ENCUENTRA TU FLOW',
-                  color: Colors.white,
+                  color: CeosmosColores.cian,
                   icon: Icons.auto_awesome,
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: Espacio.l + 2),
                 Text(
                   'Un pequeño respiro.\nUn gran comienzo.',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.headlineMedium?.copyWith(height: 1.15),
+                  style: context.texto.headlineLarge?.copyWith(
+                    color: CeosmosColores.blanco,
+                  ),
                 ),
-                const SizedBox(height: 12),
-                const Text(
+                const SizedBox(height: Espacio.m),
+                Text(
                   'Crea espacio para lo que importa.',
-                  style: TextStyle(color: Color(0xFFD4CFE2)),
+                  style: context.texto.bodyLarge?.copyWith(
+                    color: CeosmosColores.guindaClaro,
+                  ),
                 ),
-                const SizedBox(height: 22),
+                const SizedBox(height: Espacio.xl),
                 FilledButton.icon(
+                  // Sobre la escena oscura, el botón va en cian con texto guinda.
+                  style: FilledButton.styleFrom(
+                    backgroundColor: CeosmosColores.cian,
+                    foregroundColor: CeosmosColores.guinda,
+                  ),
                   onPressed: () => widget.onOpen(catalog.first),
                   icon: const Icon(Icons.play_arrow_rounded),
                   label: Text(
@@ -108,21 +117,21 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
-        const SizedBox(height: 30),
+        const SizedBox(height: Espacio.xxl),
         Text(
           '¿Qué necesitas hoy?',
-          style: Theme.of(context).textTheme.titleLarge,
+          style: context.texto.headlineSmall,
         ),
-        const SizedBox(height: 6),
-        const Text(
+        const SizedBox(height: Espacio.xs + 2),
+        Text(
           'Elige tu intención. Nosotros ponemos el ambiente.',
-          style: TextStyle(color: Cosmos.muted),
+          style: TextStyle(color: context.paleta.textoSecundario),
         ),
-        const SizedBox(height: 18),
+        const SizedBox(height: Espacio.l + 2),
         LayoutBuilder(
           builder: (context, constraints) => Wrap(
-            spacing: 12,
-            runSpacing: 12,
+            spacing: Espacio.m,
+            runSpacing: Espacio.m,
             children: FocusMode.values
                 .map(
                   (mode) => SizedBox(
@@ -130,30 +139,33 @@ class _HomeScreenState extends State<HomeScreen> {
                         ? constraints.maxWidth
                         : (constraints.maxWidth - 24) / 3,
                     child: Material(
-                      color: modeColor(mode).withValues(alpha: .07),
-                      borderRadius: BorderRadius.circular(18),
+                      color: modeColor(context, mode).withValues(alpha: .08),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: Radios.bordeL,
+                        side: BorderSide(
+                          color: modeColor(context, mode).withValues(alpha: .28),
+                        ),
+                      ),
                       child: InkWell(
-                        borderRadius: BorderRadius.circular(18),
+                        borderRadius: Radios.bordeL,
                         onTap: () => widget.onExplore(mode),
                         child: Padding(
-                          padding: const EdgeInsets.all(20),
+                          padding: const EdgeInsets.all(Espacio.l + 4),
                           child: Row(
                             children: [
                               Icon(
                                 modeIcon(mode),
-                                color: modeColor(mode),
+                                color: modeColor(context, mode),
                                 size: 28,
                               ),
-                              const SizedBox(width: 12),
+                              const SizedBox(width: Espacio.m),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
                                       mode.label,
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                      ),
+                                      style: context.texto.titleMedium,
                                     ),
                                     Text(
                                       switch (mode) {
@@ -162,10 +174,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                         FocusMode.inspire =>
                                           'Enciende una idea',
                                       },
-                                      style: const TextStyle(
-                                        color: Cosmos.muted,
-                                        fontSize: 12,
-                                      ),
+                                      style: context.texto.bodySmall,
                                     ),
                                   ],
                                 ),
@@ -180,13 +189,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 .toList(),
           ),
         ),
-        const SizedBox(height: 30),
+        const SizedBox(height: Espacio.xxl),
         Row(
           children: [
             Expanded(
               child: Text(
                 'Tu próxima pausa',
-                style: Theme.of(context).textTheme.titleLarge,
+                style: context.texto.headlineSmall,
               ),
             ),
             TextButton(
@@ -229,7 +238,7 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Icon(Icons.format_quote, color: Cosmos.lavender, size: 28),
+              Icon(Icons.format_quote, color: context.paleta.marca, size: 30),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
@@ -237,15 +246,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: [
                     Text(
                       reflections[_reflection],
-                      style: const TextStyle(fontSize: 17, height: 1.5),
+                      style: context.texto.titleLarge?.copyWith(height: 1.35),
                     ),
-                    const SizedBox(height: 9),
-                    const Text(
+                    const SizedBox(height: Espacio.s),
+                    Text(
                       'UNA IDEA DE CEOSMOS',
-                      style: TextStyle(
-                        fontSize: 10,
-                        letterSpacing: 1.8,
-                        color: Cosmos.muted,
+                      style: context.texto.labelSmall?.copyWith(
+                        letterSpacing: 1.6,
+                        color: context.paleta.textoSecundario,
                       ),
                     ),
                   ],
@@ -268,15 +276,15 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Text(
               '$minutes min de enfoque',
-              style: const TextStyle(color: Cosmos.muted),
+              style: TextStyle(color: context.paleta.textoSecundario),
             ),
             Text(
               '${state.totalSessions} sesiones guardadas',
-              style: const TextStyle(color: Cosmos.muted),
+              style: TextStyle(color: context.paleta.textoSecundario),
             ),
-            const Text(
+            Text(
               'Tu progreso comienza aquí.',
-              style: TextStyle(color: Cosmos.muted),
+              style: TextStyle(color: context.paleta.textoSecundario),
             ),
           ],
         ),

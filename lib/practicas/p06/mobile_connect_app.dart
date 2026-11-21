@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'chat_session.dart';
 import 'local_network.dart';
+import '../../core/theme/theme.dart';
 
 class MobileConnectApp extends StatelessWidget {
   const MobileConnectApp({super.key});
@@ -15,11 +16,10 @@ class MobileConnectApp extends StatelessWidget {
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
         title: 'MobileConnect',
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          useMaterial3: true,
-          colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF1769AA)),
-          scaffoldBackgroundColor: const Color(0xFFF4F7FB),
-        ),
+        // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
+        theme: CeosmosTema.claro,
+        darkTheme: CeosmosTema.oscuro,
+        themeMode: ThemeMode.system,
         home: const ConversationPage(),
       );
 }
@@ -335,22 +335,23 @@ class _ConversationPageState extends State<ConversationPage> with WidgetsBinding
       );
 
   Widget _networkCard({bool compact = false}) => Card(
-        color: const Color(0xFFE7F2FC),
+        color: context.paleta.cianSuave,
         elevation: 0,
         margin: const EdgeInsets.symmetric(vertical: 8),
         child: Padding(
           padding: EdgeInsets.all(compact ? 8 : 14),
           child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             if (!compact) ...[
-              const Text('IP de este dispositivo (Wi-Fi)',
-                  style: TextStyle(fontWeight: FontWeight.bold)),
+              Text('IP de este dispositivo (Wi-Fi)',
+                  style: context.texto.titleSmall),
               const SizedBox(height: 6),
             ],
             Row(children: [
               Expanded(child: _localNetwork.ip != null
                   ? SelectableText('${compact ? 'Mi IP Wi-Fi: ' : ''}${_localNetwork.ip}',
                       key: const Key('local-wifi-ip'),
-                      style: TextStyle(fontSize: compact ? 14 : 24, fontWeight: FontWeight.bold))
+                      style: (compact ? context.texto.titleSmall : context.texto.headlineSmall)
+                          ?.copyWith(color: context.paleta.marca))
                   : Text(_localNetwork.message, key: const Key('local-network-unavailable'))),
               IconButton(
                 tooltip: 'Copiar IP',
@@ -364,8 +365,8 @@ class _ConversationPageState extends State<ConversationPage> with WidgetsBinding
               ),
             ]),
             if (!compact && _localNetwork.ip != null)
-              const Text('Si creas la sala, comparte esta IP con tu compañero. Ambos deben estar en la misma Wi-Fi.',
-                  style: TextStyle(fontSize: 12)),
+              Text('Si creas la sala, comparte esta IP con tu compañero. Ambos deben estar en la misma Wi-Fi.',
+                  style: context.texto.bodySmall),
           ]),
         ),
       );
@@ -376,8 +377,8 @@ class _ConversationPageState extends State<ConversationPage> with WidgetsBinding
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 480),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              const Text('Prepara la conversación',
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold)),
+              Text('Prepara la conversación',
+                  style: context.texto.headlineMedium?.copyWith(color: context.paleta.marca)),
               const SizedBox(height: 12),
               const Text('Uno crea la sala y otro se une. El primero que escriba será A y el otro B; ambos pueden enviar y recibir.'),
               const SizedBox(height: 20),
@@ -443,7 +444,7 @@ class _ConversationPageState extends State<ConversationPage> with WidgetsBinding
         Text(session.roleAssigned
             ? 'Este dispositivo: ${session.localDevice.label}  ·  Chat con ${session.localDevice.peer.label}'
             : 'Rol pendiente · El primero en escribir será A',
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            style: context.texto.titleMedium),
         if (_wifiMode) ...[
           _networkCard(compact: true),
           Text(_status),
@@ -474,10 +475,10 @@ class _ConversationPageState extends State<ConversationPage> with WidgetsBinding
           child: Text(session.resetPending ? 'Reiniciando…' : 'Reiniciar chat y roles en ambos'),
         ),
         if (session.localHistoryCleared)
-          const Text('Tu historial está vacío. Conservas tu rol al recibir o enviar nuevamente.',
-              style: TextStyle(fontSize: 12, color: Color(0xFF526277))),
+          Text('Tu historial está vacío. Conservas tu rol al recibir o enviar nuevamente.',
+              style: context.texto.bodySmall),
         Expanded(child: Card(
-          color: Colors.white,
+          color: context.paleta.superficie,
           elevation: 0,
           child: session.messages.isEmpty
               ? const Center(child: Padding(
@@ -528,7 +529,7 @@ class _ConversationPageState extends State<ConversationPage> with WidgetsBinding
         body: SafeArea(child: Column(children: [
           if (_visualNotice != null)
             Container(
-              color: const Color(0xFFE7F2FC),
+              color: context.paleta.cianSuave,
               padding: const EdgeInsets.only(left: 16, top: 4, bottom: 4),
               child: Row(children: [
                 Expanded(child: Text(_visualNotice!)),
@@ -557,18 +558,18 @@ class _MessageBubble extends StatelessWidget {
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: MediaQuery.sizeOf(context).width * 0.78),
         child: Card(
-          color: mine ? const Color(0xFFE7F2FC) : const Color(0xFFEAF7EE),
+          color: mine ? context.paleta.cianSuave : context.paleta.guindaSuave,
           elevation: 0,
           child: Padding(
             padding: const EdgeInsets.all(12),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min, children: [
               Text('${mine ? 'Tú · ' : ''}Dispositivo ${message.sender.label}',
-                  style: const TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 4),
+                  style: context.texto.titleSmall),
+              const SizedBox(height: Espacio.xs),
               Text(message.text),
-              const SizedBox(height: 4),
-              Text(message.time, style: const TextStyle(color: Color(0xFF526277), fontSize: 12)),
+              const SizedBox(height: Espacio.xs),
+              Text(message.time, style: context.texto.bodySmall),
             ]),
           ),
         ),

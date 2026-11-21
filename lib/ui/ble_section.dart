@@ -23,12 +23,12 @@ class BleSection extends StatelessWidget {
       builder: (context, _) => Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Text('Reloj y TV por Bluetooth', style: Theme.of(context).textTheme.titleLarge),
+          Text('Reloj y TV por Bluetooth', style: context.texto.headlineSmall),
           const SizedBox(height: 6),
-          const Text(
+          Text(
             'CEOSMOS se conecta como central BLE. Abre «CEOSMOS Reloj» o «CEOSMOS TV» en el otro equipo '
             'y escribe el PIN de 6 dígitos que muestra la primera vez.',
-            style: TextStyle(color: Cosmos.muted),
+            style: TextStyle(color: context.paleta.textoSecundario),
           ),
           const SizedBox(height: 12),
           if (ble.adaptador == AdaptadorBle.apagado)
@@ -81,7 +81,7 @@ class _Aviso extends StatelessWidget {
         child: Panel(
           child: Row(
             children: [
-              Icon(icono, color: Cosmos.peach),
+              Icon(icono, color: context.paleta.advertencia),
               const SizedBox(width: 12),
               Expanded(child: Text(texto)),
               if (accion != null) TextButton(onPressed: onAccion, child: Text(accion!)),
@@ -164,13 +164,13 @@ class _TarjetaBleState extends State<_TarjetaBle> {
     final vinculado = widget.state.bleVinculado(rol);
     final ocupado = {EstadoEnlace.buscando, EstadoEnlace.conectando, EstadoEnlace.autenticando}.contains(e.estado);
     final (texto, color) = switch (e.estado) {
-      EstadoEnlace.desconectado => ('Desconectado', Cosmos.muted),
-      EstadoEnlace.buscando => ('Buscando…', Cosmos.lavender),
-      EstadoEnlace.conectando => ('Conectando…', Cosmos.lavender),
-      EstadoEnlace.autenticando => ('Verificando PIN…', Cosmos.lavender),
-      EstadoEnlace.conectado => ('Conectado', Cosmos.mint),
-      EstadoEnlace.reconectando => ('Reconectando${e.reintento > 0 ? ' (intento ${e.reintento})' : ''}…', Cosmos.peach),
-      EstadoEnlace.error => ('Sin conexión', Cosmos.peach),
+      EstadoEnlace.desconectado => ('Desconectado', context.paleta.textoSecundario),
+      EstadoEnlace.buscando => ('Buscando…', context.paleta.enlace),
+      EstadoEnlace.conectando => ('Conectando…', context.paleta.enlace),
+      EstadoEnlace.autenticando => ('Verificando PIN…', context.paleta.enlace),
+      EstadoEnlace.conectado => ('Conectado', context.paleta.exito),
+      EstadoEnlace.reconectando => ('Reconectando${e.reintento > 0 ? ' (intento ${e.reintento})' : ''}…', context.paleta.advertencia),
+      EstadoEnlace.error => ('Sin conexión', context.paleta.error),
     };
     return Panel(
       key: Key('ble-${rol.etiqueta}'),
@@ -179,16 +179,16 @@ class _TarjetaBleState extends State<_TarjetaBle> {
         children: [
           Row(
             children: [
-              Icon(rol == RolBle.reloj ? Icons.watch_outlined : Icons.tv_outlined, color: Cosmos.lavender, size: 30),
+              Icon(rol == RolBle.reloj ? Icons.watch_outlined : Icons.tv_outlined, color: context.paleta.enlace, size: 30),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('CEOSMOS ${rol.nombre}', style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
+                    Text('CEOSMOS ${rol.nombre}', style: context.texto.titleMedium),
                     Text(
                       vinculado == null ? 'BLE · sin vincular' : 'BLE · vinculado a tu cuenta (${vinculado.address})',
-                      style: const TextStyle(color: Cosmos.muted, fontSize: 12),
+                      style: context.texto.bodySmall,
                     ),
                   ],
                 ),
@@ -198,19 +198,19 @@ class _TarjetaBleState extends State<_TarjetaBle> {
           ),
           if (e.error != null && e.estado != EstadoEnlace.conectado) ...[
             const SizedBox(height: 10),
-            Text(e.error!, style: const TextStyle(color: Cosmos.peach)),
+            Aviso(e.error!),
           ],
           const SizedBox(height: 12),
           if (e.activo && rol == RolBle.reloj) ...[
             if (ble.ultimaLectura == null)
-              const Text('Esperando lecturas del reloj…', style: TextStyle(color: Cosmos.muted))
+              Text('Esperando lecturas del reloj…', style: TextStyle(color: context.paleta.textoSecundario))
             else
               Text(
                 '${ble.ultimaLectura!.heartRate} bpm'
                 '${ble.ultimaLectura!.steps == null ? '' : ' · ${ble.ultimaLectura!.steps} pasos'}'
                 ' · ${ble.muestras.length} lecturas',
                 key: const Key('ble-lectura'),
-                style: Theme.of(context).textTheme.titleMedium,
+                style: context.texto.titleMedium,
               ),
             const SizedBox(height: 10),
             TextField(
@@ -234,13 +234,13 @@ class _TarjetaBleState extends State<_TarjetaBle> {
                 widget.state.hasSession
                     ? 'Proyectando «${widget.state.currentMedia!.title}» en la TV.'
                     : 'La TV muestra tu panel. Inicia una sesión para proyectarla.',
-                style: const TextStyle(color: Cosmos.muted),
+                style: TextStyle(color: context.paleta.textoSecundario),
               ),
             ),
           if (e.activo && ble.ultimoComando != null)
             Padding(
               padding: const EdgeInsets.only(bottom: 8),
-              child: Text('Último comando: ${ble.ultimoComando}', style: const TextStyle(color: Cosmos.muted, fontSize: 12)),
+              child: Text('Último comando: ${ble.ultimoComando}', style: context.texto.bodySmall),
             ),
           Wrap(
             spacing: 10,

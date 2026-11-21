@@ -70,7 +70,7 @@ class _AdminScreenState extends State<AdminScreen> {
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
-          Text('Usuarios', style: Theme.of(context).textTheme.titleLarge),
+          Text('Usuarios', style: context.texto.headlineSmall),
           const SizedBox(height: 12),
           FutureBuilder<List<Map<String, dynamic>>>(
             future: _usuarios,
@@ -79,7 +79,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 return const Center(child: Padding(padding: EdgeInsets.all(24), child: CircularProgressIndicator()));
               }
               if (snap.hasError) {
-                return Text('${snap.error}', style: const TextStyle(color: Cosmos.peach));
+                return Aviso('${snap.error}');
               }
               final usuarios = snap.data!;
               if (usuarios.isEmpty) return const Text('No hay usuarios.');
@@ -93,17 +93,17 @@ class _AdminScreenState extends State<AdminScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('${u['username']}', style: const TextStyle(fontWeight: FontWeight.w600)),
-                            Text('${u['email']}', style: const TextStyle(color: Cosmos.muted, fontSize: 12)),
+                            Text('${u['username']}', style: context.texto.titleSmall),
+                            Text('${u['email']}', style: context.texto.bodySmall),
                             const SizedBox(height: 8),
                             Wrap(
                               spacing: 8,
                               runSpacing: 6,
                               children: [
-                                Tag('${u['role']}', color: u['role'] == 'ADMIN' ? Cosmos.peach : Cosmos.lavender),
+                                Tag('${u['role']}', color: u['role'] == 'ADMIN' ? context.paleta.marca : context.paleta.enlace),
                                 Tag(u['active'] == true ? 'Activo' : 'Desactivado',
-                                    color: u['active'] == true ? Cosmos.mint : Cosmos.muted),
-                                if (u['emailVerified'] != true) const Tag('Sin verificar', color: Cosmos.muted),
+                                    color: u['active'] == true ? context.paleta.exito : context.paleta.textoSecundario),
+                                if (u['emailVerified'] != true) Tag('Sin verificar', color: context.paleta.textoSecundario),
                               ],
                             ),
                             if (u['id'] != yo) ...[
@@ -146,7 +146,7 @@ class _AdminScreenState extends State<AdminScreen> {
             },
           ),
           const SizedBox(height: 24),
-          Text('Bitácora de auditoría', style: Theme.of(context).textTheme.titleLarge),
+          Text('Bitácora de auditoría', style: context.texto.headlineSmall),
           const SizedBox(height: 12),
           FutureBuilder<Map<String, dynamic>>(
             future: _bitacora,
@@ -155,7 +155,7 @@ class _AdminScreenState extends State<AdminScreen> {
                 return const LinearProgressIndicator();
               }
               if (snap.hasError) {
-                return Text('${snap.error}', style: const TextStyle(color: Cosmos.peach));
+                return Aviso('${snap.error}');
               }
               final items = (snap.data!['items'] as List? ?? const []).cast<Map>();
               if (items.isEmpty) return const Text('Sin eventos registrados.');
@@ -165,7 +165,7 @@ class _AdminScreenState extends State<AdminScreen> {
                     ListTile(
                       contentPadding: EdgeInsets.zero,
                       dense: true,
-                      leading: const Icon(Icons.receipt_long_outlined, color: Cosmos.lavender),
+                      leading: Icon(Icons.receipt_long_outlined, color: context.paleta.enlace),
                       title: Text('${e['action']} · ${(e['user'] as Map?)?['email'] ?? e['userId'] ?? 'sistema'}'),
                       subtitle: Text(
                         '${DateTime.tryParse('${e['timestamp']}')?.toLocal() ?? ''} · IP ${e['ipAddress'] ?? '-'}',

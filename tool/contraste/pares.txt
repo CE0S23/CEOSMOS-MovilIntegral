@@ -1,0 +1,69 @@
+// Paleta entregada (sin ajustar)
+#FFFFFF #5B011D 4.5 blanco/guinda
+#5B011D #51D7FD 4.5 guinda/cian
+#0A7FA3 #FFFFFF 4.5 cianOscuro/blanco
+#0A7FA3 #FFF8F3 4.5 cianOscuro/fondo
+#0A7FA3 #DDF7FF 4.5 cianOscuro/cianClaro
+#5B011D #DDF7FF 4.5 guinda/cianClaro
+#5B011D #F6E4EA 4.5 guinda/guindaClaro
+#1E0A12 #FFF8F3 4.5 tinta/fondo
+#6B5A60 #FFF8F3 4.5 texto2/fondo
+#6B5A60 #FFFFFF 4.5 texto2/sup
+#6B5A60 #F6E4EA 4.5 texto2/guindaClaro
+#1F9E6E #FFFFFF 4.5 exito/sup
+#E89B12 #FFFFFF 3 advert/sup
+#D62F45 #FFFFFF 4.5 error/sup
+#D62F45 #FFF8F3 4.5 error/fondo
+#FFB547 #FFFFFF 3 acento/sup
+#5B011D #FFB547 4.5 guinda/acento
+#EADDE1 #FFFFFF 3 borde/sup
+#FFFFFF #8A1C3D 4.5 blanco/guindaMedio
+#51D7FD #5B011D 4.5 cian/guinda
+#FCEFF3 #16060D 4.5 dk tinta/fondo
+#C9B3BB #24101A 4.5 dk t2/sup
+#C9B3BB #321623 4.5 dk t2/supAlta
+#51D7FD #24101A 4.5 dk cian/sup
+#F2A3BA #24101A 4.5 dk sec/sup
+#5B011D #F2A3BA 4.5 guinda/dk sec
+#D62F45 #24101A 4.5 error/dk sup
+#1F9E6E #24101A 4.5 exito/dk
+#E89B12 #24101A 4.5 adv/dk
+#FFB547 #24101A 4.5 acento/dk
+#4A2635 #24101A 3 dk borde
+#FFFFFF #0A7FA3 4.5 blanco/cianOscuro
+// Ajustes AA aplicados
+#08708F #FFF8F3 4.5 cianTexto/fondo
+#08708F #DDF7FF 4.5 cianTexto/cianClaro
+#08708F #F6E4EA 4.5 cianTexto/guindaClaro
+#08708F #FFFFFF 4.5 cianTexto/sup
+#06677F #DDF7FF 4.5 cianTexto2/cianClaro
+#17805A #FFFFFF 4.5 exitoTexto/sup
+#17805A #FFF8F3 4.5 exitoTexto/fondo
+#157553 #E3F4EC 4.5 exitoTexto/exitoSuave
+#9A5800 #FFFFFF 4.5 advTexto/sup
+#9A5800 #FFF8F3 4.5 advTexto/fondo
+#9A5800 #FDF0DA 4.5 advTexto/advSuave
+#C42A3F #FFF8F3 4.5 errorTexto/fondo
+#C42A3F #FBE5E8 4.5 errorTexto/errorSuave
+#8C7880 #FFFFFF 3 bordeControl/sup
+#8C7880 #FFF8F3 3 bordeControl/fondo
+#FF7A8C #24101A 4.5 dk error/sup
+#FF7A8C #321623 4.5 dk error/supAlta
+#FF7A8C #16060D 4.5 dk error/fondo
+#8E6A79 #24101A 3 dk bordeControl/sup
+#8E6A79 #16060D 3 dk bordeControl/fondo
+#2FC08A #24101A 4.5 dk exito
+#FFFFFF #D62F45 4.5 blanco/error
+#5B011D #FFFFFF 4.5 guinda/sup
+#5B011D #FFF8F3 4.5 guinda/fondo
+#8A1C3D #FFF8F3 4.5 guindaMedio/fondo
+#FFFFFF #1E0A12 4.5 blanco/tinta
+#F6E4EA #5B011D 4.5 guindaClaro/guinda
+#FCEFF3 #321623 4.5 dk tinta/supAlta
+#51D7FD #321623 4.5 dk cian/supAlta
+#F2A3BA #16060D 4.5 dk sec/fondo
+#DDF7FF #0B3E4E 4.5 dk cianClaro/chip
+#FCEFF3 #4A1A2C 4.5 dk tinta/guindaSuave
+#6B5A60 #DDF7FF 4.5 texto2/cianClaro
+#FFFFFF #08708F 4.5 blanco/cianTexto
+#1E0A12 #51D7FD 4.5 tinta/cian

@@ -159,9 +159,9 @@ private fun TarjetaIncidencia(inc: Incidencia, propia: Boolean, onClick: () -> U
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 Etiqueta(inc.estado.texto, colorEstado(inc.estado))
                 Etiqueta(inc.prioridad.texto, colorPrioridad(inc.prioridad))
-                if (inc.pendiente) Etiqueta("🕓 Pendiente de sincronizar", Color(0xFFFFE0B2), Color(0xFF6D3A00))
+                if (inc.pendiente) Etiqueta("🕓 Pendiente de sincronizar", Color(0xFFFDF0DA), Color(0xFF9A5800))
                 if (propia && inc.asignada) Etiqueta("📤 Asignada a ${inc.asignadoACorreo}", colorUsuario(inc.asignadoACorreo))
-                if (inc.asignada && inc.puedeEditar) Etiqueta("✏️ Puede editar", Color(0xFF6A1B9A))
+                if (inc.asignada && inc.puedeEditar) Etiqueta("✏️ Puede editar", Color(0xFF5B011D))
                 if (inc.cedida) Etiqueta("📦 Cedida por ${inc.cedidoPorCorreo}", colorUsuario(inc.cedidoPorCorreo))
                 if (!propia) Etiqueta("📥 De ${inc.creadoPorCorreo}", colorUsuario(inc.creadoPorCorreo))
             }
@@ -227,11 +227,11 @@ private fun DialogoNueva(vm: IncidenciasViewModel, alCerrar: () -> Unit) {
                 SelectorUsuario(vm.otros, asignado, vm.uid, nadie = true) { asignadoUid = it?.uid.orEmpty() }
                 Text("Ceder a", style = MaterialTheme.typography.labelLarge)
                 SelectorUsuario(vm.otros, cedido, vm.uid, nadie = true) { cedidoUid = it?.uid.orEmpty() }
-                if (cedido != null) Aviso("Se crea directamente para ${cedido.correo} (cesión registrada con tu UID): no aparecerá en tu lista.", Color(0xFF6A1B9A))
+                if (cedido != null) Aviso("Se crea directamente para ${cedido.correo} (cesión registrada con tu UID): no aparecerá en tu lista.", Color(0xFF5B011D))
                 Text("Propietario (creadoPor)", style = MaterialTheme.typography.labelLarge)
                 SelectorUsuario(vm.todos, propietario, vm.uid, nadie = false) { it?.let { u -> propietarioUid = u.uid } }
                 Text("creadoPor = ${propietario.uid}", style = MaterialTheme.typography.labelSmall, fontFamily = FontFamily.Monospace)
-                if (propietario.uid != vm.uid) Aviso("Estás indicando el UID de otro usuario (SEG-04): Firestore debe rechazar la escritura.", Color(0xFFE65100))
+                if (propietario.uid != vm.uid) Aviso("Estás indicando el UID de otro usuario (SEG-04): Firestore debe rechazar la escritura.", Color(0xFF9A5800))
                 vm.ultimaOperacion?.let { TarjetaOperacion(it) }
             }
         },
@@ -278,7 +278,7 @@ private fun DialogoEditor(vm: IncidenciasViewModel) {
                             "Te la asignó ${original.creadoPorCorreo}. Las reglas solo te dejan cambiar el estado: " +
                                 "cambiar la prioridad, la asignación o el propietario, o eliminarla, debe ser rechazado (SEG-14)."
                         },
-                        Color(0xFF1E5AA8),
+                        Color(0xFF08708F),
                     )
                 }
                 if (original.descripcion.isNotEmpty()) Text(original.descripcion, style = MaterialTheme.typography.bodySmall)
@@ -300,28 +300,28 @@ private fun DialogoEditor(vm: IncidenciasViewModel) {
                     val cedibles = vm.otros
                     SelectorUsuario(cedibles, cedibles.firstOrNull { it.uid == vm.cedidoEditado }, vm.uid, nadie = true) { vm.cedidoEditado = it?.uid.orEmpty() }
                     if (vm.cedidoEditado.isNotEmpty()) {
-                        Aviso("Al guardar pasa a ser del otro usuario y desaparece de tu lista (cesión registrada con tu UID).", Color(0xFF6A1B9A))
+                        Aviso("Al guardar pasa a ser del otro usuario y desaparece de tu lista (cesión registrada con tu UID).", Color(0xFF5B011D))
                     }
                 }
                 Text("Propietario (creadoPor)", style = MaterialTheme.typography.labelLarge)
                 SelectorUsuario(propietarios, propietarios.firstOrNull { it.uid == vm.propietarioEditado }, vm.uid, nadie = false) { it?.let { u -> vm.propietarioEditado = u.uid } }
                 if (vm.propietarioEditado != original.creadoPor) {
-                    Aviso("Cambiar el propietario debe ser rechazado por Firestore (${if (propia) "SEG-09" else "SEG-14"}).", Color(0xFFE65100))
+                    Aviso("Cambiar el propietario debe ser rechazado por Firestore (${if (propia) "SEG-09" else "SEG-14"}).", Color(0xFF9A5800))
                 }
                 vm.ultimaOperacion?.let { TarjetaOperacion(it) }
 
                 if (confirmarEliminar) {
-                    Aviso("¿Eliminar ${original.titulo}?", Color(0xFFB71C1C))
+                    Aviso("¿Eliminar ${original.titulo}?", Color(0xFFC42A3F))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         TextButton(onClick = { confirmarEliminar = false }) { Text("No") }
                         Button(
                             onClick = { confirmarEliminar = false; vm.eliminar(original) },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB71C1C)),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC42A3F)),
                             enabled = !vm.guardando,
                         ) { Text("Sí, eliminar") }
                     }
                 } else {
-                    TextButton(onClick = { confirmarEliminar = true }) { Text("Eliminar incidencia", color = Color(0xFFB71C1C)) }
+                    TextButton(onClick = { confirmarEliminar = true }) { Text("Eliminar incidencia", color = Color(0xFFC42A3F)) }
                 }
             }
         },
@@ -361,7 +361,7 @@ private fun DialogoAjena(vm: IncidenciasViewModel) {
                 OutlinedButton(onClick = { vm.modificarAjena(estado) }, enabled = !vm.guardando, modifier = Modifier.fillMaxWidth()) { Text("Modificar") }
                 Text("SEG-07 · Eliminar", style = MaterialTheme.typography.labelLarge)
                 OutlinedButton(onClick = vm::eliminarAjena, enabled = !vm.guardando, modifier = Modifier.fillMaxWidth()) {
-                    Text("Eliminar", color = Color(0xFFB71C1C))
+                    Text("Eliminar", color = Color(0xFFC42A3F))
                 }
                 if (vm.guardando) Progreso()
                 vm.ultimaOperacion?.let { TarjetaOperacion(it) }

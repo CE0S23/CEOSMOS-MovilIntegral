@@ -47,22 +47,28 @@ class SessionScreen extends StatelessWidget {
           scene: item.scene,
           child: Container(
             width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 32),
-            color: Cosmos.background.withValues(alpha: .3),
+            padding: const EdgeInsets.symmetric(
+              horizontal: Espacio.l + 4,
+              vertical: Espacio.xxl,
+            ),
+            // Velo de tinta: todo el texto de la escena es claro.
+            color: CeosmosColores.tinta.withValues(alpha: .35),
             child: Column(
               children: [
                 Tag(
                   item.mode.label,
-                  color: modeColor(item.mode),
+                  color: CeosmosColores.cian,
                   icon: modeIcon(item.mode),
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: Espacio.l + 2),
                 Text(
                   item.title,
-                  style: Theme.of(context).textTheme.titleLarge,
+                  style: context.texto.headlineSmall?.copyWith(
+                    color: CeosmosColores.blanco,
+                  ),
                   textAlign: TextAlign.center,
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: Espacio.xxl - 2),
                 SizedBox(
                   width: 240,
                   height: 240,
@@ -75,9 +81,12 @@ class SessionScreen extends StatelessWidget {
                           listenable: state.reloj,
                           builder: (context, _) => CircularProgressIndicator(
                             value: state.progress,
-                            strokeWidth: 3,
-                            backgroundColor: Colors.white.withValues(alpha: .14),
-                            color: modeColor(item.mode),
+                            strokeWidth: 4,
+                            strokeCap: StrokeCap.round,
+                            backgroundColor: CeosmosColores.blanco.withValues(
+                              alpha: .16,
+                            ),
+                            color: CeosmosColores.cian,
                           ),
                         ),
                       ),
@@ -88,21 +97,22 @@ class SessionScreen extends StatelessWidget {
                             listenable: state.reloj,
                             builder: (context, _) => Text(
                               clockLabel(state.remaining),
-                              style: const TextStyle(
-                                fontSize: 56,
-                                fontWeight: FontWeight.w300,
-                                letterSpacing: -2,
+                              style: context.texto.displayLarge?.copyWith(
+                                color: CeosmosColores.blanco,
+                                fontFeatures: const [
+                                  FontFeature.tabularFigures(),
+                                ],
                               ),
                             ),
                           ),
-                          const SizedBox(height: 8),
+                          const SizedBox(height: Espacio.s),
                           Text(
                             state.running
                                 ? 'RESPIRA. ESTÁS AQUÍ.'
                                 : 'A TU RITMO · EN PAUSA',
-                            style: const TextStyle(
-                              fontSize: 10,
-                              letterSpacing: 2,
+                            style: context.texto.labelSmall?.copyWith(
+                              color: CeosmosColores.cianClaro,
+                              letterSpacing: 1.8,
                             ),
                           ),
                         ],
@@ -110,13 +120,18 @@ class SessionScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 30),
+                const SizedBox(height: Espacio.xxl - 2),
                 Wrap(
                   alignment: WrapAlignment.center,
-                  spacing: 12,
-                  runSpacing: 12,
+                  spacing: Espacio.m,
+                  runSpacing: Espacio.m,
                   children: [
                     FilledButton.icon(
+                      // Sobre la escena: cian con texto guinda.
+                      style: FilledButton.styleFrom(
+                        backgroundColor: CeosmosColores.cian,
+                        foregroundColor: CeosmosColores.guinda,
+                      ),
                       onPressed: () {
                         state.togglePause();
                         if (!state.running) sound.stop();
@@ -154,20 +169,29 @@ class SessionScreen extends StatelessWidget {
                           state.finishSession();
                         }
                       },
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: CeosmosColores.blanco,
+                        side: BorderSide(
+                          color: CeosmosColores.blanco.withValues(alpha: .6),
+                        ),
+                      ),
                       child: const Text('Terminar sesión'),
                     ),
                   ],
                 ),
-                const SizedBox(height: 18),
+                const SizedBox(height: Espacio.l + 2),
                 Text(
                   'Objetivo: ${state.targetMinutes} minutos',
-                  style: const TextStyle(color: Cosmos.muted, fontSize: 12),
+                  style: context.texto.bodySmall?.copyWith(
+                    color: CeosmosColores.guindaClaro,
+                  ),
                 ),
               ],
             ),
           ),
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: Espacio.l + 4),
         if (item.audioAsset != null)
           ListenableBuilder(
             listenable: sound,
@@ -177,25 +201,22 @@ class SessionScreen extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.headphones_outlined,
-                        color: Cosmos.lavender,
+                        color: context.paleta.enlace,
                       ),
                       const SizedBox(width: 12),
-                      const Expanded(
+                      Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
                               'Tu ambiente sonoro',
-                              style: TextStyle(fontWeight: FontWeight.w600),
+                              style: context.texto.titleSmall,
                             ),
                             Text(
                               'Audio incluido · Sigue sonando en segundo plano',
-                              style: TextStyle(
-                                color: Cosmos.muted,
-                                fontSize: 12,
-                              ),
+                              style: context.texto.bodySmall,
                             ),
                           ],
                         ),
@@ -215,9 +236,9 @@ class SessionScreen extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      const Icon(
+                      Icon(
                         Icons.volume_down_outlined,
-                        color: Cosmos.muted,
+                        color: context.paleta.textoSecundario,
                         size: 18,
                       ),
                       Expanded(
@@ -230,26 +251,19 @@ class SessionScreen extends StatelessWidget {
                       ),
                       Text(
                         '${(sound.volume * 100).round()}%',
-                        style: const TextStyle(
-                          color: Cosmos.muted,
-                          fontSize: 12,
-                        ),
+                        style: context.texto.bodySmall,
                       ),
                     ],
                   ),
-                  if (sound.error != null)
-                    Text(
-                      sound.error!,
-                      style: const TextStyle(color: Cosmos.peach),
-                    ),
+                  if (sound.error != null) Aviso(sound.error!),
                 ],
               ),
             ),
           ),
         const SizedBox(height: 18),
-        const Text(
+        Text(
           'Si pausas la sesión, el audio se detiene. Puedes volver a activarlo al continuar.',
-          style: TextStyle(color: Cosmos.muted, fontSize: 12),
+          style: context.texto.bodySmall,
         ),
       ],
     );

@@ -70,9 +70,9 @@ private fun TarjetaCaso(caso: CasoSeguridad, propio: ResultadoSeguridad?, compar
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text("${caso.id} · ${caso.nombre}", style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.Bold, modifier = Modifier.weight(1f))
                 when {
-                    r == null -> Etiqueta("Sin ejecutar", Color(0xFF757575))
-                    r.paso -> Etiqueta("Pasó", Color(0xFF2E7D32))
-                    else -> Etiqueta("Falló", Color(0xFFB71C1C))
+                    r == null -> Etiqueta("Sin ejecutar", Color(0xFF6B5A60))
+                    r.paso -> Etiqueta("Pasó", Color(0xFF17805A))
+                    else -> Etiqueta("Falló", Color(0xFFC42A3F))
                 }
             }
             Text("Acción: ${caso.accion}", style = MaterialTheme.typography.bodySmall)
@@ -83,7 +83,7 @@ private fun TarjetaCaso(caso: CasoSeguridad, propio: ResultadoSeguridad?, compar
                     it.evidencia,
                     style = MaterialTheme.typography.bodySmall,
                     fontFamily = FontFamily.Monospace,
-                    color = if (it.paso) Color(0xFF2E7D32) else Color(0xFFB71C1C),
+                    color = if (it.paso) Color(0xFF17805A) else Color(0xFFC42A3F),
                 )
                 Text("Realizada por ${it.ejecutadoPor} · ${fecha(it.fecha)}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }

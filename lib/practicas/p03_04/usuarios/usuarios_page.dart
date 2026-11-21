@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'app_database.dart';
 import 'usuario.dart';
 import 'usuario_dao.dart';
+import '../../../ui/widgets.dart' show Aviso;
 
 /// [CEOSMOS] Práctica 4, caso 4: el correo es obligatorio y con formato válido.
 String? validarCorreoUsuario(String? valor) {
@@ -242,10 +243,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
             child: Center(child: CircularProgressIndicator()),
           ),
         if (_error != null)
-          Text(
-            _error!,
-            style: TextStyle(color: Theme.of(context).colorScheme.error),
-          ),
+          Aviso(_error!), // [CEOSMOS] ícono + texto
         if (_listaVisible) ...[
           const Divider(height: 32),
           if (_usuarios.isEmpty) const Text('No hay usuarios registrados.'),

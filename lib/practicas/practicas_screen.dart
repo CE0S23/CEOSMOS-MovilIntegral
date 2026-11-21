@@ -20,7 +20,7 @@ class PracticasScreen extends StatelessWidget {
       ),
       for (final p in practicas) ...[
         _TarjetaPractica(practica: p),
-        const SizedBox(height: 14),
+        const SizedBox(height: Espacio.m + 2),
       ],
     ],
   );
@@ -40,76 +40,71 @@ class _TarjetaPractica extends StatelessWidget {
         color: Colors.transparent,
         child: InkWell(
           key: ValueKey('practica-${p.id}'),
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: Radios.bordeL,
           onTap: () => abrirPractica(context, p),
           child: Panel(
-            padding: const EdgeInsets.all(18),
+            padding: const EdgeInsets.all(Espacio.l + 2),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                // Número de práctica: bloque guinda con cifra en Bricolage.
                 Container(
                   width: 64,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  padding: const EdgeInsets.symmetric(vertical: Espacio.m),
                   decoration: BoxDecoration(
-                    color: Cosmos.lavender.withValues(alpha: .12),
-                    borderRadius: BorderRadius.circular(16),
+                    color: CeosmosColores.guinda,
+                    borderRadius: Radios.bordeM,
                   ),
                   child: Text(
                     p.numero,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: Cosmos.lavender,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 13,
+                    style: context.texto.titleSmall?.copyWith(
+                      fontFamily: Fuentes.titulos,
+                      color: CeosmosColores.blanco,
                     ),
                   ),
                 ),
-                const SizedBox(width: 14),
+                const SizedBox(width: Espacio.m + 2),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         p.titulo,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
+                        style: context.texto.titleLarge,
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: Espacio.xs),
                       Text(
                         p.descripcion,
-                        style: const TextStyle(color: Cosmos.muted),
+                        style: TextStyle(color: context.paleta.textoSecundario),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: Espacio.s + 2),
                       Wrap(
-                        spacing: 8,
-                        runSpacing: 6,
+                        spacing: Espacio.s,
+                        runSpacing: Espacio.s - 2,
                         children: [
                           Tag(p.stack, icon: Icons.code),
-                          Tag(p.datos, color: Cosmos.mint, icon: Icons.storage),
+                          Tag(p.datos, color: context.paleta.exito, icon: Icons.storage),
                           if (p.tipo == TipoPractica.nativa)
-                            const Tag(
+                            Tag(
                               'Android nativo',
-                              color: Cosmos.peach,
+                              color: context.paleta.marca,
                               icon: Icons.android,
                             ),
                         ],
                       ),
                       if (p.requisito != null) ...[
-                        const SizedBox(height: 8),
-                        Text(
+                        const SizedBox(height: Espacio.s),
+                        Aviso(
                           p.requisito!,
-                          style: const TextStyle(
-                            color: Cosmos.peach,
-                            fontSize: 12,
-                          ),
+                          tipo: TipoAviso.advertencia,
+                          style: context.texto.bodySmall,
                         ),
                       ],
                     ],
                   ),
                 ),
-                const Icon(Icons.chevron_right, color: Cosmos.muted),
+                Icon(Icons.chevron_right, color: context.paleta.textoSecundario),
               ],
             ),
           ),

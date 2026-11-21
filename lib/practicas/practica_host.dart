@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../core/theme/theme.dart';
 import 'registro_practicas.dart';
 
 const _canal = MethodChannel('ceosmos/practicas');
@@ -86,42 +87,45 @@ class _PracticaHostState extends State<PracticaHost> {
         if (!didPop) _atras();
       },
       child: Scaffold(
-        backgroundColor: const Color(0xFF141725),
+        backgroundColor: context.paleta.fondo,
         // [CEOSMOS] La práctica tiene su propio Scaffold y ya se ajusta al
         // teclado; si este también lo hiciera, el teclado se restaría dos
         // veces y el formulario quedaría sin altura (P7, 19/11).
         resizeToAvoidBottomInset: false,
         body: Column(
           children: [
+            // Barra de CEOSMOS sobre la práctica: guinda con texto blanco y
+            // regreso en cian, para distinguirla del encabezado de la práctica.
             Material(
-              color: const Color(0xFF141725),
+              color: CeosmosColores.guinda,
               child: SafeArea(
                 bottom: false,
                 child: SizedBox(
                   height: 52,
                   child: Row(
                     children: [
-                      const SizedBox(width: 4),
+                      const SizedBox(width: Espacio.xs),
                       TextButton.icon(
                         onPressed: () => Navigator.of(context).pop(),
                         style: TextButton.styleFrom(
-                          foregroundColor: const Color(0xFFC2ADFF),
+                          foregroundColor: CeosmosColores.cian,
+                          iconColor: CeosmosColores.cian,
+                          overlayColor: CeosmosColores.cian,
                         ),
                         icon: const Icon(Icons.arrow_back),
-                        label: const Text(
-                          'Prácticas',
-                          style: TextStyle(fontWeight: FontWeight.w700),
-                        ),
+                        label: const Text('Prácticas'),
                       ),
                       Expanded(
                         child: Text(
                           '${p.numero} · ${p.titulo}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(color: Color(0xFFF3F0FF)),
+                          style: context.texto.bodyMedium?.copyWith(
+                            color: CeosmosColores.blanco,
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 16),
+                      const SizedBox(width: Espacio.l),
                     ],
                   ),
                 ),

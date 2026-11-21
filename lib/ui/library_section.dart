@@ -63,8 +63,8 @@ class _CachedImageState extends State<CachedImage> {
           );
         }
         if (snap.hasError) return _Falla('${snap.error}');
-        return const ColoredBox(
-          color: Cosmos.elevated,
+        return ColoredBox(
+          color: context.paleta.superficieAlta,
           child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
         );
       },
@@ -77,11 +77,11 @@ class _Falla extends StatelessWidget {
   final String texto;
   @override
   Widget build(BuildContext context) => ColoredBox(
-    color: Cosmos.elevated,
+    color: context.paleta.superficieAlta,
     child: Center(
       child: Padding(
         padding: const EdgeInsets.all(8),
-        child: Text(texto, textAlign: TextAlign.center, style: const TextStyle(color: Cosmos.muted, fontSize: 11)),
+        child: Text(texto, textAlign: TextAlign.center, style: context.texto.bodySmall),
       ),
     ),
   );
@@ -122,7 +122,7 @@ class LibrarySection extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: Text('Mi biblioteca', style: Theme.of(context).textTheme.titleLarge)),
+            Expanded(child: Text('Mi biblioteca', style: context.texto.headlineSmall)),
             TextButton.icon(
               onPressed: () => _agregar(context),
               icon: const Icon(Icons.add),
@@ -130,9 +130,9 @@ class LibrarySection extends StatelessWidget {
             ),
           ],
         ),
-        const Text(
+        Text(
           'Tus imágenes y videos guardados en tu cuenta. Las imágenes se guardan en una caché local de hasta 150 MB.',
-          style: TextStyle(color: Cosmos.muted, fontSize: 12),
+          style: context.texto.bodySmall,
         ),
         const SizedBox(height: 14),
         if (state.loadingData && items.isEmpty)
@@ -172,7 +172,7 @@ class _Tarjeta extends StatelessWidget {
       child: Panel(
         padding: EdgeInsets.zero,
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(22),
+          borderRadius: Radios.bordeL,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -182,14 +182,14 @@ class _Tarjeta extends StatelessWidget {
                 child: Row(
                   children: [
                     Icon(item.isYoutube ? Icons.smart_display_outlined : Icons.image_outlined,
-                        size: 16, color: Cosmos.lavender),
+                        size: 16, color: context.paleta.enlace),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
                         item.title ?? (item.isYoutube ? 'Video de YouTube' : 'Imagen'),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 13),
+                        style: context.texto.titleSmall,
                       ),
                     ),
                   ],
@@ -200,7 +200,7 @@ class _Tarjeta extends StatelessWidget {
                   IconButton(
                     tooltip: favorito ? 'Quitar de favoritos' : 'Agregar a favoritos',
                     onPressed: () => state.toggleFavorite(item.contentKey),
-                    icon: Icon(favorito ? Icons.favorite : Icons.favorite_border, color: Cosmos.lavender, size: 20),
+                    icon: Icon(favorito ? Icons.favorite : Icons.favorite_border, color: context.paleta.enlace, size: 20),
                   ),
                   if (item.openUrl != null)
                     IconButton(

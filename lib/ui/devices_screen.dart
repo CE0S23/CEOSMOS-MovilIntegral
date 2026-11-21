@@ -92,19 +92,19 @@ class DevicesScreen extends StatelessWidget {
             ),
             BleSection(state: state),
             const SizedBox(height: 8),
-            Text('Wearable por Wi-Fi (TCP/IP)', style: Theme.of(context).textTheme.titleLarge),
+            Text('Wearable por Wi-Fi (TCP/IP)', style: context.texto.headlineSmall),
             const SizedBox(height: 10),
-            const Panel(
+            Panel(
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Icon(Icons.wifi_tethering, color: Cosmos.lavender),
+                  Icon(Icons.wifi_tethering, color: context.paleta.enlace),
                   SizedBox(width: 14),
                   Expanded(
                     child: Text(
                       'Alternativa por red local: el wearable envía una línea JSON por lectura a IP:puerto. '
                       'Las vinculaciones (TCP y BLE) se guardan en tu cuenta.',
-                      style: TextStyle(color: Cosmos.muted),
+                      style: TextStyle(color: context.paleta.textoSecundario),
                     ),
                   ),
                 ],
@@ -170,18 +170,18 @@ class _Dispositivo extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.watch_outlined, color: Cosmos.lavender, size: 30),
+              Icon(Icons.watch_outlined, color: context.paleta.enlace, size: 30),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(device.name, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 17)),
-                    Text('${device.transport} · ${device.address}', style: const TextStyle(color: Cosmos.muted, fontSize: 12)),
+                    Text(device.name, style: context.texto.titleMedium),
+                    Text('${device.transport} · ${device.address}', style: context.texto.bodySmall),
                     if (visto != null)
                       Text(
                         'Última conexión: ${visto.day}/${visto.month} ${visto.hour.toString().padLeft(2, '0')}:${visto.minute.toString().padLeft(2, '0')}',
-                        style: const TextStyle(color: Cosmos.muted, fontSize: 12),
+                        style: context.texto.bodySmall,
                       ),
                   ],
                 ),
@@ -205,10 +205,10 @@ class _Dispositivo extends StatelessWidget {
             WearableEstado.conectado => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Tag('Conectado', color: Cosmos.mint, icon: Icons.check_circle),
+                Tag('Conectado', color: context.paleta.exito, icon: Icons.check_circle),
                 const SizedBox(height: 14),
                 if (lectura == null)
-                  const Text('Esperando la primera lectura del dispositivo…', style: TextStyle(color: Cosmos.muted))
+                  Text('Esperando la primera lectura del dispositivo…', style: TextStyle(color: context.paleta.textoSecundario))
                 else
                   Wrap(
                     spacing: 36,
@@ -226,7 +226,7 @@ class _Dispositivo extends StatelessWidget {
             WearableEstado.error => Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(wearable.error ?? 'Error de conexión.', style: const TextStyle(color: Cosmos.peach)),
+                Aviso(wearable.error ?? 'Error de conexión.'),
                 const SizedBox(height: 10),
                 FilledButton(onPressed: onConectar, child: const Text('Reintentar')),
               ],
@@ -251,10 +251,10 @@ class _Metrica extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
-      Icon(icono, color: Cosmos.mint, size: 20),
+      Icon(icono, color: context.paleta.exito, size: 20),
       const SizedBox(height: 8),
-      Text(valor, style: Theme.of(context).textTheme.headlineMedium),
-      Text(etiqueta, style: const TextStyle(color: Cosmos.muted, fontSize: 12)),
+      Text(valor, style: context.texto.headlineMedium),
+      Text(etiqueta, style: context.texto.bodySmall),
     ],
   );
 }

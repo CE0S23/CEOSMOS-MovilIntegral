@@ -107,7 +107,7 @@ private fun BarraSincronizacion(vm: IncidenciasViewModel) {
                     Text(
                         "Última lectura ${hora(vm.ultimaLectura)}" + if (vm.pendientes > 0) " · ${vm.pendientes} sin sincronizar" else "",
                         style = MaterialTheme.typography.bodySmall,
-                        color = if (vm.pendientes > 0) Color(0xFFE65100) else MaterialTheme.colorScheme.onSurfaceVariant,
+                        color = if (vm.pendientes > 0) Color(0xFF9A5800) else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
                 TextButton(onClick = vm::consultar, enabled = !vm.consultando) {
@@ -142,7 +142,7 @@ private fun TarjetaIncidencia(inc: Incidencia, onClick: () -> Unit) {
             FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                 Etiqueta(inc.estado.texto, colorEstado(inc.estado))
                 Etiqueta(inc.prioridad.texto, colorPrioridad(inc.prioridad))
-                if (inc.pendiente) Etiqueta("🕓 Pendiente de sincronizar", Color(0xFFFFE0B2), Color(0xFF6D3A00))
+                if (inc.pendiente) Etiqueta("🕓 Pendiente de sincronizar", Color(0xFFFDF0DA), Color(0xFF9A5800))
             }
             if (inc.descripcion.isNotEmpty()) Text(inc.descripcion, style = MaterialTheme.typography.bodySmall, maxLines = 2)
             Text(
@@ -221,11 +221,11 @@ private fun DialogoEditor(vm: IncidenciasViewModel) {
 
                 // Aviso en vivo: otro dispositivo modificó o eliminó el registro mientras está abierto.
                 when {
-                    actual == null && !vm.cargando -> Aviso("Esta incidencia fue eliminada en otro dispositivo.", Color(0xFFB71C1C))
+                    actual == null && !vm.cargando -> Aviso("Esta incidencia fue eliminada en otro dispositivo.", Color(0xFFC42A3F))
                     actual != null && actual.version != original.version -> Aviso(
                         "${actual.actualizadoPor} la modificó mientras estaba abierta: ahora v${actual.version}, " +
                             "${actual.estado.texto} / ${actual.prioridad.texto}.",
-                        Color(0xFFE65100),
+                        Color(0xFF9A5800),
                     )
                 }
 
@@ -238,17 +238,17 @@ private fun DialogoEditor(vm: IncidenciasViewModel) {
                 vm.conflicto?.let { c -> PanelConflicto(vm, c) }
 
                 if (confirmarEliminar) {
-                    Aviso("¿Eliminar ${original.titulo} para todos los dispositivos?", Color(0xFFB71C1C))
+                    Aviso("¿Eliminar ${original.titulo} para todos los dispositivos?", Color(0xFFC42A3F))
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         TextButton(onClick = { confirmarEliminar = false }) { Text("No") }
                         Button(
                             onClick = { vm.eliminar(original) },
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB71C1C)),
+                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFC42A3F)),
                             enabled = !vm.guardando,
                         ) { Text("Sí, eliminar") }
                     }
                 } else {
-                    TextButton(onClick = { confirmarEliminar = true }) { Text("Eliminar incidencia", color = Color(0xFFB71C1C)) }
+                    TextButton(onClick = { confirmarEliminar = true }) { Text("Eliminar incidencia", color = Color(0xFFC42A3F)) }
                 }
             }
         },
@@ -263,9 +263,9 @@ private fun DialogoEditor(vm: IncidenciasViewModel) {
 
 @Composable
 private fun PanelConflicto(vm: IncidenciasViewModel, c: ResultadoGuardado.Conflicto) {
-    Surface(color = Color(0xFFE65100).copy(alpha = 0.12f), shape = MaterialTheme.shapes.medium) {
+    Surface(color = Color(0xFF9A5800).copy(alpha = 0.12f), shape = MaterialTheme.shapes.medium) {
         Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Conflicto de actualización", fontWeight = FontWeight.Bold, color = Color(0xFFE65100))
+            Text("Conflicto de actualización", fontWeight = FontWeight.Bold, color = Color(0xFF9A5800))
             Text(
                 "${c.remota.actualizadoPor} cambió ${c.campos.joinToString()} mientras editabas. " +
                     "En el servidor: ${c.remota.estado.texto} / ${c.remota.prioridad.texto} (v${c.remota.version}). " +

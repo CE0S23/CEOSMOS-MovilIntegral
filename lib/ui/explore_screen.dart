@@ -119,7 +119,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         const SizedBox(height: 24),
         Text(
           '${items.length} experiencias · Disponibles sin conexión',
-          style: const TextStyle(color: Cosmos.muted, fontSize: 12),
+          style: context.texto.bodySmall,
         ),
         const SizedBox(height: 16),
         if (items.isEmpty)
@@ -171,9 +171,9 @@ class _ExploreScreenState extends State<ExploreScreen> {
           },
         ),
         const SizedBox(height: 18),
-        const Text(
+        Text(
           'Colección incluida en la app: paisajes dibujados por CEOSMOS y audios originales, disponibles sin conexión.',
-          style: TextStyle(color: Cosmos.muted, fontSize: 12),
+          style: context.texto.bodySmall,
         ),
         const SizedBox(height: 30),
         LibrarySection(state: widget.state),

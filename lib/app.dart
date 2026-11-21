@@ -40,7 +40,9 @@ class _CeosmosAppState extends State<CeosmosApp> {
   Widget build(BuildContext context) => MaterialApp(
     title: 'CEOSMOS · Tu espacio de enfoque',
     debugShowCheckedModeBanner: false,
-    theme: Cosmos.theme,
+    theme: CeosmosTema.claro,
+    darkTheme: CeosmosTema.oscuro,
+    themeMode: ThemeMode.system,
     locale: const Locale('es'),
     supportedLocales: const [Locale('es')],
     localizationsDelegates: GlobalMaterialLocalizations.delegates,
@@ -159,7 +161,6 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       context: context,
       isScrollControlled: true,
       showDragHandle: true,
-      backgroundColor: Cosmos.surface,
       builder: (context) => StatefulBuilder(
         builder: (context, setSheetState) => SafeArea(
           child: SingleChildScrollView(
@@ -174,25 +175,27 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                     height: 160,
                     child: const SizedBox(width: double.infinity),
                   ),
-                  const SizedBox(height: 22),
+                  const SizedBox(height: Espacio.xl),
                   Text(
                     item.title,
-                    style: Theme.of(context).textTheme.headlineMedium,
+                    style: context.texto.headlineMedium?.copyWith(
+                      color: context.paleta.marca,
+                    ),
                   ),
-                  const SizedBox(height: 6),
+                  const SizedBox(height: Espacio.s - 2),
                   Text(
                     item.subtitle,
-                    style: const TextStyle(color: Cosmos.muted),
+                    style: TextStyle(color: context.paleta.textoSecundario),
                   ),
-                  const SizedBox(height: 22),
-                  const Text(
+                  const SizedBox(height: Espacio.xl),
+                  Text(
                     '¿Cuánto tiempo quieres dedicarte?',
-                    style: TextStyle(fontWeight: FontWeight.w600),
+                    style: context.texto.titleSmall,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: Espacio.m),
                   Wrap(
-                    spacing: 10,
-                    runSpacing: 8,
+                    spacing: Espacio.s + 2,
+                    runSpacing: Espacio.s,
                     children: sessionMinutes
                         .map(
                           (value) => ChoiceChip(
@@ -206,11 +209,12 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                   ),
                   const SizedBox(height: 20),
                   if (widget.state.hasSession)
-                    const Padding(
-                      padding: EdgeInsets.only(bottom: 14),
-                      child: Text(
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: Espacio.m + 2),
+                      child: Aviso(
                         'Al comenzar, tu sesión actual se guardará como finalizada.',
-                        style: TextStyle(color: Cosmos.peach, fontSize: 12),
+                        tipo: TipoAviso.advertencia,
+                        style: context.texto.bodySmall,
                       ),
                     ),
                   SizedBox(
@@ -272,87 +276,89 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
             if (wide)
               Container(
                 width: 228,
-                decoration: const BoxDecoration(
-                  color: Cosmos.surface,
-                  border: Border(right: BorderSide(color: Cosmos.border)),
+                decoration: BoxDecoration(
+                  color: context.paleta.superficie,
+                  border: Border(
+                    right: BorderSide(color: context.paleta.borde),
+                  ),
                 ),
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 18,
-                  vertical: 30,
+                  horizontal: Espacio.l + 2,
+                  vertical: Espacio.xxl - 2,
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const Padding(
-                      padding: EdgeInsets.only(left: 8),
+                      padding: EdgeInsets.only(left: Espacio.s),
                       child: Brand(),
                     ),
-                    const SizedBox(height: 48),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 16, bottom: 16),
+                    const SizedBox(height: Espacio.xxl + Espacio.l),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: Espacio.l,
+                        bottom: Espacio.l,
+                      ),
                       child: Text(
                         'MI UNIVERSO',
-                        style: TextStyle(
-                          color: Cosmos.muted,
-                          fontSize: 10,
-                          letterSpacing: 2,
+                        style: context.texto.labelSmall?.copyWith(
+                          color: context.paleta.textoSecundario,
+                          letterSpacing: 1.6,
                         ),
                       ),
                     ),
                     ...List.generate(
                       _labels.length,
                       (i) => Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
+                        padding: const EdgeInsets.only(bottom: Espacio.s),
                         child: ListTile(
                           selected: i == _tab,
-                          selectedColor: Cosmos.lavender,
-                          selectedTileColor: Cosmos.lavender.withValues(
-                            alpha: .1,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
                           leading: Icon(_icons[i], size: 21),
+                          iconColor: context.paleta.textoSecundario,
                           title: Text(
                             _labels[i],
-                            style: const TextStyle(fontSize: 14),
+                            style: context.texto.labelLarge?.copyWith(
+                              fontWeight: i == _tab
+                                  ? FontWeight.w700
+                                  : FontWeight.w500,
+                            ),
                           ),
                           onTap: () => _navigate(i),
                         ),
                       ),
                     ),
                     const Spacer(),
-                    const Panel(
-                      padding: EdgeInsets.all(16),
+                    Panel(
+                      padding: const EdgeInsets.all(Espacio.l),
+                      color: context.paleta.cianSuave,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Icon(
                             Icons.nightlight_outlined,
-                            color: Cosmos.lavender,
+                            color: context.paleta.enlace,
                           ),
-                          SizedBox(height: 12),
+                          const SizedBox(height: Espacio.m),
                           Text(
                             'Haz espacio para ti.',
-                            style: TextStyle(fontWeight: FontWeight.w600),
+                            style: context.texto.titleSmall,
                           ),
-                          SizedBox(height: 6),
+                          const SizedBox(height: Espacio.s - 2),
                           Text(
                             'Un momento de calma también es un avance.',
-                            style: TextStyle(fontSize: 12, color: Cosmos.muted),
+                            style: context.texto.bodySmall,
                           ),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 22),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 8),
+                    const SizedBox(height: Espacio.xl),
+                    Padding(
+                      padding: const EdgeInsets.only(left: Espacio.s),
                       child: Text(
                         'MÓVIL INTEGRAL',
-                        style: TextStyle(
-                          fontSize: 10,
+                        style: context.texto.labelSmall?.copyWith(
+                          color: context.paleta.textoSecundario,
                           letterSpacing: 1.4,
-                          color: Cosmos.muted,
                         ),
                       ),
                     ),
@@ -365,10 +371,13 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                   Container(
                     padding: EdgeInsets.symmetric(
                       horizontal: wide ? 38 : 22,
-                      vertical: 16,
+                      vertical: Espacio.l,
                     ),
-                    decoration: const BoxDecoration(
-                      border: Border(bottom: BorderSide(color: Cosmos.border)),
+                    decoration: BoxDecoration(
+                      color: context.paleta.fondo,
+                      border: Border(
+                        bottom: BorderSide(color: context.paleta.borde),
+                      ),
                     ),
                     child: Row(
                       children: [
@@ -377,29 +386,48 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                         else
                           Text(
                             'Tu espacio / ${_labels[_tab]}',
-                            style: const TextStyle(
-                              color: Cosmos.muted,
-                              fontSize: 13,
+                            style: context.texto.labelMedium?.copyWith(
+                              color: context.paleta.textoSecundario,
                             ),
                           ),
                         const Spacer(),
                         if (state.user!.isAdmin) ...[
-                          const Tag('ADMIN', color: Cosmos.peach),
-                          const SizedBox(width: 12),
+                          // Insignia de rol: ámbar con texto guinda.
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: Espacio.m,
+                              vertical: Espacio.xs + 1,
+                            ),
+                            decoration: BoxDecoration(
+                              color: context.paleta.acento,
+                              borderRadius: BorderRadius.circular(
+                                Radios.pildora,
+                              ),
+                            ),
+                            child: Text(
+                              'ADMIN',
+                              style: context.texto.labelSmall?.copyWith(
+                                color: context.paleta.sobreAcento,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: Espacio.m),
                         ],
                         Tooltip(
                           message: 'Ver mi perfil',
                           child: InkWell(
                             onTap: () => _navigate(5),
-                            borderRadius: BorderRadius.circular(20),
+                            borderRadius: Radios.bordeL,
                             child: CircleAvatar(
                               radius: 18,
-                              backgroundColor: Cosmos.elevated,
-                              foregroundColor: Cosmos.lavender,
+                              backgroundColor: context.paleta.marca,
+                              foregroundColor: context.paleta.sobreMarca,
                               child: Text(
                                 state.user!.username.characters.first
                                     .toUpperCase(),
-                                style: const TextStyle(fontSize: 14),
+                                style: context.texto.titleSmall?.copyWith(
+                                  color: context.paleta.sobreMarca,
+                                ),
                               ),
                             ),
                           ),
@@ -464,15 +492,22 @@ class _SessionBar extends StatelessWidget {
   final VoidCallback onTap, onPause;
   @override
   Widget build(BuildContext context) => Material(
-    color: Cosmos.elevated,
+    // Barra de sesión en guinda: texto blanco y acentos cian.
+    color: CeosmosColores.guinda,
     child: InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: Espacio.l + 4,
+          vertical: Espacio.s,
+        ),
         child: Row(
           children: [
-            Icon(modeIcon(state.currentMedia!.mode), color: Cosmos.lavender),
-            const SizedBox(width: 14),
+            Icon(
+              modeIcon(state.currentMedia!.mode),
+              color: CeosmosColores.cian,
+            ),
+            const SizedBox(width: Espacio.m + 2),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -481,14 +516,15 @@ class _SessionBar extends StatelessWidget {
                     state.currentMedia!.title,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: 13,
+                    style: context.texto.titleSmall?.copyWith(
+                      color: CeosmosColores.blanco,
                     ),
                   ),
                   Text(
                     state.running ? 'Sesión en curso' : 'En pausa',
-                    style: const TextStyle(color: Cosmos.muted, fontSize: 11),
+                    style: context.texto.bodySmall?.copyWith(
+                      color: CeosmosColores.guindaClaro,
+                    ),
                   ),
                 ],
               ),
@@ -498,13 +534,17 @@ class _SessionBar extends StatelessWidget {
               listenable: state.reloj,
               builder: (context, _) => Text(
                 clockLabel(state.remaining),
-                style: const TextStyle(color: Cosmos.lavender),
+                style: context.texto.titleLarge?.copyWith(
+                  color: CeosmosColores.cian,
+                  fontFeatures: const [FontFeature.tabularFigures()],
+                ),
               ),
             ),
-            const SizedBox(width: 10),
+            const SizedBox(width: Espacio.s + 2),
             IconButton(
               onPressed: onPause,
               tooltip: state.running ? 'Pausar sesión' : 'Continuar sesión',
+              color: CeosmosColores.blanco,
               icon: Icon(state.running ? Icons.pause : Icons.play_arrow),
             ),
           ],
@@ -518,18 +558,29 @@ class _SessionBar extends StatelessWidget {
 class _Arranque extends StatelessWidget {
   const _Arranque();
   @override
-  Widget build(BuildContext context) => const Scaffold(
-    body: Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Brand(),
-          SizedBox(height: 28),
-          CircularProgressIndicator(),
-          SizedBox(height: 16),
-          Text('Conectando con CEOSMOS…', style: TextStyle(color: Cosmos.muted)),
-        ],
-      ),
+  Widget build(BuildContext context) => Scaffold(
+    body: Column(
+      children: [
+        // Splash: el patrón de curvas de la paleta, sin texto encima.
+        const Expanded(child: CurvasCeosmos(radio: 0)),
+        Expanded(
+          child: Center(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Brand(),
+                const SizedBox(height: Espacio.xxl - 4),
+                const CircularProgressIndicator(),
+                const SizedBox(height: Espacio.l),
+                Text(
+                  'Conectando con CEOSMOS…',
+                  style: TextStyle(color: context.paleta.textoSecundario),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     ),
   );
 }

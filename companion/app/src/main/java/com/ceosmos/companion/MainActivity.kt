@@ -29,6 +29,10 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.LinearProgressIndicator
@@ -36,7 +40,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -61,15 +65,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.ceosmos.companion.ble.Protocolo.Rol
 
-private val Fondo = Color(0xFF0B0D18)
-private val Superficie = Color(0xFF1C2032)
-private val Lavanda = Color(0xFFC2ADFF)
-private val Menta = Color(0xFF8AD8BC)
-private val Durazno = Color(0xFFEABD9C)
-private val Tenue = Color(0xFFA5A9BE)
+// Colores, fuentes y escala: TemaCeosmos.kt (mismos tokens que la app Flutter).
 
 class MainActivity : ComponentActivity() {
     private var permisosOk by mutableStateOf(false)
@@ -104,9 +104,9 @@ class MainActivity : ComponentActivity() {
         window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         aplicarOrientacion()
         setContent {
-            MaterialTheme(colorScheme = darkColorScheme(primary = Lavanda, secondary = Menta, background = Fondo, surface = Superficie)) {
+            TemaCeosmos(if (modo == Rol.RELOJ) Formato.RELOJ else Formato.TV) {
                 val e by Nucleo.estado.collectAsState()
-                Box(Modifier.fillMaxSize().background(Fondo)) {
+                Box(Modifier.fillMaxSize().background(LocalPaleta.current.fondo)) {
                     when {
                         !permisosOk -> Bloqueo(
                             "CEOSMOS ${modo.nombre} necesita el permiso «Dispositivos cercanos» para anunciarse por Bluetooth LE.",
@@ -141,30 +141,45 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 private fun Bloqueo(texto: String, accion: String, alPulsar: () -> Unit) {
+    val p = LocalPaleta.current
     Column(
         Modifier.fillMaxSize().padding(32.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
-        Text(texto, color = Color.White, fontSize = 20.sp, textAlign = TextAlign.Center)
+        Text(texto, color = p.tinta, style = MaterialTheme.typography.titleLarge, textAlign = TextAlign.Center)
         Spacer(Modifier.height(24.dp))
-        Button(onClick = alPulsar) { Text(accion) }
+        Button(onClick = alPulsar) { Text(accion, style = MaterialTheme.typography.labelLarge) }
     }
 }
 
 private fun mmss(seg: Int) = "%02d:%02d".format(seg / 60, seg % 60)
 
+/** Cifras de ancho fijo para que el contador no "baile" cada segundo. */
+private val Tabulares = "tnum"
+
 @Composable
 private fun EstadoConexion(e: Estado, rol: Rol, grande: Boolean = false) {
-    val (texto, color) = when {
-        e.error != null && rol !in e.anunciando -> (e.error ?: "Error") to Durazno
-        rol in e.autenticado && rol in e.suscrito -> "Conectado con ${e.nombreCentral ?: "CEOSMOS"}" to Menta
-        rol in e.autenticado -> "Autenticado" to Menta
-        e.conectados > 0 -> "Central conectado · esperando PIN" to Durazno
-        rol in e.anunciando -> "Anunciando · esperando a CEOSMOS" to Lavanda
-        else -> "Iniciando…" to Tenue
+    val p = LocalPaleta.current
+    // Estado con ícono + texto: el error nunca depende solo del color.
+    val (texto, color, icono) = when {
+        e.error != null && rol !in e.anunciando -> Triple(e.error ?: "Error", p.error, Icons.Filled.Warning)
+        rol in e.autenticado && rol in e.suscrito -> Triple("Conectado con ${e.nombreCentral ?: "CEOSMOS"}", p.exito, Icons.Filled.CheckCircle)
+        rol in e.autenticado -> Triple("Autenticado", p.exito, Icons.Filled.CheckCircle)
+        e.conectados > 0 -> Triple("Central conectado · esperando PIN", p.advertencia, Icons.Filled.Info)
+        rol in e.anunciando -> Triple("Anunciando · esperando a CEOSMOS", p.enlace, Icons.Filled.Info)
+        else -> Triple("Iniciando…", p.textoSecundario, Icons.Filled.Info)
     }
-    Text(texto, color = color, fontSize = if (grande) 22.sp else 12.sp, textAlign = TextAlign.Center, modifier = Modifier.testTag("estado"))
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(if (grande) 8.dp else 4.dp)) {
+        Icon(icono, contentDescription = null, tint = color, modifier = Modifier.size(if (grande) 24.dp else 14.dp))
+        Text(
+            texto,
+            color = color,
+            style = if (grande) MaterialTheme.typography.titleMedium else MaterialTheme.typography.labelMedium,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.testTag("estado"),
+        )
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -173,50 +188,55 @@ private fun EstadoConexion(e: Estado, rol: Rol, grande: Boolean = false) {
 
 @Composable
 private fun PantallaReloj(e: Estado, cambiarModo: (() -> Unit)?) {
+    val p = LocalPaleta.current
+    val t = MaterialTheme.typography
     Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
         Box(
-            Modifier.size(380.dp).clip(CircleShape).background(Color.Black).border(6.dp, Superficie, CircleShape),
+            Modifier.size(380.dp).clip(CircleShape).background(p.superficie).border(6.dp, p.marca, CircleShape),
             contentAlignment = Alignment.Center,
         ) {
             Column(horizontalAlignment = Alignment.CenterHorizontally, modifier = Modifier.padding(40.dp)) {
-                Text("CEOSMOS", color = Lavanda, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                Text("CEOSMOS", color = p.marca, style = t.titleLarge.copy(letterSpacing = 0.06.em))
                 EstadoConexion(e, Rol.RELOJ)
                 Spacer(Modifier.height(6.dp))
                 val s = e.sesion
                 if (s != null && s.estado != "idle") {
-                    Text(mmss(s.restante), color = Color.White, fontSize = 46.sp, fontWeight = FontWeight.Light)
+                    Text(mmss(s.restante), color = p.tinta, style = t.displayLarge.copy(fontFeatureSettings = Tabulares))
                     Text(
                         (if (s.estado == "paused") "En pausa · " else "") + s.titulo,
-                        color = Tenue, fontSize = 12.sp, maxLines = 1, overflow = TextOverflow.Ellipsis,
+                        color = p.textoSecundario, style = t.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis,
                     )
                 } else {
-                    Text("♥ ${e.hr}", color = Color.White, fontSize = 46.sp, fontWeight = FontWeight.Light)
-                    Text("bpm · ${e.pasos} pasos", color = Tenue, fontSize = 12.sp)
+                    Text("♥ ${e.hr}", color = p.tinta, style = t.displayLarge.copy(fontFeatureSettings = Tabulares))
+                    Text("bpm · ${e.pasos} pasos", color = p.textoSecundario, style = t.bodyMedium)
                 }
-                if (s != null && s.estado != "idle") Text("♥ ${e.hr} bpm · ${e.pasos} pasos", color = Menta, fontSize = 12.sp)
+                if (s != null && s.estado != "idle") Text("♥ ${e.hr} bpm · ${e.pasos} pasos", color = p.exito, style = t.labelMedium)
                 Spacer(Modifier.height(8.dp))
+                // Primario: guinda con texto blanco (en oscuro, guinda aclarado con texto guinda).
                 Button(
                     onClick = { Nucleo.enviarComando(Rol.RELOJ, "toggle") },
                     enabled = Rol.RELOJ in e.suscrito,
                     shape = CircleShape,
                     modifier = Modifier.testTag("accion"),
-                ) { Text(if (s?.estado == "running") "Pausar" else "Reanudar") }
+                ) { Text(if (s?.estado == "running") "Pausar" else "Reanudar", style = t.labelLarge) }
                 TextButton(
                     onClick = { Nucleo.enviarComando(Rol.RELOJ, "stop") },
                     enabled = Rol.RELOJ in e.suscrito && s != null && s.estado != "idle",
-                ) { Text("Terminar", fontSize = 12.sp) }
+                    colors = ButtonDefaults.textButtonColors(contentColor = p.enlace),
+                ) { Text("Terminar", style = t.labelMedium) }
                 e.notificaciones.firstOrNull()?.let {
-                    Text(it, color = Durazno, fontSize = 12.sp, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
+                    Text(it, color = p.enlace, style = t.labelMedium, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
         Spacer(Modifier.height(20.dp))
-        Text("PIN  ${e.pin}", color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("pin"))
-        Text("id ${e.id} · centrales: ${e.conectados}" + if (e.bloqueos > 0) " · bloqueados: ${e.bloqueos}" else "", color = Tenue, fontSize = 12.sp)
+        Text("PIN  ${e.pin}", color = p.marca, style = t.displayMedium.copy(fontSize = 28.sp, fontFeatureSettings = Tabulares), modifier = Modifier.testTag("pin"))
+        Text("id ${e.id} · centrales: ${e.conectados}" + if (e.bloqueos > 0) " · bloqueados: ${e.bloqueos}" else "", color = p.textoSecundario, style = t.bodyMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            TextButton(onClick = Nucleo::alternarSimulacion) { Text(if (e.simulando) "Pausar lecturas" else "Reanudar lecturas") }
-            TextButton(onClick = Nucleo::regenerarPin) { Text("Nuevo PIN") }
-            cambiarModo?.let { TextButton(onClick = it) { Text("Modo TV") } }
+            val terciario = ButtonDefaults.textButtonColors(contentColor = p.enlace)
+            TextButton(onClick = Nucleo::alternarSimulacion, colors = terciario) { Text(if (e.simulando) "Pausar lecturas" else "Reanudar lecturas", style = t.labelLarge) }
+            TextButton(onClick = Nucleo::regenerarPin, colors = terciario) { Text("Nuevo PIN", style = t.labelLarge) }
+            cambiarModo?.let { TextButton(onClick = it, colors = terciario) { Text("Modo TV", style = t.labelLarge) } }
         }
         Registro(e, Modifier.width(520.dp).height(130.dp))
     }
@@ -224,8 +244,9 @@ private fun PantallaReloj(e: Estado, cambiarModo: (() -> Unit)?) {
 
 @Composable
 private fun Registro(e: Estado, modifier: Modifier) {
+    val p = LocalPaleta.current
     Column(modifier.padding(top = 8.dp)) {
-        e.registro.take(6).forEach { Text(it, color = Tenue, fontSize = 11.sp, maxLines = 1) }
+        e.registro.take(6).forEach { Text(it, color = p.textoSecundario, style = MaterialTheme.typography.bodySmall, maxLines = 1) }
     }
 }
 
@@ -235,33 +256,36 @@ private fun Registro(e: Estado, modifier: Modifier) {
 
 @Composable
 private fun PantallaTv(e: Estado, cambiarModo: (() -> Unit)?) {
+    val p = LocalPaleta.current
+    val t = MaterialTheme.typography
     val primero = remember { FocusRequester() }
     LaunchedEffect(Unit) { runCatching { primero.requestFocus() } }
     Row(Modifier.fillMaxSize().padding(48.dp), horizontalArrangement = Arrangement.spacedBy(40.dp)) {
         Column(Modifier.weight(2f)) {
-            Text("CEOSMOS TV", color = Lavanda, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            Text("CEOSMOS TV", color = p.marca, style = t.headlineSmall.copy(letterSpacing = 0.04.em))
             EstadoConexion(e, Rol.TV, grande = true)
             Spacer(Modifier.height(32.dp))
             val s = e.sesion
             if (s == null || s.estado == "idle") {
-                Text("Sin sesión en curso", color = Color.White, fontSize = 44.sp)
+                Text("Sin sesión en curso", color = p.tinta, style = t.headlineLarge)
                 Text(
                     if (Rol.TV in e.suscrito) "Inicia una sesión en CEOSMOS o pulsa ▶ Siguiente." else "Conecta CEOSMOS desde Equipos › CEOSMOS TV con el PIN.",
-                    color = Tenue, fontSize = 22.sp,
+                    color = p.textoSecundario, style = t.bodyLarge,
                 )
-                if (s?.usuario?.isNotEmpty() == true) Text("Cuenta: ${s.usuario}", color = Tenue, fontSize = 18.sp)
+                if (s?.usuario?.isNotEmpty() == true) Text("Cuenta: ${s.usuario}", color = p.textoSecundario, style = t.bodyMedium)
             } else {
-                Text(s.titulo, color = Color.White, fontSize = 52.sp, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                Text("${s.modo} · ${if (s.estado == "paused") "en pausa" else "en curso"} · ${s.usuario}", color = Tenue, fontSize = 22.sp)
+                Text(s.titulo, color = p.marca, style = t.displaySmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                Text("${s.modo} · ${if (s.estado == "paused") "en pausa" else "en curso"} · ${s.usuario}", color = p.textoSecundario, style = t.bodyLarge)
                 Spacer(Modifier.height(24.dp))
-                Text(mmss(s.restante), color = Color.White, fontSize = 120.sp, fontWeight = FontWeight.Light, modifier = Modifier.testTag("restante"))
+                Text(mmss(s.restante), color = p.tinta, style = t.displayLarge.copy(fontFeatureSettings = Tabulares), modifier = Modifier.testTag("restante"))
                 LinearProgressIndicator(
                     progress = { if (s.total == 0) 0f else 1f - s.restante.toFloat() / s.total },
-                    modifier = Modifier.fillMaxWidth().height(10.dp),
-                    color = Menta,
-                    trackColor = Superficie,
+                    modifier = Modifier.fillMaxWidth().height(10.dp).clip(RoundedCornerShape(5.dp)),
+                    color = CeosmosColores.Cian,
+                    trackColor = p.superficieAlta,
+                    drawStopIndicator = {},
                 )
-                s.hr?.let { Text("♥ $it bpm (reloj)", color = Menta, fontSize = 26.sp, modifier = Modifier.padding(top = 16.dp)) }
+                s.hr?.let { Text("♥ $it bpm (reloj)", color = p.exito, style = t.headlineSmall, modifier = Modifier.padding(top = 16.dp)) }
             }
             Spacer(Modifier.height(36.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(20.dp)) {
@@ -272,32 +296,48 @@ private fun PantallaTv(e: Estado, cambiarModo: (() -> Unit)?) {
                 BotonTv("Siguiente ▶", ok) { Nucleo.enviarComando(Rol.TV, "next") }
             }
         }
-        Column(Modifier.weight(1f)) {
-            Text("Emparejar", color = Lavanda, fontSize = 20.sp)
-            Text(e.pin, color = Color.White, fontSize = 64.sp, fontWeight = FontWeight.Bold, modifier = Modifier.testTag("pin"))
-            Text("id ${e.id} · centrales: ${e.conectados}" + if (e.bloqueos > 0) " · bloqueados: ${e.bloqueos}" else "", color = Tenue, fontSize = 16.sp)
-            Text("Varios anuncios a la vez: ${if (e.multiAnuncio) "sí" else "no"}", color = Tenue, fontSize = 14.sp)
+        Column(
+            Modifier.weight(1f).clip(RoundedCornerShape(20.dp)).background(p.superficie)
+                .border(1.dp, p.borde, RoundedCornerShape(20.dp)).padding(24.dp),
+        ) {
+            Text("Emparejar", color = p.enlace, style = t.titleMedium)
+            Text(e.pin, color = p.marca, style = t.displayMedium.copy(fontFeatureSettings = Tabulares), modifier = Modifier.testTag("pin"))
+            Text("id ${e.id} · centrales: ${e.conectados}" + if (e.bloqueos > 0) " · bloqueados: ${e.bloqueos}" else "", color = p.textoSecundario, style = t.labelMedium.copy(fontWeight = FontWeight.Medium))
+            Text("Varios anuncios a la vez: ${if (e.multiAnuncio) "sí" else "no"}", color = p.textoSecundario, style = t.bodySmall)
+            Spacer(Modifier.height(12.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 BotonTv("Nuevo PIN", true, chico = true) { Nucleo.regenerarPin() }
                 cambiarModo?.let { BotonTv("Modo reloj", true, chico = true, alPulsar = it) }
             }
             Spacer(Modifier.height(16.dp))
-            Text("Registro", color = Lavanda, fontSize = 16.sp)
+            Text("Registro", color = p.enlace, style = t.titleMedium.copy(fontSize = 16.sp))
             Registro(e, Modifier.fillMaxWidth())
         }
     }
 }
 
-/** Botón enfocable con D-pad: borde al enfocar y ENTER / centro del D-pad para pulsar. */
+/**
+ * Botón enfocable con D-pad: al enfocar, fondo cian con texto guinda y anillo
+ * de foco; ENTER / centro del D-pad para pulsar.
+ */
 @Composable
 private fun BotonTv(texto: String, habilitado: Boolean, modifier: Modifier = Modifier, chico: Boolean = false, alPulsar: () -> Unit) {
+    val p = LocalPaleta.current
     var enfocado by remember { mutableStateOf(false) }
+    val contenido = when {
+        !habilitado -> p.tinta.copy(alpha = .38f)
+        enfocado -> CeosmosColores.Guinda
+        else -> p.tinta
+    }
     OutlinedButton(
         onClick = alPulsar,
         enabled = habilitado,
-        border = BorderStroke(if (enfocado) 4.dp else 1.dp, if (enfocado) Menta else Tenue),
-        shape = RoundedCornerShape(14.dp),
-        colors = ButtonDefaults.outlinedButtonColors(containerColor = if (enfocado) Superficie else Color.Transparent),
+        border = BorderStroke(if (enfocado) 4.dp else 1.dp, if (enfocado) p.foco else p.bordeControl),
+        shape = RoundedCornerShape(16.dp),
+        colors = ButtonDefaults.outlinedButtonColors(
+            containerColor = if (enfocado) CeosmosColores.Cian else Color.Transparent,
+            disabledContainerColor = Color.Transparent,
+        ),
         modifier = modifier
             .onFocusChanged { enfocado = it.isFocused }
             .onKeyEvent {
@@ -306,5 +346,12 @@ private fun BotonTv(texto: String, habilitado: Boolean, modifier: Modifier = Mod
                 } else false
             }
             .focusable(),
-    ) { Text(texto, fontSize = if (chico) 16.sp else 24.sp, color = Color.White, modifier = Modifier.padding(if (chico) 4.dp else 12.dp)) }
+    ) {
+        Text(
+            texto,
+            style = if (chico) MaterialTheme.typography.labelMedium else MaterialTheme.typography.labelLarge,
+            color = contenido,
+            modifier = Modifier.padding(if (chico) 4.dp else 12.dp),
+        )
+    }
 }

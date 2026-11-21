@@ -12,7 +12,9 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.core.graphics.Insets
+import com.ceosmos.ceosmos_movil_integral.R
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 
@@ -63,15 +65,15 @@ object BarraPracticas : Application.ActivityLifecycleCallbacks {
             tag = TAG_BARRA
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            setBackgroundColor(Color.parseColor("#141725"))
+            setBackgroundColor(Color.parseColor("#5B011D"))
             setPadding(dp(8), dp(6), dp(16), dp(6))
         }
         val volver = TextView(activity).apply {
             text = "←  Prácticas"
             contentDescription = "Volver a la lista de prácticas"
-            setTextColor(Color.parseColor("#C2ADFF"))
+            setTextColor(Color.parseColor("#51D7FD"))
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 15f)
-            typeface = Typeface.DEFAULT_BOLD
+            typeface = ResourcesCompat.getFont(activity, R.font.dm_sans_bold) ?: Typeface.DEFAULT_BOLD
             setPadding(dp(12), dp(10), dp(12), dp(10))
             isClickable = true
             isFocusable = true
@@ -79,8 +81,9 @@ object BarraPracticas : Application.ActivityLifecycleCallbacks {
         }
         val nombre = TextView(activity).apply {
             text = titulo
-            setTextColor(Color.parseColor("#F3F0FF"))
+            setTextColor(Color.parseColor("#FFFFFF"))
             setTextSize(TypedValue.COMPLEX_UNIT_SP, 14f)
+            typeface = ResourcesCompat.getFont(activity, R.font.dm_sans_regular)
             maxLines = 1
             ellipsize = android.text.TextUtils.TruncateAt.END
         }

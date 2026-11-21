@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'reporte_validation.dart';
+import '../../core/theme/theme.dart';
 
 void main() => runApp(const ReportesApp());
 
@@ -16,11 +17,10 @@ class ReportesApp extends StatelessWidget {
       onNavigationNotification: atrasManejadoPorCeosmos, // [CEOSMOS] Atrás vuelve a «Prácticas»
     title: 'Reportes Firestore',
     debugShowCheckedModeBanner: false,
-    theme: ThemeData(
-      colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFF174A67)),
-      useMaterial3: true,
-      scaffoldBackgroundColor: const Color(0xFFF4F7F9),
-    ),
+    // [CEOSMOS] Tema compartido del sistema de diseño (claro/oscuro).
+    theme: CeosmosTema.claro,
+    darkTheme: CeosmosTema.oscuro,
+    themeMode: ThemeMode.system,
     home: const ReportesPage(),
   );
 }
@@ -247,7 +247,6 @@ class _ReportesPageState extends State<ReportesPage> {
               decoration: const InputDecoration(
                 labelText: 'ID',
                 hintText: 'REP001',
-                border: OutlineInputBorder(),
               ),
               textCapitalization: TextCapitalization.characters,
             ),
@@ -256,7 +255,6 @@ class _ReportesPageState extends State<ReportesPage> {
               controller: _equipo,
               decoration: const InputDecoration(
                 labelText: 'Equipo',
-                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 12),
@@ -265,7 +263,6 @@ class _ReportesPageState extends State<ReportesPage> {
               maxLines: 2,
               decoration: const InputDecoration(
                 labelText: 'Descripción',
-                border: OutlineInputBorder(),
               ),
             ),
             const SizedBox(height: 12),
@@ -274,7 +271,6 @@ class _ReportesPageState extends State<ReportesPage> {
               initialValue: _prioridad,
               decoration: const InputDecoration(
                 labelText: 'Prioridad',
-                border: OutlineInputBorder(),
               ),
               items: const [
                 'Baja',
@@ -308,7 +304,9 @@ class _ReportesPageState extends State<ReportesPage> {
             ),
             const SizedBox(height: 12),
             Card(
-              color: _error ? const Color(0xFFFFEAEA) : const Color(0xFFE4F1F6),
+              color: _error
+                  ? Theme.of(context).colorScheme.errorContainer
+                  : Theme.of(context).colorScheme.secondaryContainer,
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Text(_estado, key: const Key('estado')),

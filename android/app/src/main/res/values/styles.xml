@@ -15,4 +15,15 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+    <!-- [CEOSMOS] Prácticas nativas: paleta y fuente del sistema de diseño. -->
+    <style name="CeosmosPracticas" parent="@android:style/Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/ceosmos_fondo</item>
+        <item name="android:colorBackground">@color/ceosmos_fondo</item>
+        <item name="android:colorPrimary">@color/ceosmos_marca</item>
+        <item name="android:colorPrimaryDark">@color/ceosmos_marca</item>
+        <item name="android:colorAccent">@color/ceosmos_enlace</item>
+        <item name="android:textColorPrimary">@color/ceosmos_tinta</item>
+        <item name="android:textColorSecondary">@color/ceosmos_texto_secundario</item>
+        <item name="android:fontFamily">@font/dm_sans_regular</item>
+    </style>
 </resources>
