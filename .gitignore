@@ -60,3 +60,6 @@ android/key.properties
 
 # Base PostgreSQL local de desarrollo (scripts/dev_backend.ps1)
 /.devdb/
+
+# Blindaje: APK de respaldo (binarios grandes, se guardan localmente)
+/release/*.apk

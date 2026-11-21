@@ -1,3 +1,13 @@
+import java.util.Properties
+import java.io.FileInputStream
+
+// Llave de release propia (fuera del repo). Si no hay key.properties (por
+// ejemplo en el CI), el release se firma con la llave de depuración.
+val propiedadesLlave = Properties().apply {
+    val archivo = rootProject.file("key.properties")
+    if (archivo.exists()) load(FileInputStream(archivo))
+}
+
 plugins {
     id("com.android.application")
     id("kotlin-android")
@@ -36,11 +46,26 @@ android {
         compose = true
     }
 
+    signingConfigs {
+        if (propiedadesLlave.isNotEmpty()) {
+            create("release") {
+                keyAlias = propiedadesLlave["keyAlias"] as String
+                keyPassword = propiedadesLlave["keyPassword"] as String
+                storeFile = file(propiedadesLlave["storeFile"] as String)
+                storePassword = propiedadesLlave["storePassword"] as String
+            }
+        }
+    }
+
     buildTypes {
+        debug {
+            // Blindaje: build aislada para monkey (otro paquete, convive con la app real
+            // y las claves de Firebase restringidas por paquete la rechazan).
+            if (project.hasProperty("ceosmosMonkey")) applicationIdSuffix = ".monkey"
+        }
         release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = if (propiedadesLlave.isNotEmpty()) signingConfigs.getByName("release")
+            else signingConfigs.getByName("debug")
         }
     }
 }

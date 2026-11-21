@@ -193,7 +193,9 @@ class _TarjetaBleState extends State<_TarjetaBle> {
                   ],
                 ),
               ),
-              Tag(texto, color: color),
+              const SizedBox(width: 8),
+              // Flexible: en ventanas angostas la etiqueta se ajusta en vez de desbordar.
+              Flexible(child: Tag(texto, color: color)),
             ],
           ),
           if (e.error != null && e.estado != EstadoEnlace.conectado) ...[

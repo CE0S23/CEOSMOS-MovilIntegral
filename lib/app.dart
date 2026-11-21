@@ -382,7 +382,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                     child: Row(
                       children: [
                         if (!wide)
-                          const Brand()
+                          // Ventanas angostas (< 340 dp, p. ej. ventana flotante):
+                          // solo el ícono, para que el avatar siga visible.
+                          Brand(compact: MediaQuery.sizeOf(context).width < 340)
                         else
                           Text(
                             'Tu espacio / ${_labels[_tab]}',
