@@ -41,6 +41,15 @@ actualizado: 2026-11-19
 - [x] P10: suplantación pura de propietario, lectura/modificación/eliminación ajena y acceso sin sesión rechazados por las reglas de Firestore.
 - [x] P7: usuario2 no puede leer el ticket de usuario1; la cuenta debe tener documento de rol y coincidir con la URL; la API key restringida a paquete + SHA-1 sigue funcionando.
 
+## Blindaje (22/11)
+- [x] **319/319** pruebas Flutter (+102: barrido de 91 tamaños, accesibilidad 48 dp y fuente 200 %, errores globales, TLS, doble toque, biblioteca); analyze limpio.
+- [x] Red Box ampliado `scripts/redbox_ampliado.sh`: 27/37 → **37/37** tras 6 correcciones de la API (rama `blindaje-api` de CEOSMOSV2, 79/79 Jest). **Producción sin promover.**
+- [x] Firestore sin sesión: 403 salvo `mesaayuda-p7/dispositivos` (legible, pendiente del usuario).
+- [x] Certificado no confiable rechazado con mensaje claro (`test/tls_rechazo_test.dart`).
+- [x] gitleaks sobre historial y árbol: sin credenciales de servidor (`evidencias/blindaje/secretos_gitleaks.txt`).
+- [x] Red mínima y geografía medidas (`evidencias/blindaje/red/`). Usuario torpe: S24 5 000 sin errores; Tab S9 5 000 → 4 desbordes corregidos y verificados.
+- Mapa completo: `evidencias/blindaje/masvs.md` · [[13 - Blindaje]]
+
 ## Riesgos que quedan (con mitigación)
 - [ ] APK firmado con llave de depuración → crear keystore propio (ver [[08 - Pendientes]]).
 - Riesgo aceptado: credencial de práctica `alumno/ClaveDemo2026` en Kotlin (P5, simulada por diseño de la práctica).

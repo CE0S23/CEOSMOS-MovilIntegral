@@ -1,8 +1,10 @@
 # Dossier de blindaje · CEOSMOS Integral
 
-Versión de entrega `entrega-v1` · 21/11/2026 · Samsung Galaxy S24 (Android 17) y Galaxy Tab S9 (Android 16).
+Versión de entrega `entrega-v2` · 22/11/2026 (actualiza la del 21/11) · Samsung Galaxy S24 (Android 17) y Galaxy Tab S9 (Android 16).
 
-Regla de este documento: lo **medido** se distingue de lo **inferido**, y lo que no se hizo se dice. Las etapas 1 (usabilidad con usuarios y conectividad) y 2 (seguridad ampliada) del plan de blindaje **no se ejecutaron**. Sus apartados aquí recogen solo evidencia previa o de la etapa 3, y lo faltante queda listado en §6.
+Regla de este documento: lo **medido** se distingue de lo **inferido**, y lo que no se hizo se dice. El 22/11 se ejecutaron las partes medibles de las etapas 1 y 2: robustez, accesibilidad, barrido de tamaños, red mínima, geografía, Red Box ampliado, secretos y mapa MASVS. Lo que sigue sin hacer está en §6.
+
+**Novedades del 22/11 (todas con prueba de regresión):** manejo global de errores con aviso amigable; áreas táctiles de 48 dp y fuente al 200 % sin desbordes; barra lateral desplazable en ventanas anchas y bajas; diálogo «Agregar a mi biblioteca» desplazable y confirmación antes de borrar (los dos hallados por el usuario torpe en la tablet); mensaje claro ante un certificado no confiable; 6 correcciones de seguridad en la API (rama `blindaje-api`, pendiente de promover a producción).
 
 ## 1. Resumen ejecutivo y alcance
 
@@ -12,14 +14,16 @@ CEOSMOS Integral es una app Flutter de concentración, calma e inspiración cone
 
 | Indicador | Resultado | Tipo |
 |---|---|---|
-| Pruebas de Flutter | **217/217** (`flutter test`), análisis estático sin avisos | medido |
+| Pruebas de Flutter | **319/319** (`flutter test`; 217 el 21/11 + barrido de 91 tamaños, accesibilidad, errores, TLS, doble toque y biblioteca), análisis estático sin avisos | medido |
 | Pruebas de Kotlin | Reloj, TV y Companion: 14/14 por app más lint sin errores | medido |
-| Cobertura de líneas (toda `lib/`) | **52.9 %** (3 074 / 5 814); núcleo `core`/`data`/`domain` 78.9 % (P11) | medido |
-| Usuario torpe dentro de la app | en ejecución al cierre de esta sesión: resultado en `evidencias/blindaje/mono/` | medido |
-| Red Box de la API (local) | **13/13** ataques bloqueados | medido |
-| Tamaño mínimo funcional (ventana flotante) | **320 × 560 dp** | medido |
+| Cobertura de líneas (toda `lib/`) | **52.9 %** (3 074 / 5 814, medida el 21/11); núcleo `core`/`data`/`domain` 78.9 % (P11) | medido |
+| Usuario torpe dentro de la app | S24: 5 000 acciones, 0 errores, 0 crashes, 0 ANR. Tab S9: 5 000 acciones, 0 crashes, 0 ANR, 4 desbordes → corregidos y verificados (2 100 acciones con la misma semilla, 0 errores) | medido |
+| Red Box de la API (local) | **13/13** + ampliado **37/37** (27/37 antes de corregir la API) | medido |
+| Red mínima | API: 5 kbps o RTT 4 s dentro del timeout de 15 s; Firebase: 5 kbps, falla con RTT 4 s | medido |
+| Geografía | API 200 desde los 6 continentes; Madrid 373 ms | medido |
+| Tamaño mínimo funcional | Barrido: sin desbordes desde **240 dp** de ancho (91 tamaños). Ventana flotante real: cómodo desde **260 × 440 dp**, sin errores hasta 220 × 380 dp | medido |
 | Ensayo de arreglo en 20 minutos | 3 fallos detectados por las pruebas; ciclo de 1.9–2.4 min por fallo | medido |
-| CI (GitHub Actions) | Verde en cada push: análisis, 217 pruebas, 3 apps Kotlin | medido |
+| CI (GitHub Actions) | Verde en cada push: análisis, todas las pruebas de Flutter, 3 apps Kotlin | medido |
 
 ## 2. Usabilidad
 
@@ -37,6 +41,16 @@ CEOSMOS Integral es una app Flutter de concentración, calma e inspiración cone
 | El botón «Siguiente ▶» de la TV se parte en tres líneas | App TV (tablet) | Botones en `FlowRow` y texto en una sola línea | Revisión en la tablet |
 | Las tarjetas de las pantallas nativas salen gris neutro en modo oscuro | Incidencias en tiempo real / Mis incidencias | Tonos `surfaceContainer*` en el tema nativo | Captura en la tablet |
 | Se veían identificadores internos con sufijos de práctica | Encabezado y pantallas nativas | Nombres visibles sin el sufijo; las consultas no cambian | Revisión en los equipos |
+| Avatar del encabezado con área táctil de 36 dp | Encabezado | Área de 48 × 48 dp | `accesibilidad_test.dart` |
+| Con la fuente del sistema al 200 % el encabezado se desborda 20 px | Encabezado | Marca flexible | `accesibilidad_test.dart` |
+| Ventana ancha y baja (≥ 920 × < 760 dp): la barra lateral se desborda hasta 441 px | Barra lateral | Barra desplazable | `tamanos_pantalla_test.dart` (91 tamaños) |
+| Diálogo «Agregar a mi biblioteca» se desborda 9–75 px con teclado y errores (usuario torpe, Tab S9) | Explorar › Mi biblioteca | Contenido desplazable | `biblioteca_dialogo_test.dart` + misma semilla en la tablet: 0 errores |
+| Borrar de la biblioteca no pedía confirmación | Explorar › Mi biblioteca | Diálogo «¿Eliminar de tu biblioteca?» | `biblioteca_dialogo_test.dart` |
+| Un error inesperado podía mostrar la pantalla roja o gris | Toda la app | Manejo global y aviso amigable | `errores_globales_test.dart` |
+
+**Barrido de tamaños (22/11, automático, Acceso + 6 pestañas por tamaño):** 13 anchos (200–1600 dp) × 7 altos (320–1000 dp). Sin desbordes desde 240 dp de ancho en todos los altos; con 200 dp se desbordan Inicio y Perfil (fuera del mínimo). Tabla: `evidencias/blindaje/ventana/barrido_tamanos.md`.
+
+**Ventana flotante real (22/11, Tab S9, release v2, pantalla de Acceso, 14 tamaños):** sin recortes ni errores en ninguno; dos columnas desde 900 × 700; en apaisadas bajas (500 × 300) el formulario queda bajo el pliegue y se alcanza desplazando; cómodo desde 260 × 440 dp. Hoja de contacto: `evidencias/blindaje/ventana/v2/`. No verificado en el equipo: las pestañas con sesión en ventana flotante (cubiertas por el barrido automático).
 
 **Ventana flotante (Tab S9, densidad 300 dpi; medido):**
 
@@ -90,10 +104,33 @@ Capturas: `evidencias/blindaje/ventana/` y `evidencias/reestructura/dispositivos
 - Carga inicial en el S24 (P11): 984 ms.
 - Saturación de la API local (P12): ~5 usuarios concurrentes, ~210 solicitudes/s y sin errores; después la latencia crece de forma lineal.
 
-**Inferido (no medido):**
-- **España y Europa:** funciona. No hay restricción por país en Vercel ni en Firebase, pero la API está en EE. UU. Este, así que se esperan unos 90–120 ms de ida y vuelta (hoy ~35 ms desde México). Firestore elige su región al crear el proyecto; no se verificó cuál es.
-- **Otros continentes:** Asia y Oceanía tendrían de 150 a 250 ms de ida y vuelta hacia `iad1`. La app lo tolera (timeout de 15 s y reintentos), pero la carga inicial sería más lenta.
-- **Red mínima:** no se midió con limitación de ancho de banda. La respuesta más pesada (historial de 50 sesiones) es de 24–28 KB, así que en teoría alcanza con una red 3G.
+**Red mínima (medido el 22/11 contra producción con un proxy que degrada la red; detalle en `evidencias/blindaje/red/red_minima.md`):**
+
+| Perfil | API CEOSMOS | Firestore | Firebase Auth |
+|---|---|---|---|
+| 4G (RTT +50 ms · 10 Mbps) | 0.42–0.45 s | 0.70 s | 0.32 s |
+| 3G (RTT +200 ms · 750 kbps) | 0.93–0.95 s | 1.08–1.19 s | 0.80 s |
+| EDGE/2G (RTT +400 ms · 50 kbps) | 2.46–2.48 s | 2.35–2.41 s | 2.31 s |
+| 3G + 5 % / 20 % de pérdida (emulada) | ≤ 2.0 s / ≤ 4.95 s | ≤ 3.1 s / ≤ 4.0 s | 1.8 s / 2.8 s |
+| 3G con corte cada 3 s | 0.93 s | 0.88–1.04 s | 0.81 s |
+| RTT 4 s | **12.4 s (responde)** | **falla a los 10 s** | **falla a los 10 s** |
+| 5 kbps | **11.4 s** | **9.7–9.8 s** | **10.6 s** |
+
+Mínimos: API, 5 kbps o RTT de 4 s dentro del timeout de 15 s (para el historial de 24–28 KB hacen falta ≈ 20 kbps, **calculado**). Firebase, 5 kbps y RTT por debajo de 4 s (Google corta el saludo TLS a los ~10 s). Por debajo del mínimo: la API muestra «El servidor de CEOSMOS tardó demasiado en responder. Intenta de nuevo.» y las sesiones se reenvían sin duplicar; Firestore sigue con la caché local y sincroniza al volver la red.
+
+**Geografía (medido el 22/11 con sondas públicas de Globalping; detalle en `evidencias/blindaje/red/geografia.md`):**
+
+| Continente | API `/api/health` | Firestore | ¿Funciona? |
+|---|---|---|---|
+| Norteamérica (Los Ángeles, Búfalo) | 200 · 137–258 ms | 304 ms | sí |
+| Sudamérica (São Paulo, Campinas) | 200 · 337–379 ms | 973 ms | sí |
+| **Europa: España (Madrid, Logroño)** | **200 · 373–400 ms** | **783 ms** | **sí** |
+| Europa (Helsinki) | 200 · 396 ms | — | sí |
+| Asia (Singapur, Tokio) | 200 · 572–697 ms | 238 ms | sí |
+| África (Lagos, Johannesburgo) | 200 · 652–763 ms | 2 068 ms | sí |
+| Oceanía (Sídney) | 200 · 561–566 ms | 438 ms | sí |
+
+Regiones: Vercel `iad1` (medido) y Neon `us-east-1` (medido en el `.env` local; que producción use el mismo host es inferido). La región de Firestore **no se verificó**. La API solo publica IPv4 (en redes solo IPv6 Android usa 464XLAT, **inferido**). Para usuarios reales en la UE faltaría el aviso RGPD; no es un bloqueo técnico.
 
 **Ante caídas (medido en pruebas):** aviso «Sin conexión», reintento con espera progresiva, escrituras idempotentes (`clientId`) sin duplicados y reconexión BLE automática. Las funciones con Firestore sincronizan al volver la red (prueba de la tablet sin red en P9).
 
@@ -109,44 +146,71 @@ Capturas: `evidencias/blindaje/ventana/` y `evidencias/reestructura/dispositivos
 | M5 Comunicación insegura | Mitigado: HTTPS + HSTS y texto claro solo a localhost. La mensajería en LAN va en texto plano (aceptado, §6) | `network_security_config.xml` |
 | M8 Configuración incorrecta | Mitigado: release no depurable, `allowBackup=false` y solo las actividades necesarias exportadas | Nota 07 |
 | M9 Almacenamiento inseguro | Mitigado: token en almacenamiento seguro (Keystore) y nada sensible en los registros | `token_store.dart` |
-| M2, M6, M7, M10 | No evaluados a fondo (cadena de suministro, privacidad, protección binaria, criptografía) | §6 |
+| M2, M6, M7, M10 | Parcial o riesgo aceptado (sin escáner de CVE, datos en EE. UU., sin ofuscación, BLE sin cifrado de carga útil) | `evidencias/blindaje/masvs.md` |
+
+El mapa completo control por control (MASVS v2 y Top 10) está en `evidencias/blindaje/masvs.md`.
+
+**Red Box ampliado (22/11, `scripts/redbox_ampliado.sh`, API local con un secreto JWT de prueba desechable):** tokens expirados, de usuario inexistente, con HS512, con rol inventado, Basic y vacíos; inyección NoSQL y SQL, tipos erróneos, JSON malformado y anidado, XSS almacenado, `javascript:` en medios, asignación masiva, títulos de 100 000 caracteres, IDOR en tareas, métodos TRACE/PUT, CORS, cabeceras, trazas en errores, enumeración de usuarios, fuerza bruta y reutilización tras logout. **Primera pasada: 27/37. Tras corregir la API: 37/37**, y el Red Box original sigue en 13/13.
+
+| Hallazgo | ¿También en producción? | Corrección |
+|---|---|---|
+| Token firmado con otra carga útil o HS512 → 500 | solo con el secreto (inferido) | Solo HS256 y forma validada → 401 |
+| CORS con origen ajeno → 500 | **sí (medido)** | Sin cabeceras CORS, sin 500 |
+| JSON anidado 5 000 niveles sin sesión → 500 | **sí (medido)** | 400 |
+| Sin Content-Security-Policy | **sí (medido)** | `default-src 'none'; frame-ancestors 'none'` |
+| Medio IMAGE aceptaba `javascript:` | inferido | Solo https y longitudes acotadas |
+| El login revelaba si la cuenta existe | inferido | Mismo mensaje siempre |
+| Certificado no confiable → excepción cruda en la app | — | Mensaje claro (`tls_rechazo_test.dart`) |
+
+Las 6 correcciones de la API están en la rama `blindaje-api` (repo CEOSMOSV2, commit `605776c`): 79/79 pruebas, el preview de Vercel compiló en verde, pero está protegido con el inicio de sesión de Vercel y **no se pudo probar**. **Producción aún no las tiene.** Rollback: volver a promover el despliegue anterior (`a4d8d6a`).
+
+**Firestore sin sesión (22/11, medido):** lecturas y escrituras rechazadas (403) en `practica7-8` y `reportes-movil`; en `mesaayuda-p7`, `turnos` y `contadores` dan 403, pero **`dispositivos` se lee sin sesión** (3 documentos de presencia: nombre, modelo, rol y última conexión). La regla la debe ajustar el usuario en la consola de Firebase.
+
+**Interceptación:** la app no confía en CA de usuario y rechaza un certificado autofirmado (prueba con un servidor HTTPS local). No se usó mitmproxy en el teléfono porque exige cambiar el proxy del sistema.
 
 **Cifrado:** en tránsito, TLS en la API y en Firestore. En reposo, Keystore para el token; SQLite y SharedPreferences sin cifrar porque solo guardan datos de práctica. En BLE no hay cifrado del enlace: la integridad se protege con reto + HMAC y no se envía el PIN.
 
 **Ataques (medido el 21/11 con `scripts/redbox_api.sh` contra la API local):** 13/13 bloqueados (`evidencias/blindaje/redbox_api_entrega.txt`). Antes (P10 y P7) ya se habían probado el acceso ajeno en Firestore y las escrituras BLE no autenticadas.
 
-**Dependencias y secretos:** no hay secretos de servidor en el repositorio. El keystore de release queda fuera del repositorio (`C:\CESAR10cuatri\llaves\`) y `key.properties` está en `.gitignore`. 67 paquetes tienen versiones más nuevas que no son compatibles con las restricciones actuales; no se hizo un análisis de vulnerabilidades de dependencias.
+**Dependencias y secretos:** gitleaks 8.30.1 sobre los 33 commits del historial y el árbol de trabajo (22/11; `evidencias/blindaje/secretos_gitleaks.txt`, con los valores ocultos). En el historial hay 19 coincidencias: 7 claves de cliente de Firebase (públicas por diseño) y 12 tokens de sesión de la base local de P12 dentro de planes EXPLAIN (no son de producción). No hay contraseñas, JWT_SECRET, llaves ni `key.properties` en el historial. El keystore queda fuera del repositorio. 67 paquetes tienen versiones nuevas incompatibles; no se usó un escáner de CVE (riesgo aceptado).
 
 ## 6. Límites conocidos y riesgos aceptados
 
 | Límite o riesgo | Impacto | Mitigación / estado |
 |---|---|---|
-| Etapas 1 y 2 del blindaje no ejecutadas (usabilidad con personas, red mínima por API, tabla por continente medida, Red Box ampliado, MASVS completo) | La defensa en esas áreas se apoya en evidencia previa e inferencias | Ejecutarlas si da tiempo; aquí se separa lo inferido |
+| Correcciones de la API sin promover a producción | Producción sigue respondiendo 500 a CORS ajeno y JSON anidado, y sin CSP | Rama `blindaje-api` lista (79/79, 37/37); promover en Vercel (tarea del usuario) |
+| `mesaayuda-p7/dispositivos` legible sin sesión | Se ven 3 registros de presencia (nombre, modelo, rol, última conexión) | Exigir `request.auth != null` en la regla (tarea del usuario) |
+| Usuario torpe: 5 000 acciones por equipo, no 20 000 | Menos cobertura aleatoria que la planeada | El S24 se quedó sin batería; el usuario decidió no repetir lo ya probado. Los hallazgos de la tablet se corrigieron y se verificaron con la misma semilla |
+| Usabilidad con personas reales y recorrido con sesión en el equipo | Sin datos de usuarios reales; el recorrido con sesión del 22/11 no se hizo (la tablet estaba en Acceso y no se usaron credenciales) | Barrido automático, accesibilidad y usuario torpe; recorrido manual del 21/11 |
 | El «usuario torpe» no entra a las funciones con nube (Soporte, Reportes, Citas) | Esas pantallas no reciben acciones al azar | Se excluyeron a propósito para no tocar datos reales; cubiertas por el recorrido manual |
-| La app instalada en los teléfonos se firma con la llave de depuración | Cualquiera con esa llave podría firmar una actualización | Hay un APK firmado con llave propia en `release/`; instalarlo exige desinstalar (se pierden datos locales), así que se dejó para después de la evaluación |
+| La entrega usa el APK firmado con la llave de depuración | Cualquiera con esa llave podría firmar una actualización | El APK con llave propia está listo (`release/CEOSMOS-entrega-v1-release.apk`), pero requiere registrar su SHA-1 en Firebase e instalarlo exige desinstalar (se pierden datos). Riesgo aceptado: decisión pendiente del usuario |
+| SQLite y SharedPreferences sin cifrar | Datos de funciones legibles con acceso root | No guardan credenciales; el token está en el Keystore |
+| Sin ofuscación ni detección de root | Ingeniería inversa más fácil | Dart se compila AOT a código nativo; aceptado para una app académica |
 | Rotación de `JWT_SECRET` y de la contraseña de Neon pendiente | Credenciales que estuvieron expuestas siguen vigentes | Tarea del usuario (08 - Pendientes) |
 | Clave de Firebase de `mesaayuda` sin restringir | Uso de la cuota por terceros | Restringir por paquete + SHA (tarea del usuario) |
 | Limitador de la API en memoria por instancia | En Vercel cada instancia cuenta por su lado | Upstash Redis (mejora futura) |
 | Mensajería entre equipos en texto plano en la LAN | Otra persona en la misma Wi-Fi podría leerla | Aceptado: es solo de demostración y en red local |
-| BLE sin bonding cifrado | Se podría escuchar el tráfico de lecturas | Integridad con HMAC; LE Secure Connections como mejora |
+| BLE: autenticación con reto + HMAC y PIN que nunca viaja; la carga útil no va cifrada | Se podría escuchar el tráfico de lecturas (pulso, pasos, estado de la TV) a pocos metros | Riesgo aceptado: el cifrado AES-256-GCM no se hizo porque tocaba las 3 apps a la vez justo antes de la entrega |
 | Errores transitorios de GATT (`ANDROID_SPECIFIC_ERROR`) | La primera conexión a veces falla | Reintento manual o automático; documentado en la guía |
 
 ## 7. Pruebas
 
 | Conjunto | Cantidad | Cómo reproducir |
 |---|---|---|
-| Flutter (unidad, widgets, caja negra y blanca, BLE, funciones, CI) | 217 | `flutter test` |
-| Cobertura | 52.9 % de líneas (núcleo 78.9 %) | `flutter test --coverage` |
+| Flutter (unidad, widgets, caja negra y blanca, BLE, funciones, accesibilidad, tamaños, TLS, CI) | 319 | `flutter test` |
+| Cobertura | 52.9 % de líneas (núcleo 78.9 %), medida el 21/11 | `flutter test --coverage` |
 | Kotlin (Reloj, TV, Companion) | 14 por app más lint | `cd companion; ./gradlew test lint` |
-| Usuario torpe en el teléfono | 20 000 acciones por equipo | `flutter test integration_test/mono_usuario_test.dart -d <serial>` |
-| Red Box de la API | 13 | `scripts\dev_backend.ps1` y luego `bash scripts/redbox_api.sh` |
+| Usuario torpe en el teléfono | 5 000 acciones por equipo + verificación de 2 100 en la tablet | `powershell -File scripts\mono_bloques.ps1 -Serial <serial>` (copia aislada `.monkey`) |
+| Red Box de la API | 13 + 37 ampliado | `scripts\dev_backend.ps1`, luego `bash scripts/redbox_api.sh` y `bash scripts/redbox_ampliado.sh` |
+| API (Jest) | 79 | `npx jest` en `ceosmos-api` |
+| Red mínima | 65 mediciones | `bash scripts/medir_red.sh` |
 | Sin texto académico visible | 1 recorrido | `flutter test test/navegacion_funciones_test.dart` |
 | CI | Cada push y pull request | GitHub Actions `CI` (sin secretos ni producción) |
 
 ## 8. Plan de contingencia
 
 - **Script:** `scripts/arreglo_rapido.sh <área>` (o `.ps1`). Ejecuta el análisis y las pruebas del área, compila en modo debug, instala en los dos equipos sin borrar datos y muestra el logcat de la app, cronometrando cada paso.
-- **Volver atrás:** `git checkout entrega-v1`, o reinstalar `release\CEOSMOS-entrega-v1-release-llave-depuracion.apk` (se instala encima sin perder datos).
+- **Volver atrás:** `git checkout entrega-v2` (o `entrega-v1`), o reinstalar `release\CEOSMOS-entrega-v2-release-llave-depuracion.apk` (se instala encima sin perder datos; misma firma que la v1).
 - **Guía de fallos:** `evidencias/blindaje/Guia de fallos rapidos.md`.
 - **Lista previa:** `evidencias/blindaje/Lista de verificacion previa.md`.
 

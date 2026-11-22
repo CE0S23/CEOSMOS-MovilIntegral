@@ -76,6 +76,15 @@ void main() {
     await tester.pumpWidget(CeosmosApp(state: state));
     await tester.pumpAndSettle();
 
+    // Ubicación (archivo:línea de lib/) del widget que causó cada error de dibujo.
+    final ubicaciones = <String>[];
+    final onErrorOriginal = FlutterError.onError;
+    FlutterError.onError = (d) {
+      final m = RegExp(r'lib/[\w/]+\.dart:\d+').firstMatch(d.toString());
+      ubicaciones.add(m?.group(0) ?? 'sin ubicación');
+      onErrorOriginal?.call(d);
+    };
+
     final azar = Random(_semilla);
     final errores = <String>[];
     var toques = 0, escrituras = 0, atras = 0, desplazamientos = 0, reingresos = 0;
@@ -151,10 +160,14 @@ void main() {
       }
       final ex = tester.takeException();
       // En la PC no existen los plugins nativos (conectividad, BLE): no es un fallo de la app.
-      if (ex != null && ex is! MissingPluginException) errores.add('acción $i: $ex');
+      if (ex != null && ex is! MissingPluginException) {
+        final donde = ubicaciones.isEmpty ? '' : ' [${ubicaciones.last}]';
+        errores.add('acción $i: ${'$ex'.split('\n').first}$donde');
+      }
       if (errores.length > 20) break;
     }
     reloj.stop();
+    FlutterError.onError = onErrorOriginal;
 
     final resumen = 'MONO_RESUMEN acciones=$_acciones toques=$toques escrituras=$escrituras '
         'atras=$atras desplazamientos=$desplazamientos reingresos=$reingresos '

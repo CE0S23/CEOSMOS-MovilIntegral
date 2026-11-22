@@ -1,0 +1,3 @@
+﻿2026-11-22T14:01:28 serial=R5CXA1DRLAF semilla=3101 codigo=0 pasa=True crash=0 anr=0 seg=777 :: MONO_RESUMEN acciones=5000 toques=3384 escrituras=231 atras=489 desplazamientos=319 reingresos=0 errores=0 segundos=478
+2026-11-22T14:06:12 serial=R5CXA1DRLAF semilla=3102 codigo=79 pasa=False crash=0 anr=0 seg=279 :: 
+FIN R5CXA1DRLAF

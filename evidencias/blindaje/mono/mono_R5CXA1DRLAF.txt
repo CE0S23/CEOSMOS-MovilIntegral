@@ -101,3 +101,77 @@ Some possible finders for the widgets at Offset(83.9, 139.9):
   find.byKey(const Key('u1'))
   find.byElementType(InheritedModelElement<_ModalRouteAspect>)
   find.byElementType(InheritedModelElement<Object>)
+Some possible finders for the widgets at Offset(382.2, 46.1):
+  find.byType(ScrollNotificationObserver)
+  find.byType(Scaffold)
+  find.byKey(const Key('u1'))
+  find.byType(ColoredBox)
+  find.byType(PrimaryScrollController)
+  find.byType(PageStorage)
+  find.byElementType(InheritedModelElement<_ModalRouteAspect>)
+  find.byElementType(InheritedModelElement<Object>)
+Some possible finders for the widgets at Offset(390.6, 154.3):
+  find.byType(ImageFiltered)
+  find.byType(StretchEffect)
+  find.byType(ClipRect)
+  find.byType(StretchingOverscrollIndicator)
+  find.byType(SingleChildScrollView)
+  find.byKey(const Key('u1'))
+  find.byElementType(InheritedModelElement<_ModalRouteAspect>)
+  find.byElementType(InheritedModelElement<Object>)
+Some possible finders for the widgets at Offset(210.1, 228.3):
+  find.byType(SizeChangedLayoutNotifier)
+  find.byType(CompositedTransformTarget)
+  find.byType(UndoHistory<TextEditingValue>)
+  find.byType(EditableText)
+  find.byElementType(SlottedRenderObjectElement<_DecorationSlot, RenderBox>)
+  find.byType(InputDecorator)
+  find.byKey(const ValueKey<int>(370))
+  find.byKey(const Key('u1'))
+  find.byElementType(InheritedModelElement<_ModalRouteAspect>)
+  find.byElementType(InheritedModelElement<Object>)
+Some possible finders for the widgets at Offset(40.1, 113.2):
+  find.byType(ImageFiltered)
+  find.byType(StretchEffect)
+  find.byType(ClipRect)
+  find.byType(StretchingOverscrollIndicator)
+  find.byType(SingleChildScrollView)
+  find.byKey(const Key('u1'))
+  find.byElementType(InheritedModelElement<_ModalRouteAspect>)
+  find.byElementType(InheritedModelElement<Object>)
+Some possible finders for the widgets at Offset(69.6, 242.9):
+  find.byElementType(SlottedRenderObjectElement<_DecorationSlot, RenderBox>)
+  find.byType(InputDecorator)
+  find.byType(TextSelectionGestureDetector)
+  find.byType(TextField)
+  find.byKey(const ValueKey<int>(370))
+  find.byType(ImageFiltered)
+  find.byType(StretchEffect)
+  find.byKey(const Key('u1'))
+  find.byElementType(InheritedModelElement<_ModalRouteAspect>)
+  find.byElementType(InheritedModelElement<Object>)
+27:14 +0: Usuario torpe: 20000 acciones al azar dentro de CEOSMOS sin fallos - did not complete [E]
+27:14 +0: (tearDownAll) - did not complete [E]
+27:14 +0: Some tests failed.
+No tests were found.
+adb.exe: device 'R5CXA1DRLAF' not found
+adb uninstall failed: ProcessException: Process exited abnormally with exit code 1:
+adb.exe: device 'R5CXA1DRLAF' not found
+  Command: C:\Users\cesar\AppData\Local\Android\sdk\platform-tools\adb.exe -s R5CXA1DRLAF uninstall com.ceosmos.ceosmos_movil_integral.monkey
+unhandled error during finalization of test:
+C:/CESAR10cuatri/CEOSMOS.MovilIntegral/integration_test/mono_usuario_test.dart
+PathNotFoundException: Deletion failed, path = 'C:\Users\cesar\AppData\Local\Temp\flutter_tools.67c337d6\flutter_test_listener.3bba8d86' (OS Error: El sistema no puede encontrar la ruta especificada, errno = 3)
+#0      _Directory._deleteSync (dart:io/directory_impl.dart:216:7)
+#1      FileSystemEntity.deleteSync (dart:io/file_system_entity.dart:425:7)
+#2      ForwardingFileSystemEntity.deleteSync (package:file/src/forwarding/forwarding_file_system_entity.dart:70:16)
+#3      ErrorHandlingDirectory.deleteSync.<anonymous closure> (package:flutter_tools/src/base/error_handling_io.dart:451:22)
+#4      _runSync (package:flutter_tools/src/base/error_handling_io.dart:552:14)
+#5      ErrorHandlingDirectory.deleteSync (package:flutter_tools/src/base/error_handling_io.dart:450:12)
+#6      FlutterPlatform._createListenerDart.<anonymous closure> (package:flutter_tools/src/test/flutter_platform.dart:787:15)
+#7      FlutterPlatform._startTest.finalize (package:flutter_tools/src/test/flutter_platform.dart:592:26)
+<asynchronous suspension>
+#8      FlutterPlatform._startTest (package:flutter_tools/src/test/flutter_platform.dart:763:7)
+<asynchronous suspension>
+
+fin R5CXA1DRLAF codigo=79 segundos=1721
+adb.exe: device 'R5CXA1DRLAF' not found

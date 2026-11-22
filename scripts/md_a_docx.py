@@ -15,6 +15,7 @@ from docx.enum.text import WD_BREAK
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 from docx.shared import Pt, RGBColor, Inches
+from docx.text.paragraph import Paragraph
 
 TINTA = RGBColor(0x00, 0x00, 0x00)
 TITULO = RGBColor(0x22, 0x22, 0x22)
@@ -118,7 +119,30 @@ def convertir(entrada, salida):
         elif l.strip():
             runs(doc.add_paragraph(), l.strip())
         i += 1
+    saltos_antes_de_lo_siguiente(doc)
     doc.save(salida)
+
+
+def saltos_antes_de_lo_siguiente(doc):
+    """Cambia cada párrafo que solo contiene un salto de página por «salto antes»
+    en el párrafo siguiente. Así, si la sección anterior llena la página justo,
+    no queda una página en blanco (hoja de defensa, 22/11)."""
+    for p in list(doc.paragraphs):
+        if p.text.strip() or not p._p.xpath('.//w:br[@w:type="page"]'):
+            continue
+        siguiente = p._p.getnext()
+        if siguiente is not None and siguiente.tag == qn('w:p'):
+            # python-docx coloca el elemento en el orden que exige el esquema.
+            Paragraph(siguiente, p._parent).paragraph_format.page_break_before = True
+            p._p.getparent().remove(p._p)
+            # Un párrafo vacío justo antes también podría caer solo en una página nueva.
+            previo = siguiente.getprevious()
+            while (previo is not None and previo.tag == qn('w:p')
+                   and not ''.join(previo.itertext()).strip()
+                   and not previo.xpath('.//w:br | .//w:drawing')):
+                anterior = previo.getprevious()
+                previo.getparent().remove(previo)
+                previo = anterior
 
 
 if __name__ == '__main__':

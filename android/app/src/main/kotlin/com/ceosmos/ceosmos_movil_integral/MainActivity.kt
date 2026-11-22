@@ -25,6 +25,12 @@ class MainActivity : FlutterActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         BarraPracticas.instalar(application)
+        // Solo la copia aislada del «usuario torpe» (sufijo .monkey): mantiene la
+        // pantalla encendida mientras la app está al frente. Es una bandera de la
+        // ventana de la app, no cambia ningún ajuste del sistema.
+        if (packageName.endsWith(".monkey")) {
+            window.addFlags(android.view.WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
     }
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {

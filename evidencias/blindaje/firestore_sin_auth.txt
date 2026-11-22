@@ -1,0 +1,7 @@
+GET sin auth practica7-8-941cb/databases/(default)/documents/conversaciones	403
+GET sin auth practica7-8-941cb/databases/(default)/documents/mensajes	403
+GET sin auth reportes-movil-20261019/databases/(default)/documents/reportes	403
+GET sin auth mesaayuda-p7/databases/(default)/documents/turnos	403
+GET sin auth mesaayuda-p7/databases/(default)/documents/dispositivos	200
+GET sin auth mesaayuda-p7/databases/(default)/documents/contadores	403
+POST sin auth reportes (escritura)	403

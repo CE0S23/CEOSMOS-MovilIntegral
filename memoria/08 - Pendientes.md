@@ -39,6 +39,10 @@ actualizado: 2026-11-19
 - [ ] Keystore propio para firmar el release (hoy llave de depuración). → [[07 - Pruebas (Black, White, Red Box)]]
 - [ ] Borrar los `.env` temporales con credenciales de prod del scratchpad de la sesión del 12/11, si siguen ahí. → [[Notas varias]]
 
+- [ ] **Blindaje (22/11):** promover a producción la rama `blindaje-api` (CEOSMOSV2, commit 605776c; el preview compiló pero exige iniciar sesión en Vercel para probarlo). Rollback: volver a promover el despliegue `a4d8d6a`. → [[13 - Blindaje]]
+- [ ] **Blindaje:** regla de Firestore de `mesaayuda-p7/dispositivos` (hoy legible sin sesión): exigir `request.auth != null`. → [[13 - Blindaje]]
+- [ ] **Blindaje:** decidir el APK con llave propia (registrar su SHA-1 en Firebase y reinstalar perdiendo datos locales) o mantener la llave de depuración como riesgo aceptado. → [[13 - Blindaje]]
+
 ## 3. Mejoras opcionales
 - [ ] Servicio en primer plano para audio muy largo. → [[02 - Requerimientos]]
 - [ ] Limitador de la API en Redis (Upstash). → [[07 - Pruebas (Black, White, Red Box)]]

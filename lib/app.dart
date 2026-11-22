@@ -117,7 +117,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
       widget.state.takeNotice();
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(aviso)));
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text(aviso)));
       });
     }
   }
@@ -154,7 +156,8 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   }
 
   Future<void> _open(MediaItem item) async {
-    var minutes = sessionMinutes.contains(widget.state.workspace.preferredMinutes)
+    var minutes =
+        sessionMinutes.contains(widget.state.workspace.preferredMinutes)
         ? widget.state.workspace.preferredMinutes
         : 25;
     final selected = await showModalBottomSheet<int>(
@@ -286,83 +289,96 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                   horizontal: Espacio.l + 2,
                   vertical: Espacio.xxl - 2,
                 ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: Espacio.s),
-                      child: Brand(),
-                    ),
-                    const SizedBox(height: Espacio.xxl + Espacio.l),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        left: Espacio.l,
-                        bottom: Espacio.l,
-                      ),
-                      child: Text(
-                        'MI UNIVERSO',
-                        style: context.texto.labelSmall?.copyWith(
-                          color: context.paleta.textoSecundario,
-                          letterSpacing: 1.6,
-                        ),
-                      ),
-                    ),
-                    ...List.generate(
-                      _labels.length,
-                      (i) => Padding(
-                        padding: const EdgeInsets.only(bottom: Espacio.s),
-                        child: ListTile(
-                          selected: i == _tab,
-                          leading: Icon(_icons[i], size: 21),
-                          iconColor: context.paleta.textoSecundario,
-                          title: Text(
-                            _labels[i],
-                            style: context.texto.labelLarge?.copyWith(
-                              fontWeight: i == _tab
-                                  ? FontWeight.w700
-                                  : FontWeight.w500,
+                // Ventanas anchas pero bajas (ventana flotante apaisada, pantalla
+                // dividida): la barra lateral se desplaza en lugar de desbordarse.
+                child: LayoutBuilder(
+                  builder: (context, caja) => SingleChildScrollView(
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(minHeight: caja.maxHeight),
+                      child: IntrinsicHeight(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Padding(
+                              padding: EdgeInsets.only(left: Espacio.s),
+                              child: Brand(),
                             ),
-                          ),
-                          onTap: () => _navigate(i),
+                            const SizedBox(height: Espacio.xxl + Espacio.l),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: Espacio.l,
+                                bottom: Espacio.l,
+                              ),
+                              child: Text(
+                                'MI UNIVERSO',
+                                style: context.texto.labelSmall?.copyWith(
+                                  color: context.paleta.textoSecundario,
+                                  letterSpacing: 1.6,
+                                ),
+                              ),
+                            ),
+                            ...List.generate(
+                              _labels.length,
+                              (i) => Padding(
+                                padding: const EdgeInsets.only(
+                                  bottom: Espacio.s,
+                                ),
+                                child: ListTile(
+                                  selected: i == _tab,
+                                  leading: Icon(_icons[i], size: 21),
+                                  iconColor: context.paleta.textoSecundario,
+                                  title: Text(
+                                    _labels[i],
+                                    style: context.texto.labelLarge?.copyWith(
+                                      fontWeight: i == _tab
+                                          ? FontWeight.w700
+                                          : FontWeight.w500,
+                                    ),
+                                  ),
+                                  onTap: () => _navigate(i),
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                            Panel(
+                              padding: const EdgeInsets.all(Espacio.l),
+                              color: context.paleta.cianSuave,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Icon(
+                                    Icons.nightlight_outlined,
+                                    color: context.paleta.enlace,
+                                  ),
+                                  const SizedBox(height: Espacio.m),
+                                  Text(
+                                    'Haz espacio para ti.',
+                                    style: context.texto.titleSmall,
+                                  ),
+                                  const SizedBox(height: Espacio.s - 2),
+                                  Text(
+                                    'Un momento de calma también es un avance.',
+                                    style: context.texto.bodySmall,
+                                  ),
+                                ],
+                              ),
+                            ),
+                            const SizedBox(height: Espacio.xl),
+                            Padding(
+                              padding: const EdgeInsets.only(left: Espacio.s),
+                              child: Text(
+                                'MÓVIL INTEGRAL',
+                                style: context.texto.labelSmall?.copyWith(
+                                  color: context.paleta.textoSecundario,
+                                  letterSpacing: 1.4,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    const Spacer(),
-                    Panel(
-                      padding: const EdgeInsets.all(Espacio.l),
-                      color: context.paleta.cianSuave,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.nightlight_outlined,
-                            color: context.paleta.enlace,
-                          ),
-                          const SizedBox(height: Espacio.m),
-                          Text(
-                            'Haz espacio para ti.',
-                            style: context.texto.titleSmall,
-                          ),
-                          const SizedBox(height: Espacio.s - 2),
-                          Text(
-                            'Un momento de calma también es un avance.',
-                            style: context.texto.bodySmall,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: Espacio.xl),
-                    Padding(
-                      padding: const EdgeInsets.only(left: Espacio.s),
-                      child: Text(
-                        'MÓVIL INTEGRAL',
-                        style: context.texto.labelSmall?.copyWith(
-                          color: context.paleta.textoSecundario,
-                          letterSpacing: 1.4,
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             Expanded(
@@ -384,7 +400,13 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                         if (!wide)
                           // Ventanas angostas (< 340 dp, p. ej. ventana flotante):
                           // solo el ícono, para que el avatar siga visible.
-                          Brand(compact: MediaQuery.sizeOf(context).width < 340)
+                          // Flexible: con la fuente del sistema al 200 % la marca se encoge en lugar de desbordarse.
+                          Flexible(
+                            flex: 3,
+                            child: Brand(
+                              compact: MediaQuery.sizeOf(context).width < 340,
+                            ),
+                          )
                         else
                           Text(
                             'Tu espacio / ${_labels[_tab]}',
@@ -417,18 +439,24 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                         ],
                         Tooltip(
                           message: 'Ver mi perfil',
+                          // Área táctil de 48 × 48 dp (accesibilidad); el avatar sigue de 36.
                           child: InkWell(
                             onTap: () => _navigate(5),
-                            borderRadius: Radios.bordeL,
-                            child: CircleAvatar(
-                              radius: 18,
-                              backgroundColor: context.paleta.marca,
-                              foregroundColor: context.paleta.sobreMarca,
-                              child: Text(
-                                state.user!.username.characters.first
-                                    .toUpperCase(),
-                                style: context.texto.titleSmall?.copyWith(
-                                  color: context.paleta.sobreMarca,
+                            customBorder: const CircleBorder(),
+                            child: SizedBox.square(
+                              dimension: 48,
+                              child: Center(
+                                child: CircleAvatar(
+                                  radius: 18,
+                                  backgroundColor: context.paleta.marca,
+                                  foregroundColor: context.paleta.sobreMarca,
+                                  child: Text(
+                                    state.user!.username.characters.first
+                                        .toUpperCase(),
+                                    style: context.texto.titleSmall?.copyWith(
+                                      color: context.paleta.sobreMarca,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),

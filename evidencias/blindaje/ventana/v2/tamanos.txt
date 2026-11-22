@@ -1,0 +1,14 @@
+﻿1200x750 dp -> pedido 2250x1406px, real bounds=60,120,2310,1526
+900x700 dp -> pedido 1688x1312px, real bounds=60,120,1748,1432
+700x500 dp -> pedido 1312x938px, real bounds=60,120,1372,1058
+600x400 dp -> pedido 1125x750px, real bounds=60,120,1185,870
+500x300 dp -> pedido 938x562px, real bounds=60,120,998,682
+412x780 dp -> pedido 772x1462px, real bounds=60,120,832,1582
+360x640 dp -> pedido 675x1200px, real bounds=60,120,735,1320
+320x560 dp -> pedido 600x1050px, real bounds=60,120,660,1170
+300x500 dp -> pedido 562x938px, real bounds=60,120,622,1058
+280x480 dp -> pedido 525x900px, real bounds=60,120,585,1020
+260x440 dp -> pedido 488x825px, real bounds=60,120,548,945
+240x420 dp -> pedido 450x788px, real bounds=60,120,510,908
+240x320 dp -> pedido 450x600px, real bounds=60,120,510,720
+220x380 dp -> pedido 412x712px, real bounds=60,120,472,832

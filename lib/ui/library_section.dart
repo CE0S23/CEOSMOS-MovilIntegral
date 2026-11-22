@@ -20,8 +20,10 @@ String? youtubeId(String entrada) {
   if (uri.host.endsWith('youtu.be')) {
     id = uri.pathSegments.isEmpty ? null : uri.pathSegments.first;
   } else if (uri.host.contains('youtube.com')) {
-    id = uri.queryParameters['v'] ??
-        (uri.pathSegments.length >= 2 && ['shorts', 'embed'].contains(uri.pathSegments.first)
+    id =
+        uri.queryParameters['v'] ??
+        (uri.pathSegments.length >= 2 &&
+                ['shorts', 'embed'].contains(uri.pathSegments.first)
             ? uri.pathSegments[1]
             : null);
   }
@@ -81,7 +83,11 @@ class _Falla extends StatelessWidget {
     child: Center(
       child: Padding(
         padding: const EdgeInsets.all(8),
-        child: Text(texto, textAlign: TextAlign.center, style: context.texto.bodySmall),
+        child: Text(
+          texto,
+          textAlign: TextAlign.center,
+          style: context.texto.bodySmall,
+        ),
       ),
     ),
   );
@@ -122,7 +128,9 @@ class LibrarySection extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: Text('Mi biblioteca', style: context.texto.headlineSmall)),
+            Expanded(
+              child: Text('Mi biblioteca', style: context.texto.headlineSmall),
+            ),
             TextButton.icon(
               onPressed: () => _agregar(context),
               icon: const Icon(Icons.add),
@@ -141,7 +149,8 @@ class LibrarySection extends StatelessWidget {
           const EmptyState(
             icon: Icons.photo_library_outlined,
             title: 'Tu biblioteca está vacía',
-            message: 'Agrega una imagen o un video que te ayude a concentrarte.',
+            message:
+                'Agrega una imagen o un video que te ayude a concentrarte.',
           )
         else
           SizedBox(
@@ -151,7 +160,8 @@ class LibrarySection extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               itemCount: items.length,
               separatorBuilder: (_, _) => const SizedBox(width: 14),
-              itemBuilder: (context, i) => _Tarjeta(state: state, item: items[i]),
+              itemBuilder: (context, i) =>
+                  _Tarjeta(state: state, item: items[i]),
             ),
           ),
       ],
@@ -176,17 +186,24 @@ class _Tarjeta extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              if (item.imageUrl != null) CachedImage(url: item.imageUrl!, height: 120),
+              if (item.imageUrl != null)
+                CachedImage(url: item.imageUrl!, height: 120),
               Padding(
                 padding: const EdgeInsets.fromLTRB(14, 10, 6, 0),
                 child: Row(
                   children: [
-                    Icon(item.isYoutube ? Icons.smart_display_outlined : Icons.image_outlined,
-                        size: 16, color: context.paleta.enlace),
+                    Icon(
+                      item.isYoutube
+                          ? Icons.smart_display_outlined
+                          : Icons.image_outlined,
+                      size: 16,
+                      color: context.paleta.enlace,
+                    ),
                     const SizedBox(width: 6),
                     Expanded(
                       child: Text(
-                        item.title ?? (item.isYoutube ? 'Video de YouTube' : 'Imagen'),
+                        item.title ??
+                            (item.isYoutube ? 'Video de YouTube' : 'Imagen'),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: context.texto.titleSmall,
@@ -198,25 +215,57 @@ class _Tarjeta extends StatelessWidget {
               Row(
                 children: [
                   IconButton(
-                    tooltip: favorito ? 'Quitar de favoritos' : 'Agregar a favoritos',
+                    tooltip: favorito
+                        ? 'Quitar de favoritos'
+                        : 'Agregar a favoritos',
                     onPressed: () => state.toggleFavorite(item.contentKey),
-                    icon: Icon(favorito ? Icons.favorite : Icons.favorite_border, color: context.paleta.enlace, size: 20),
+                    icon: Icon(
+                      favorito ? Icons.favorite : Icons.favorite_border,
+                      color: context.paleta.enlace,
+                      size: 20,
+                    ),
                   ),
                   if (item.openUrl != null)
                     IconButton(
                       tooltip: 'Abrir',
-                      onPressed: () => launchUrl(item.openUrl!, mode: LaunchMode.externalApplication),
+                      onPressed: () => launchUrl(
+                        item.openUrl!,
+                        mode: LaunchMode.externalApplication,
+                      ),
                       icon: const Icon(Icons.open_in_new, size: 20),
                     ),
                   const Spacer(),
                   IconButton(
                     tooltip: 'Eliminar de mi biblioteca',
                     onPressed: () async {
+                      // Confirmación antes de borrar (usabilidad: no se puede deshacer).
+                      final si = await showDialog<bool>(
+                        context: context,
+                        builder: (c) => AlertDialog(
+                          title: const Text('¿Eliminar de tu biblioteca?'),
+                          content: Text(
+                            '«${item.title ?? 'Este elemento'}» se quitará de tu biblioteca. Esta acción no se puede deshacer.',
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(c, false),
+                              child: const Text('Cancelar'),
+                            ),
+                            FilledButton(
+                              onPressed: () => Navigator.pop(c, true),
+                              child: const Text('Eliminar'),
+                            ),
+                          ],
+                        ),
+                      );
+                      if (si != true) return;
                       try {
                         await state.deleteLibraryItem(item);
                       } on ApiException catch (e) {
                         if (context.mounted) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(e.message)));
+                          ScaffoldMessenger.of(
+                            context,
+                          ).showSnackBar(SnackBar(content: Text(e.message)));
                         }
                       }
                     },
@@ -254,47 +303,74 @@ class _AgregarDialogState extends State<_AgregarDialog> {
   @override
   Widget build(BuildContext context) => AlertDialog(
     title: const Text('Agregar a mi biblioteca'),
-    content: Form(
-      key: _form,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          SegmentedButton<String>(
-            segments: const [
-              ButtonSegment(value: 'IMAGE', label: Text('Imagen'), icon: Icon(Icons.image_outlined)),
-              ButtonSegment(value: 'YOUTUBE', label: Text('YouTube'), icon: Icon(Icons.smart_display_outlined)),
-            ],
-            selected: {_tipo},
-            onSelectionChanged: (s) => setState(() => _tipo = s.first),
-          ),
-          const SizedBox(height: 12),
-          TextFormField(
-            controller: _enlace,
-            keyboardType: TextInputType.url,
-            decoration: InputDecoration(
-              labelText: _tipo == 'IMAGE' ? 'URL de la imagen (JPEG o WebP)' : 'Enlace o id del video',
+    // Desplazable: con el teclado abierto y los mensajes de validación, en la
+    // tablet el contenido no cabía (usuario torpe, 22/11: desborde de 9–75 px).
+    content: SingleChildScrollView(
+      child: Form(
+        key: _form,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SegmentedButton<String>(
+              segments: const [
+                ButtonSegment(
+                  value: 'IMAGE',
+                  label: Text('Imagen'),
+                  icon: Icon(Icons.image_outlined),
+                ),
+                ButtonSegment(
+                  value: 'YOUTUBE',
+                  label: Text('YouTube'),
+                  icon: Icon(Icons.smart_display_outlined),
+                ),
+              ],
+              selected: {_tipo},
+              onSelectionChanged: (s) => setState(() => _tipo = s.first),
             ),
-            validator: (v) {
-              final t = v?.trim() ?? '';
-              if (_tipo == 'YOUTUBE') return youtubeId(t) == null ? 'Enlace de YouTube no válido.' : null;
-              final uri = Uri.tryParse(t);
-              return uri == null || !uri.isScheme('https') || uri.host.isEmpty ? 'Usa una URL https.' : null;
-            },
-          ),
-          TextFormField(
-            controller: _titulo,
-            maxLength: 80,
-            decoration: const InputDecoration(labelText: 'Título (opcional)'),
-          ),
-        ],
+            const SizedBox(height: 12),
+            TextFormField(
+              controller: _enlace,
+              keyboardType: TextInputType.url,
+              decoration: InputDecoration(
+                labelText: _tipo == 'IMAGE'
+                    ? 'URL de la imagen (JPEG o WebP)'
+                    : 'Enlace o id del video',
+              ),
+              validator: (v) {
+                final t = v?.trim() ?? '';
+                if (_tipo == 'YOUTUBE') {
+                  return youtubeId(t) == null
+                      ? 'Enlace de YouTube no válido.'
+                      : null;
+                }
+                final uri = Uri.tryParse(t);
+                return uri == null || !uri.isScheme('https') || uri.host.isEmpty
+                    ? 'Usa una URL https.'
+                    : null;
+              },
+            ),
+            TextFormField(
+              controller: _titulo,
+              maxLength: 80,
+              decoration: const InputDecoration(labelText: 'Título (opcional)'),
+            ),
+          ],
+        ),
       ),
     ),
     actions: [
-      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancelar')),
+      TextButton(
+        onPressed: () => Navigator.pop(context),
+        child: const Text('Cancelar'),
+      ),
       FilledButton(
         onPressed: () {
           if (_form.currentState!.validate()) {
-            Navigator.pop(context, (_tipo, _enlace.text.trim(), _titulo.text.trim()));
+            Navigator.pop(context, (
+              _tipo,
+              _enlace.text.trim(),
+              _titulo.text.trim(),
+            ));
           }
         },
         child: const Text('Agregar'),

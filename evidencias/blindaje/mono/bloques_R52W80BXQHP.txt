@@ -1,0 +1,2 @@
+﻿2026-11-22T14:20:15 serial=R52W80BXQHP semilla=4101 codigo=1 pasa=False crash=0 anr=0 seg=625 :: MONO_RESUMEN acciones=5000 toques=3371 escrituras=206 atras=501 desplazamientos=328 reingresos=0 errores=4 segundos=510
+FIN R52W80BXQHP

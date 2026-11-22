@@ -69,6 +69,22 @@ class ApiClient {
       throw const ApiException(
         'No hay conexión con el servidor de CEOSMOS. Revisa tu red.',
       );
+    } on Exception catch (e) {
+      // Blindaje (22/11): package:http no envuelve los errores de TLS
+      // (HandshakeException) ni otros de E/S. Un certificado no confiable
+      // (mitmproxy, portal cautivo que intercepta HTTPS) se rechaza y aquí se
+      // traduce. Sin dart:io para no romper la compilación web.
+      final t = '$e';
+      if (t.contains('Handshake') || t.contains('CERTIFICATE') || t.contains('Tls')) {
+        throw const ApiException(
+          'No se pudo establecer una conexión segura con CEOSMOS. '
+          'Si estás en una red pública, abre el navegador para aceptar su '
+          'portal o cambia de red.',
+        );
+      }
+      throw const ApiException(
+        'No hay conexión con el servidor de CEOSMOS. Revisa tu red.',
+      );
     }
 
     final decoded = _decode(response.body);

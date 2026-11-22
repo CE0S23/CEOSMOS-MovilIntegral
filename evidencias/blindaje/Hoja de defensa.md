@@ -6,16 +6,16 @@ Una página por profesor: qué enseñar en la app, qué abrir y las 10 preguntas
 
 ## 1 · Usabilidad
 
-**Qué enseñar (en este orden):** Acceso con un correo inválido, que muestra el error con ícono y texto. Inicio. Explorar con sus filtros. Mi sesión (pausar y terminar). Soporte con el botón ⓘ. Ventana flotante: achicarla hasta 320 × 560 dp.
+**Qué enseñar (en este orden):** Acceso con un correo inválido, que muestra el error con ícono y texto. Inicio. Explorar con sus filtros. Mi sesión (pausar y terminar). Soporte con el botón ⓘ. Ventana flotante: achicarla hasta 260 × 440 dp (sigue sin errores hasta 220 × 380).
 **Qué abrir:** S24 en modo claro y luego oscuro (Ajustes › Pantalla). Carpetas `evidencias/rediseno/` (antes y después) y `evidencias/blindaje/ventana/`.
 
 | # | Pregunta probable | Respuesta corta | Evidencia |
 |---|---|---|---|
 | 1 | ¿Cómo sabe el usuario dónde está? | Tienen nombre funcional la barra inferior (6 pestañas), el encabezado «Tu espacio / sección» en tablet y cada función abierta («← Soporte · Tickets y chat interno») | `evidencias/reestructura/` |
 | 2 | ¿Qué pasa si se equivoca en un formulario? | Validación antes de enviar, mensaje junto al campo y error con ícono + texto (no solo color) | `test/widget_test.dart` («Acceso valida campos») |
-| 3 | ¿Funciona en pantallas pequeñas? | Probado en ventana flotante: completa hasta **320 × 560 dp** (medido). A 280 dp se corrigió el encabezado; por debajo de 280 ya no es cómoda | `evidencias/blindaje/ventana/`, prueba sin desbordes a 280 px |
-| 4 | ¿Y con un usuario torpe? | Prueba dentro de la app con 20 000 acciones al azar (toques, textos raros, Atrás, desplazamientos) en cada teléfono | `integration_test/mono_usuario_test.dart`, `evidencias/blindaje/mono/` |
-| 5 | ¿Contraste y accesibilidad? | Paleta verificada con WCAG AA; 6 combinaciones ajustadas; objetivos táctiles de 48 dp o más | `tool/contraste/resultado.txt`, nota «11 - Sistema de diseño» |
+| 3 | ¿Funciona en pantallas pequeñas? | Barrido automático de 91 tamaños (240–1600 × 320–1000 dp): sin desbordes desde 240 dp de ancho. En la Tab S9 real, 14 tamaños de ventana flotante sin errores; cómoda desde **260 × 440 dp** (medido). Se corrigió la barra lateral en ventanas anchas y bajas | `test/tamanos_pantalla_test.dart`, `evidencias/blindaje/ventana/barrido_tamanos.md` y `ventana/v2/` |
+| 4 | ¿Y con un usuario torpe? | Prueba dentro de la app (copia aislada) con 5 000 acciones al azar por equipo: S24 sin errores ni crashes; en la Tab S9 encontró 4 desbordes en un diálogo, se corrigieron y la misma semilla pasó con 0 errores (medido) | `integration_test/mono_usuario_test.dart`, `evidencias/blindaje/mono/` |
+| 5 | ¿Contraste y accesibilidad? | Paleta verificada con WCAG AA; áreas táctiles ≥ 48 dp y botones con nombre (prueba de las guías de Android; se corrigió el avatar de 36 dp); fuente del sistema al 200 % sin desbordes | `test/accesibilidad_test.dart`, `tool/contraste/resultado.txt` |
 | 6 | ¿Modo oscuro? | Sigue al del sistema; tiene su propia paleta (no un simple invertido) | `evidencias/rediseno/despues_*_oscuro.png` |
 | 7 | ¿El botón Atrás cierra la app? | No: vuelve a la sección anterior (se corrigió para Android 16/17) | `test/navegacion_funciones_test.dart` |
 | 8 | ¿Se hizo un estudio con usuarios reales? | **No medido**: no hubo sesiones con usuarios (la etapa de usabilidad con personas no se ejecutó). Se sustituyó con pruebas automatizadas y heurísticas | Este documento, §6 |
@@ -55,8 +55,8 @@ Una página por profesor: qué enseñar en la app, qué abrir y las 10 preguntas
 | 2 | ¿Cuánto tarda la API? | Medido desde México el 21/11: conexión de 35 ms y respuesta de 0.21–0.34 s en `/health` (un pico de 1.76 s en arranque en frío) | `evidencias/blindaje/api_produccion_health.txt` |
 | 3 | ¿Y la carga inicial? | Medido en P11: 984 ms (login + 4 lecturas en paralelo) en el S24 | Reporte P11 |
 | 4 | ¿Cuántos usuarios aguanta? | Medido en P12 (API local): saturación en ~5 usuarios concurrentes (~210 solicitudes/s); después la latencia crece de forma lineal, sin errores | Reporte P12 |
-| 5 | ¿Funciona en España o Europa? | **Inferido, no medido**: la API está en EE. UU. Este; desde España se esperan unos 90–120 ms de ida y vuelta (hoy, unos 35 ms desde México). Funciona, pero responde algo más lento. No hay bloqueo por país | §4 del dossier |
-| 6 | ¿Qué red mínima necesita? | **No medido** con limitación de ancho de banda. Referencia: la respuesta más grande (historial) pesa 24–28 KB | Reporte P12, §6 del dossier |
+| 5 | ¿Funciona en España o Europa? | **Sí, medido** el 22/11 con sondas públicas: desde Madrid y Logroño la API responde 200 en 373–400 ms y Firestore en 783 ms. También funciona desde los 6 continentes (137–763 ms). Datos en EE. UU. (Vercel `iad1`, Neon `us-east-1`); para usuarios reales en la UE faltaría el aviso RGPD | `evidencias/blindaje/red/geografia.md` |
+| 6 | ¿Qué red mínima necesita? | **Medido** con un proxy que degrada la red: en EDGE/2G (50 kbps, +400 ms) la API responde en 2.5 s; con 20 % de pérdida, en ≤ 5 s. Mínimo: 5 kbps o RTT de 4 s dentro del timeout de 15 s. Firebase falla con RTT de 4 s (Google corta a los 10 s) | `evidencias/blindaje/red/red_minima.md` |
 | 7 | ¿Qué pasa si se cae la API? | Aviso «Sin conexión», reintento con espera progresiva y las escrituras pendientes se reenvían sin duplicarse | `test/p13_14/aut05_*`, `test/p12` |
 | 8 | ¿Por qué falla a veces el BLE? | Error transitorio de GATT de Android (`ANDROID_SPECIFIC_ERROR`); la app reintenta y conecta (visto el 21/11) | Recorrido del 21/11 |
 | 9 | ¿Cómo se comunican los dos teléfonos? | Mensajería por TCP en el puerto 5000 dentro de la misma Wi-Fi; uno crea la sala y el otro se une por IP | `lib/practicas/p06/` |
@@ -73,11 +73,11 @@ Una página por profesor: qué enseñar en la app, qué abrir y las 10 preguntas
 |---|---|---|---|
 | 1 | ¿La comunicación va cifrada? | Sí: HTTPS con HSTS (2 años, `preload`), y HTTP redirige con 308. El tráfico en texto claro solo se permite a `localhost` y al emulador | `api_produccion_health.txt`, `network_security_config.xml` |
 | 2 | ¿Dónde se guarda el token? | En almacenamiento seguro (Keystore de Android), nunca en texto plano | `lib/data/token_store.dart` |
-| 3 | ¿Qué ataques resiste la API? | 13/13 del Red Box del 21/11: sin token o token alterado, `alg:none`, inyección SQL, IDOR, asignación masiva, cuerpo de 2 MB, USER en `/admin` y token tras cerrar sesión | `evidencias/blindaje/redbox_api_entrega.txt` |
+| 3 | ¿Qué ataques resiste la API? | Red Box 13/13 + ampliado 37/37 (22/11): tokens expirados, HS512, `alg:none`, inyección SQL/NoSQL, XSS, IDOR, asignación masiva, JSON anidado, CORS, enumeración y fuerza bruta (429). La primera pasada dio 27/37: se corrigieron 6 fallos en la API (rama `blindaje-api`, **falta promoverla a producción**) | `evidencias/blindaje/redbox_ampliado.txt`, `masvs.md` |
 | 4 | ¿Y el Bluetooth? | El PIN no viaja por el aire: reto + HMAC. Un central no autenticado no puede escribir ni suscribirse. El enlace BLE no usa bonding cifrado | Nota 06; §6 del dossier |
 | 5 | ¿Un usuario puede ver datos de otro? | No: la API filtra por usuario (404 ante IDOR) y las reglas de Firestore bloquean leer o modificar lo ajeno | Red Box, nota P10 |
 | 6 | ¿Hay secretos en el código? | Solo claves de cliente de Firebase (públicas por diseño y protegidas por reglas y por paquete + SHA) y la credencial simulada de la práctica de código seguro | §5 del dossier |
 | 7 | ¿El APK es seguro? | Release no depurable, `allowBackup=false`, solo las actividades necesarias exportadas y firmado con llave propia (APK de respaldo) | `release/`, nota 07 |
-| 8 | ¿Se revisó contra OWASP? | Mapa MASVS / Mobile Top 10 en §5, con lo que está cubierto y lo que no | §5 |
+| 8 | ¿Se revisó contra OWASP? | Sí: mapa MASVS v2 y Mobile Top 10 control por control, con su estado (cumple, parcial o riesgo aceptado) y su evidencia | `evidencias/blindaje/masvs.md` |
 | 9 | ¿Qué riesgos quedan? | Limitador en memoria por instancia, cesión en «Mis incidencias», clave de `mesaayuda-p7` sin restringir y rotación de secretos pendiente | §6 |
-| 10 | ¿Se hizo pentest completo? | **No**: el Red Box ampliado de la etapa de seguridad no se ejecutó; hay 13 casos de API más los de BLE, Firestore y APK | §6 |
+| 10 | ¿Se hizo pentest completo? | No es un pentest profesional: es un Red Box de 50 casos sobre la API, Firestore sin sesión (se halló `mesaayuda-p7/dispositivos` legible: hay que cerrar la regla), gitleaks sobre el historial y una prueba de certificado no confiable. No se usó mitmproxy en el teléfono (exige cambiar el proxy del sistema) | `evidencias/blindaje/masvs.md` |
