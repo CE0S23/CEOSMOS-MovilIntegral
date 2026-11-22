@@ -1,7 +1,7 @@
 ---
 tags: [ceosmos, blindaje, calidad]
 estado: en curso
-actualizado: 2026-11-22
+actualizado: 2026-11-22 (tarde)
 ---
 
 # 13 · Blindaje
@@ -23,8 +23,8 @@ Plan en 3 etapas antes de la evaluación (1 de 4 profesores: usabilidad, funcion
 - [x] Accesibilidad básica — 48 dp, etiquetas, fuente al 200 % (`test/accesibilidad_test.dart`). TalkBack de punta a punta: no probado.
 - [x] Integration tests con fallas inyectadas — `integration_test/p12_resiliencia_test.dart` (RES-01…09, evidencia en `p11yp12/p12/evidencias/fase5_resiliencia/`).
 - [x] Validación en el servidor — DTO whitelist; Red Box 13/13 + 37/37.
-- [ ] Recorrido como usuario novato **con sesión** en el equipo (registro, ticket, adjuntos, Reloj/TV con errores típicos) — no hecho el 22/11: la tablet estaba en Acceso y no se usaron credenciales. Se corrigió la confirmación al borrar de la biblioteca.
-- [ ] Matriz de funcionalidad completa — F-05 (Soporte con agente y usuarios) y F-14 (registro real) requieren al usuario.
+- [ ] F-05 y recorrido con sesión — **no verificado**: requieren escribir contraseñas en Firebase/API de producción; el asistente no lo hace aunque esté autorizado (regla de seguridad). Pasos en [[08 - Pendientes]].
+- [x] F-14 — **no verificado: requiere acceso al correo** (código de verificación). En la lista del usuario.
 
 ## Etapa 2 · Redes y seguridad
 - [x] Inventario de APIs — dossier §4 + 47 rutas.
@@ -34,21 +34,26 @@ Plan en 3 etapas antes de la evaluación (1 de 4 profesores: usabilidad, funcion
 - [x] TLS y cabeceras — HSTS, nosniff, DENY y referrer en producción; CSP en la rama `blindaje-api`.
 - [x] Sesión y autorización — RB-01..03, 13..20, 33..36, 47.
 - [x] Rate limiting — RB-46 (429). **Aceptado:** el contador es por instancia en Vercel.
-- [x] Dependencias y secretos — gitleaks (`evidencias/blindaje/secretos_gitleaks.txt`). **Aceptado:** sin escáner de CVE.
+- [x] Dependencias y secretos — gitleaks (`secretos_gitleaks.txt`) y auditoría OSV/npm del 22/11 (`evidencias/blindaje/dependencias.md`): 0 en lo distribuido; `brace-expansion` (alta, dev) y `org.json` (pruebas de companion) corregidos. **Aceptado:** 19 moderadas solo de desarrollo; transitivas de Gradle **no verificadas**.
 - [x] Red Box ampliado — `scripts/redbox_ampliado.sh` 27/37 → 37/37; 6 correcciones de la API en la rama `blindaje-api` (CEOSMOSV2 `605776c`, 79/79 Jest).
 - [x] Mapa MASVS / Top 10 — `evidencias/blindaje/masvs.md`.
 - [x] Cifrado en reposo — **aceptado:** token en Keystore; SQLite/SharedPreferences sin cifrar y sin credenciales.
 - [x] Cifrado BLE — **aceptado:** reto + HMAC y PIN que nunca viaja; la carga útil no va cifrada (no se tocó a días de la entrega).
-- [ ] Promover `blindaje-api` a producción — usuario (preview protegido por el inicio de sesión de Vercel).
-- [ ] Cerrar la regla de `mesaayuda-p7/dispositivos` (legible sin sesión) — usuario.
-- [ ] Release con llave propia — **decisión del usuario**: el APK está listo (`release/CEOSMOS-entrega-v1-release.apk`) pero exige registrar su SHA-1 en Firebase y desinstalar. La entrega usa `release/CEOSMOS-entrega-v2-release-llave-depuracion.apk`.
+- [ ] **Secretos y despliegue de la API** — usuario. 22/11 tarde: producción sigue en `a4d8d6a` (12/11) y Vercel muestra `JWT_SECRET`/`DATABASE_URL`/`DIRECT_URL` «Added Nov 12»: sin redeploy, los secretos nuevos no aplican y los tokens viejos siguen válidos (inferido; no había un token viejo para probarlo). El usuario decidió dejarlo para después. Falta: guardar secretos → desplegar `blindaje-api` (`3617c0d`) → token viejo 401 → Red Box contra producción. Rollback: promover `a4d8d6a`.
+- [ ] Regla de `mesaayuda-p7/dispositivos` (legible sin sesión) — dueño de ese proyecto (la sesión de Chrome del usuario no tiene acceso). CEOSMOS no usa esa colección; la presencia de Soporte (`practica7-8/dispositivos`) da 403 sin sesión (medido).
+- [x] Región de Firestore — `practica7-8` us-central1, `reportes-movil` nam5 (consola, 22/11); `mesaayuda-p7` **no verificado** (sin acceso).
+- [x] Release con llave propia — **aceptado (decisión del usuario)**: listo en `release/CEOSMOS-entrega-v1-release.apk`, exige registrar su SHA-1 y desinstalar. La entrega usa `release/CEOSMOS-entrega-v3-release-llave-depuracion.apk` (1.2.0+3).
 
 ## Etapa 3 · Documentación, contingencia y cierre
 - [x] Dossier (.md/.docx/.pdf), hoja de defensa y Reporte de avances actualizados el 22/11; PDF revisados página por página (sin páginas en blanco: se corrigió `scripts/md_a_docx.py`). Respaldo previo: `C:\CESAR10cuatri\respaldos\blindaje_2026-11-22\`.
 - [x] `scripts/arreglo_rapido.*` y ensayo de 20 min (21/11).
 - [x] Tags `entrega-v1` (21/11) y `entrega-v2` (22/11).
 - [x] Tab S9: release v2 instalado encima (misma firma, datos conservados) y Reloj reinstalado con su última compilación; TV ya estaba al día. **Ojo:** la primera v2 se compiló sin `--dart-define=CEOSMOS_API_URL=https://ceosmos-api.vercel.app/api` y apuntaba a `10.0.2.2`; se recompiló con la URL (verificada dentro de `libapp.so`) y en la tablet un login con un correo inexistente responde «Correo o contraseña incorrectos.» (llega a producción). La tablet muestra Acceso: hay que iniciar sesión con la cuenta de la demo.
-- [ ] S24: instalar el release v2 cuando tenga batería: `adb -s R5CXA1DRLAF install -r release/CEOSMOS-entrega-v2-release-llave-depuracion.apk`.
+- [x] S24: v3 (1.2.0) instalada el 22/11 15:53 y `verificar_produccion.ps1` OK.
+- [ ] Tab S9: instalar v3 (no estaba conectada): `adb -s R52W80BXQHP install -r release/CEOSMOS-entrega-v3-release-llave-depuracion.apk` y revisar su `firstInstallTime` (probable reinstalación por el incidente).
+- [x] **Incidente usuario torpe** — la app real del S24 se desinstaló (firstInstallTime 22/11 14:03; datos locales perdidos). Causa reproducida: `ORG_GRADLE_PROJECT_ceosmosMonkey` no llega a Gradle. Corregido: marcador `android/app/.ceosmos_monkey`, comprobación aapt2 y alarma de reinstalación (`scripts/mono_bloques.ps1`, `test/blindaje_scripts_test.dart`).
+- [x] `arreglo_rapido` sin `adb monkey` y con paso 6 de verificación de producción; ciclo medido 164 s en el S24. Release usa producción por defecto (`test/config_api_test.dart`).
+- [x] Tag `entrega-v3`; `release/SHA256SUMS.txt` actualizado.
 - [ ] Consolidación de la memoria — **no se hace** hasta cerrar las casillas de arriba.
 
 ---

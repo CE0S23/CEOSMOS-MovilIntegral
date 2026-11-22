@@ -61,7 +61,13 @@ android {
         debug {
             // Blindaje: build aislada para monkey (otro paquete, convive con la app real
             // y las claves de Firebase restringidas por paquete la rechazan).
-            if (project.hasProperty("ceosmosMonkey")) applicationIdSuffix = ".monkey"
+            // 22/11: la variable ORG_GRADLE_PROJECT_ceosmosMonkey NO llegó a la build y
+            // `flutter test` desinstaló la app real del S24. Ahora también se activa con
+            // el archivo marcador `android/app/.ceosmos_monkey` (lo crea y borra
+            // scripts/mono_bloques.ps1, que además comprueba el paquete antes de correr).
+            if (project.hasProperty("ceosmosMonkey") || file(".ceosmos_monkey").exists()) {
+                applicationIdSuffix = ".monkey"
+            }
         }
         release {
             signingConfig = if (propiedadesLlave.isNotEmpty()) signingConfigs.getByName("release")

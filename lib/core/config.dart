@@ -4,14 +4,32 @@ import 'package:flutter/foundation.dart';
 ///
 /// La URL de la API se define al compilar:
 ///   flutter run --dart-define=CEOSMOS_API_URL=https://mi-api.example.com/api
-/// Sin valor, en Android (emulador) se usa la API local del equipo anfitrión
-/// (10.0.2.2) y en web/escritorio `localhost`.
+/// Sin valor:
+///  * en **release** se usa la API de producción (blindaje 22/11: una v2 se
+///    compiló sin la URL y apuntaba a 10.0.2.2, sin conexión en los teléfonos);
+///  * en depuración, en Android (emulador) la API local del equipo anfitrión
+///    (10.0.2.2) y en web/escritorio `localhost`.
 class AppConfig {
   static const _definida = String.fromEnvironment('CEOSMOS_API_URL');
 
-  static String get apiBaseUrl {
-    if (_definida.isNotEmpty) return _definida;
-    final android = !kIsWeb && defaultTargetPlatform == TargetPlatform.android;
+  /// API de producción (Vercel).
+  static const produccion = 'https://ceosmos-api.vercel.app/api';
+
+  static String get apiBaseUrl => resolverApi(
+        definida: _definida,
+        release: kReleaseMode,
+        android: !kIsWeb && defaultTargetPlatform == TargetPlatform.android,
+      );
+
+  /// Regla de selección de la URL, separada para poder probarla.
+  @visibleForTesting
+  static String resolverApi({
+    required String definida,
+    required bool release,
+    required bool android,
+  }) {
+    if (definida.isNotEmpty) return definida;
+    if (release) return produccion;
     return android ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api';
   }
 

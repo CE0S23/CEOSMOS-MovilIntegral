@@ -8,7 +8,8 @@
 //
 //   En el teléfono:  flutter test integration_test/mono_usuario_test.dart -d <serial>
 //   En la PC:        flutter test integration_test/mono_usuario_test.dart
-//   Más acciones:    --dart-define=MONO_ACCIONES=20000  (semilla: MONO_SEMILLA)
+//   Más acciones:    --dart-define=MONO_ACCIONES=10000  (semilla: MONO_SEMILLA)
+//   Por bloques en la copia aislada: scripts/mono_bloques.ps1 (5 000 por bloque)
 import 'dart:math';
 
 import 'package:ceosmos_movil_integral/app.dart';
@@ -20,7 +21,7 @@ import 'package:integration_test/integration_test.dart';
 
 import '../test/support/fake_ceosmos_api.dart';
 
-const _acciones = int.fromEnvironment('MONO_ACCIONES', defaultValue: 20000);
+const _acciones = int.fromEnvironment('MONO_ACCIONES', defaultValue: 5000);
 const _semilla = int.fromEnvironment('MONO_SEMILLA', defaultValue: 2111);
 
 const _textos = [

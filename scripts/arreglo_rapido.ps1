@@ -52,7 +52,7 @@ if (-not $fallo) {
             # -r conserva los datos de la app (misma llave que el release instalado).
             Paso "4 instalar $d" { adb -s $d install -r build/app/outputs/flutter-apk/app-debug.apk }
             adb -s $d shell am force-stop $paquete | Out-Null
-            adb -s $d shell monkey -p $paquete -c android.intent.category.LAUNCHER 1 2>$null | Out-Null
+            adb -s $d shell am start -n "$paquete/.MainActivity" | Out-Null   # nunca adb monkey
         } else {
             $resumen.Add(('{0,-22} {1,4}s  {2}' -f "4 instalar $d", 0, 'SIN CONEXIÓN'))
         }
@@ -67,6 +67,8 @@ if (-not $fallo) {
         Start-Sleep -Seconds $LogcatSeg
         if (-not $p.HasExited) { Stop-Process -Id $p.Id -Force }
         $resumen.Add(('{0,-22} {1,4}s  {2}' -f "5 logcat $d", [int]$reloj.Elapsed.TotalSeconds, 'revisado'))
+        # 6: ¿llega a producción? Correo inexistente → «Correo o contraseña incorrectos».
+        Paso "6 API producción $d" { powershell -NoProfile -ExecutionPolicy Bypass -File (Join-Path $PSScriptRoot 'verificar_produccion.ps1') -Serial $d }
     }
 } else {
     Write-Host "`nLas pruebas fallaron: corrige antes de instalar."

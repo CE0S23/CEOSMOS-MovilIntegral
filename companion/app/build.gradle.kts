@@ -77,5 +77,5 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
     testImplementation("junit:junit:4.13.2")
-    testImplementation("org.json:json:20180813")
+    testImplementation("org.json:json:20260719") // Blindaje 22/11: 20180813 tenía 3 avisos DoS (OSV)
 }

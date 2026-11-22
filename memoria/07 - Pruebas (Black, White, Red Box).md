@@ -50,6 +50,11 @@ actualizado: 2026-11-19
 - [x] Red mínima y geografía medidas (`evidencias/blindaje/red/`). Usuario torpe: S24 5 000 sin errores; Tab S9 5 000 → 4 desbordes corregidos y verificados.
 - Mapa completo: `evidencias/blindaje/masvs.md` · [[13 - Blindaje]]
 
+### Cierre (22/11, tarde)
+- [x] **326/326** pruebas Flutter (+ `config_api_test`, `blindaje_scripts_test`); companion `./gradlew test lint` en verde con `org.json` 20260719; API 79/79.
+- [x] Dependencias: OSV/npm (`evidencias/blindaje/dependencias.md`): 0 en lo distribuido.
+- [ ] API en producción sin desplegar (Red Box contra producción **no verificado**). F-05 **no verificado** (contraseñas).
+
 ## Riesgos que quedan (con mitigación)
 - [ ] APK firmado con llave de depuración → crear keystore propio (ver [[08 - Pendientes]]).
 - Riesgo aceptado: credencial de práctica `alumno/ClaveDemo2026` en Kotlin (P5, simulada por diseño de la práctica).

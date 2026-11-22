@@ -63,3 +63,6 @@ android/key.properties
 
 # Blindaje: APK de respaldo (binarios grandes, se guardan localmente)
 /release/*.apk
+
+# Blindaje: marcador local de la build aislada del usuario torpe (scripts/mono_bloques.ps1)
+/android/app/.ceosmos_monkey

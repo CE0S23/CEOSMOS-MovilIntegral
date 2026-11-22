@@ -6,6 +6,7 @@ Revísala 30 minutos antes. Cada punto tiene el comando o la pantalla que lo com
 - [ ] Batería del S24 (`R5CXA1DRLAF`) y de la Tab S9 (`R52W80BXQHP`) al 80 % o más, con cargador a la mano. Comando: `adb -s <serial> shell dumpsys battery | grep level`.
 - [ ] Los dos aparecen en `adb devices` como `device`. Si alguno sale `offline`: `adb reconnect offline`.
 - [ ] Modo No molestar activado y brillo cómodo, ajustados a mano. La app no los toca.
+- [ ] Nunca correr `adb shell monkey`. El usuario torpe solo con `scripts\mono_bloques.ps1` (se aborta si el APK no es la copia `.monkey`).
 - [ ] Bluetooth encendido y Wi-Fi en la **misma red** en los dos equipos: Mensajería entre equipos lo necesita.
 - [ ] Internet: `curl -s https://ceosmos-api.vercel.app/api/health` responde `200`.
 
@@ -27,6 +28,9 @@ Revísala 30 minutos antes. Cada punto tiene el comando o la pantalla que lo com
 
 ## Servicios
 - [ ] API de producción: `200` en `/api/health` y `401` en `/api/devices` sin token.
+- [ ] **La app instalada llega a producción** (en cada equipo, con la app en Acceso): `powershell -File scripts\verificar_produccion.ps1 -Serial <serial>` debe decir «VERIFICACION OK» (escribe un correo inexistente y espera «Correo o contraseña incorrectos.»; tarda ~18 s). Si dice FALLÓ: reinstala `release\CEOSMOS-entrega-v3-release-llave-depuracion.apk`.
+- [ ] Versión igual en los dos equipos: `adb -s <serial> shell dumpsys package com.ceosmos.ceosmos_movil_integral | findstr versionName` → `1.2.0`.
+- [ ] Reloj y TV **emparejados de nuevo** en el S24 (el 22/11 se perdió su emparejamiento al reinstalarse la app).
 - [ ] Firestore: Reportes compartidos muestra un UID y «Consultar desde servidor» responde.
 - [ ] Citas de bienestar (solo si se va a mostrar): `scripts\dev_backend.ps1` levantado y `adb reverse tcp:3443 tcp:3443`.
 

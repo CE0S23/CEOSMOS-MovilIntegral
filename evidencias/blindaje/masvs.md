@@ -17,7 +17,7 @@ Estado: **cumple** (con evidencia) · **parcial** · **riesgo aceptado** · **no
 | PLATFORM-2 WebViews | no aplica | No hay WebView propia; los enlaces abren el navegador |
 | PLATFORM-3 Interfaz: datos sensibles en pantalla | parcial | Contraseña oculta con botón de mostrar; no se usa `FLAG_SECURE` (capturas permitidas) |
 | CODE-1 Plataforma actualizada | cumple | targetSdk 36; Android 16/17 en los equipos |
-| CODE-2 Dependencias | parcial | `pubspec.lock` fijo; 67 paquetes con versiones nuevas incompatibles; sin escáner de CVE |
+| CODE-2 Dependencias | cumple / parcial | OSV: Flutter 0, API en producción 0, companion corregido (`org.json`); 19 moderadas solo de desarrollo y transitivas de Gradle sin escanear (`dependencias.md`) |
 | CODE-3 Validación de entradas | cumple | App y API (DTO whitelist); fuzzing RB-21..32 sin 500 tras las correcciones |
 | CODE-4 Manejo de errores | cumple | `errores_globales.dart`; errores HTTP traducidos; API sin trazas (RB-43) |
 | RESILIENCE-1..4 Anti-manipulación, ofuscación | riesgo aceptado | Dart compilado AOT a código nativo; sin `--obfuscate` ni detección de root |
@@ -27,7 +27,7 @@ Estado: **cumple** (con evidencia) · **parcial** · **riesgo aceptado** · **no
 | Riesgo | Estado | Evidencia |
 |---|---|---|
 | M1 Uso indebido de credenciales | cumple | Sin secretos de servidor en el repo ni en el historial (gitleaks: `secretos_gitleaks.txt`); claves de Firebase de cliente, la de P7 restringida por referente (medido: `API_KEY_HTTP_REFERRER_BLOCKED`) |
-| M2 Cadena de suministro | parcial | Versiones fijas; sin escáner de CVE (riesgo aceptado) |
+| M2 Cadena de suministro | cumple / parcial | OSV-Scanner y `npm audit` (22/11): 0 en lo que se distribuye; quedan 19 moderadas de herramientas de desarrollo (aceptado) |
 | M3 Autenticación/autorización | cumple | ver AUTH; **hallazgo**: `mesaayuda-p7/dispositivos` se lee sin sesión (3 documentos de presencia: nombre, modelo, rol, última conexión) — regla pendiente del usuario |
 | M4 Validación de entradas/salidas | cumple | RB-04, 08–10, 21–32; XSS guardado como texto y la app no interpreta HTML |
 | M5 Comunicación insegura | cumple | NETWORK-1/2. Mensajería TCP en LAN en texto plano: riesgo aceptado (demostración local) |

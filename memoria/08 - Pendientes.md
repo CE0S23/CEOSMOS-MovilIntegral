@@ -36,12 +36,15 @@ actualizado: 2026-11-19
 - [ ] Push de `movil-integral` (WEBANGULAR, repo CEOSMOSV2). → [[10 - Bitácora]]
 - [ ] Frontend Angular (`ceosmos-t8ee.vercel.app`) apuntando a `https://ceosmos-api.vercel.app/api`. → [[03 - Arquitectura y stack]]
 - [ ] Passkeys WebAuthn en móvil (`assetlinks.json` en el dominio). → [[02 - Requerimientos]]
-- [ ] Keystore propio para firmar el release (hoy llave de depuración). → [[07 - Pruebas (Black, White, Red Box)]]
+- [ ] Keystore propio para firmar el release (hoy llave de depuración; aceptado para la entrega, ver [[13 - Blindaje]]). → [[07 - Pruebas (Black, White, Red Box)]]
 - [ ] Borrar los `.env` temporales con credenciales de prod del scratchpad de la sesión del 12/11, si siguen ahí. → [[Notas varias]]
 
-- [ ] **Blindaje (22/11):** promover a producción la rama `blindaje-api` (CEOSMOSV2, commit 605776c; el preview compiló pero exige iniciar sesión en Vercel para probarlo). Rollback: volver a promover el despliegue `a4d8d6a`. → [[13 - Blindaje]]
 - [ ] **Blindaje:** regla de Firestore de `mesaayuda-p7/dispositivos` (hoy legible sin sesión): exigir `request.auth != null`. → [[13 - Blindaje]]
-- [ ] **Blindaje:** decidir el APK con llave propia (registrar su SHA-1 en Firebase y reinstalar perdiendo datos locales) o mantener la llave de depuración como riesgo aceptado. → [[13 - Blindaje]]
+
+- [ ] **Blindaje · API (22/11 tarde):** en Vercel `ceosmos-api` → Settings → Environment Variables, editar `JWT_SECRET`, `DATABASE_URL` y `DIRECT_URL` con los valores nuevos (hoy dicen «Added Nov 12») → desplegar la rama `blindaje-api` (commit `3617c0d`) en producción → comprobar que un token viejo da 401 → `bash scripts/redbox_api.sh` y `redbox_ampliado.sh` adaptados a producción a bajo ritmo. Rollback: promover `a4d8d6a`. → [[13 - Blindaje]]
+- [ ] **Blindaje · F-05 y recorrido con sesión:** en la tablet, Soporte con admin, agente, usuario1 y usuario2 de P7 (`.devdb/CUENTAS_DEV.txt`); las contraseñas las escribe el usuario. → [[13 - Blindaje]]
+- [ ] **Blindaje · F-14:** registro real en producción (no verificado: requiere acceso al correo del código).
+- [ ] **Blindaje · Tab S9:** `adb -s R52W80BXQHP install -r release/CEOSMOS-entrega-v3-release-llave-depuracion.apk`, luego `powershell -File scripts\verificar_produccion.ps1 -Serial R52W80BXQHP` y emparejar de nuevo Reloj y TV en el S24.
 
 ## 3. Mejoras opcionales
 - [ ] Servicio en primer plano para audio muy largo. → [[02 - Requerimientos]]

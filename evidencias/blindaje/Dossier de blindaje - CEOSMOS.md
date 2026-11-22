@@ -74,7 +74,7 @@ Capturas: `evidencias/blindaje/ventana/` y `evidencias/reestructura/dispositivos
 | F-02 | Validación de campos en Acceso (vacíos, correo inválido) | prueba automática | aprobado |
 | F-03 | Sesión de enfoque: iniciar, pausar, continuar y terminar | prueba automática | aprobado |
 | F-04 | Soporte como administrador: menú de asignados, todos y dispositivos; ⓘ; Atrás | S24 | aprobado (21/11) |
-| F-05 | Soporte con el agente y los dos usuarios | — | **pendiente** (requiere las contraseñas del usuario) |
+| F-05 | Soporte con el agente y los dos usuarios | — | **no verificado**: hay que escribir las contraseñas de las cuentas de P7 en el equipo (lo hace el usuario; el asistente no introduce contraseñas en servicios de producción) |
 | F-06 | Incidencias en tiempo real: alta en la tablet visible al instante en el S24 | S24 + Tab S9 | aprobado (21/11) |
 | F-07 | Reportes compartidos (Flutter y Android) conectados a la nube | S24 | aprobado |
 | F-08 | Mis incidencias y acceso: solo lo propio | S24 | aprobado |
@@ -83,7 +83,7 @@ Capturas: `evidencias/blindaje/ventana/` y `evidencias/reestructura/dispositivos
 | F-11 | Seguridad de la cuenta, Directorio de alumnos y Citas de bienestar abren desde Perfil | S24 | aprobado |
 | F-12 | Ningún texto visible contiene «Práctica», «P» + número, «Examen» ni «Eval.» | prueba automática | aprobado (`navegacion_funciones_test.dart`) |
 | F-13 | Atrás vuelve a la sección y no cierra la app (Android 16/17) | prueba + equipos | aprobado |
-| F-14 | Registro de una cuenta nueva | — | no ejecutado en producción: requiere recibir el código por correo; cubierto por pruebas con la API simulada |
+| F-14 | Registro de una cuenta nueva | — | **no verificado: requiere acceso al correo** para el código; cubierto por pruebas con la API simulada |
 
 ## 4. Conectividad
 
@@ -130,7 +130,7 @@ Mínimos: API, 5 kbps o RTT de 4 s dentro del timeout de 15 s (para el historial
 | África (Lagos, Johannesburgo) | 200 · 652–763 ms | 2 068 ms | sí |
 | Oceanía (Sídney) | 200 · 561–566 ms | 438 ms | sí |
 
-Regiones: Vercel `iad1` (medido) y Neon `us-east-1` (medido en el `.env` local; que producción use el mismo host es inferido). La región de Firestore **no se verificó**. La API solo publica IPv4 (en redes solo IPv6 Android usa 464XLAT, **inferido**). Para usuarios reales en la UE faltaría el aviso RGPD; no es un bloqueo técnico.
+Regiones: Vercel `iad1` (medido) y Neon `us-east-1` (medido en el `.env` local; que producción use el mismo host es inferido). Firestore (consola, 22/11): `practica7-8` en **us-central1** y `reportes-movil` en **nam5** (multirregión EE. UU.); `mesaayuda-p7` **no verificado** (la cuenta no tiene acceso a ese proyecto). La API solo publica IPv4 (en redes solo IPv6 Android usa 464XLAT, **inferido**). Para usuarios reales en la UE faltaría el aviso RGPD; no es un bloqueo técnico.
 
 **Ante caídas (medido en pruebas):** aviso «Sin conexión», reintento con espera progresiva, escrituras idempotentes (`clientId`) sin duplicados y reconexión BLE automática. Las funciones con Firestore sincronizan al volver la red (prueba de la tablet sin red en P9).
 
@@ -164,7 +164,7 @@ El mapa completo control por control (MASVS v2 y Top 10) está en `evidencias/bl
 
 Las 6 correcciones de la API están en la rama `blindaje-api` (repo CEOSMOSV2, commit `605776c`): 79/79 pruebas, el preview de Vercel compiló en verde, pero está protegido con el inicio de sesión de Vercel y **no se pudo probar**. **Producción aún no las tiene.** Rollback: volver a promover el despliegue anterior (`a4d8d6a`).
 
-**Firestore sin sesión (22/11, medido):** lecturas y escrituras rechazadas (403) en `practica7-8` y `reportes-movil`; en `mesaayuda-p7`, `turnos` y `contadores` dan 403, pero **`dispositivos` se lee sin sesión** (3 documentos de presencia: nombre, modelo, rol y última conexión). La regla la debe ajustar el usuario en la consola de Firebase.
+**Firestore sin sesión (22/11, medido):** lecturas y escrituras rechazadas (403) en `practica7-8` y `reportes-movil`; en `mesaayuda-p7`, `turnos` y `contadores` dan 403, pero **`dispositivos` se lee sin sesión** (3 documentos de presencia: nombre, modelo, rol y última conexión). CEOSMOS no usa esa colección (la presencia de Soporte vive en `practica7-8/dispositivos`, que sin sesión da **403**, medido el 22/11). La regla la debe ajustar el dueño del proyecto `mesaayuda-p7` (otra cuenta de Google; la sesión del usuario no tiene acceso).
 
 **Interceptación:** la app no confía en CA de usuario y rechaza un certificado autofirmado (prueba con un servidor HTTPS local). No se usó mitmproxy en el teléfono porque exige cambiar el proxy del sistema.
 
@@ -172,13 +172,14 @@ Las 6 correcciones de la API están en la rama `blindaje-api` (repo CEOSMOSV2, c
 
 **Ataques (medido el 21/11 con `scripts/redbox_api.sh` contra la API local):** 13/13 bloqueados (`evidencias/blindaje/redbox_api_entrega.txt`). Antes (P10 y P7) ya se habían probado el acceso ajeno en Firestore y las escrituras BLE no autenticadas.
 
-**Dependencias y secretos:** gitleaks 8.30.1 sobre los 33 commits del historial y el árbol de trabajo (22/11; `evidencias/blindaje/secretos_gitleaks.txt`, con los valores ocultos). En el historial hay 19 coincidencias: 7 claves de cliente de Firebase (públicas por diseño) y 12 tokens de sesión de la base local de P12 dentro de planes EXPLAIN (no son de producción). No hay contraseñas, JWT_SECRET, llaves ni `key.properties` en el historial. El keystore queda fuera del repositorio. 67 paquetes tienen versiones nuevas incompatibles; no se usó un escáner de CVE (riesgo aceptado).
+**Dependencias y secretos:** gitleaks 8.30.1 sobre los 33 commits del historial y el árbol de trabajo (22/11; `evidencias/blindaje/secretos_gitleaks.txt`, con los valores ocultos). En el historial hay 19 coincidencias: 7 claves de cliente de Firebase (públicas por diseño) y 12 tokens de sesión de la base local de P12 dentro de planes EXPLAIN (no son de producción). No hay contraseñas, JWT_SECRET, llaves ni `key.properties` en el historial. El keystore queda fuera del repositorio. Auditoría de dependencias (22/11, `evidencias/blindaje/dependencias.md`): OSV-Scanner sobre `pubspec.lock` → **0 vulnerabilidades**; `npm audit` de la API → **0 en producción** y 26 en herramientas de desarrollo, que bajaron a 19 moderadas con `npm audit fix` compatible (la alta de `brace-expansion` quedó corregida; el resto exige Jest 29 o Nest CLI 12, versiones mayores); companion: OSV sobre sus dependencias directas → solo `org.json 20180813` (únicamente pruebas) con 3 avisos DoS, actualizado a `20260719`. Las dependencias transitivas de Gradle no se escanearon (no verificado). `flutter pub outdated`: 13 directas con versiones nuevas, ninguna con aviso de seguridad.
 
 ## 6. Límites conocidos y riesgos aceptados
 
 | Límite o riesgo | Impacto | Mitigación / estado |
 |---|---|---|
-| Correcciones de la API sin promover a producción | Producción sigue respondiendo 500 a CORS ajeno y JSON anidado, y sin CSP | Rama `blindaje-api` lista (79/79, 37/37); promover en Vercel (tarea del usuario) |
+| Correcciones de la API sin desplegar y secretos sin aplicar | Producción sigue en el despliegue del 12/11 (`a4d8d6a`): sin redeploy, Vercel sigue usando el `JWT_SECRET` y la conexión a Neon anteriores, así que los tokens previos siguen siendo válidos (inferido). Siguen el 500 ante CORS ajeno y JSON anidado y la falta de CSP | Tarea del usuario: guardar los secretos nuevos en Production y desplegar la rama `blindaje-api` (79/79, 37/37 en local) |
+| **Incidente 22/11: la app real del S24 se desinstaló** | El usuario torpe se corrió con la variable `ORG_GRADLE_PROJECT_ceosmosMonkey`, que no llega a Gradle (reproducido). `flutter test` instaló el paquete real y lo desinstaló al terminar (S24: `firstInstallTime` 22/11 14:03): se perdieron los datos locales (sesión, SQLite, emparejamiento del Reloj y la TV). Los datos en la nube no se afectaron | Corregido: marcador `android/app/.ceosmos_monkey`, comprobación del paquete con aapt2 antes de correr y alarma si la app real se reinstala (`scripts/mono_bloques.ps1`, `test/blindaje_scripts_test.dart`). Tablet: probablemente igual (no verificado hasta reconectarla) |
 | `mesaayuda-p7/dispositivos` legible sin sesión | Se ven 3 registros de presencia (nombre, modelo, rol, última conexión) | Exigir `request.auth != null` en la regla (tarea del usuario) |
 | Usuario torpe: 5 000 acciones por equipo, no 20 000 | Menos cobertura aleatoria que la planeada | El S24 se quedó sin batería; el usuario decidió no repetir lo ya probado. Los hallazgos de la tablet se corrigieron y se verificaron con la misma semilla |
 | Usabilidad con personas reales y recorrido con sesión en el equipo | Sin datos de usuarios reales; el recorrido con sesión del 22/11 no se hizo (la tablet estaba en Acceso y no se usaron credenciales) | Barrido automático, accesibilidad y usuario torpe; recorrido manual del 21/11 |
@@ -205,12 +206,14 @@ Las 6 correcciones de la API están en la rama `blindaje-api` (repo CEOSMOSV2, c
 | API (Jest) | 79 | `npx jest` en `ceosmos-api` |
 | Red mínima | 65 mediciones | `bash scripts/medir_red.sh` |
 | Sin texto académico visible | 1 recorrido | `flutter test test/navegacion_funciones_test.dart` |
+| Scripts de operación (marcador, sin `monkey`, verificación de producción) | 4 | `flutter test test/blindaje_scripts_test.dart` |
 | CI | Cada push y pull request | GitHub Actions `CI` (sin secretos ni producción) |
 
 ## 8. Plan de contingencia
 
 - **Script:** `scripts/arreglo_rapido.sh <área>` (o `.ps1`). Ejecuta el análisis y las pruebas del área, compila en modo debug, instala en los dos equipos sin borrar datos y muestra el logcat de la app, cronometrando cada paso.
 - **Volver atrás:** `git checkout entrega-v2` (o `entrega-v1`), o reinstalar `release\CEOSMOS-entrega-v2-release-llave-depuracion.apk` (se instala encima sin perder datos; misma firma que la v1).
+- **Verificación automática tras instalar (22/11):** el paso 6 del script (`scripts/verificar_produccion.ps1` o `.sh`) intenta entrar con un correo inexistente y espera «Correo o contraseña incorrectos.»: prueba que la app instalada llega a producción. Ciclo completo medido en el S24 con el área `login`: **164 s** (análisis 30, pruebas 18, build 35, instalación 42, logcat 20, verificación 18). El release usa producción aunque se compile sin `--dart-define` (`lib/core/config.dart`, `test/config_api_test.dart`).
 - **Guía de fallos:** `evidencias/blindaje/Guia de fallos rapidos.md`.
 - **Lista previa:** `evidencias/blindaje/Lista de verificacion previa.md`.
 

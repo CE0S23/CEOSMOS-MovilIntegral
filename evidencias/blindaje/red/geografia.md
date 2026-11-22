@@ -20,7 +20,9 @@ Todas las respuestas están muy por debajo del timeout de 15 s y del mínimo med
 |---|---|---|
 | API (Vercel) | `iad1` (Washington D. C., EE. UU. Este) | medido: cabecera `X-Vercel-Id` |
 | Base de datos (Neon) | `us-east-1` | medido: host de `DATABASE_URL` del `.env` local; que producción use el mismo host es **inferido** |
-| Firestore (3 proyectos) | **no verificado** (no se puede leer sin sesión de la consola) | la red de borde de Google atiende desde cerca del usuario; la base vive en la región elegida al crear el proyecto |
+| Firestore `practica7-8` (Soporte) | **us-central1** | medido: consola de Firebase, 22/11 |
+| Firestore `reportes-movil` | **nam5** (multirregión EE. UU.) | medido: consola de Firebase, 22/11 |
+| Firestore `mesaayuda-p7` | **no verificado** | la cuenta del usuario no tiene acceso a ese proyecto |
 
 ## ¿Funcionaría en España / Europa?
 **Sí, medido desde Madrid y Logroño (200 en 373–400 ms).** Además:

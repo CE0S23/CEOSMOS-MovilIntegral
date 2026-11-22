@@ -52,7 +52,7 @@ if [ "$FALLO" = 0 ]; then
       # -r conserva los datos de la app (misma llave que el release instalado).
       paso "4 instalar $d" adb -s "$d" install -r build/app/outputs/flutter-apk/app-debug.apk
       adb -s "$d" shell am force-stop "$PAQUETE"
-      adb -s "$d" shell monkey -p "$PAQUETE" -c android.intent.category.LAUNCHER 1 >/dev/null 2>&1
+      adb -s "$d" shell am start -n "$PAQUETE/.MainActivity" >/dev/null   # nunca adb monkey
     else
       RESUMEN+=("$(printf '%-22s %4ss  %s' "4 instalar $d" 0 "SIN CONEXIÓN")")
     fi
@@ -64,6 +64,8 @@ if [ "$FALLO" = 0 ]; then
       t0=$(date +%s)
       timeout "$LOGCAT_SEG" adb -s "$d" logcat -v time 'flutter:E' 'AndroidRuntime:E' 'CEOSMOS:*' '*:S' || true
       RESUMEN+=("$(printf '%-22s %4ss  %s' "5 logcat $d" "$(( $(date +%s) - t0 ))" "revisado")")
+      # 6: ¿llega a producción? Correo inexistente → «Correo o contraseña incorrectos».
+      paso "6 API producción $d" bash "$(dirname "$0")/verificar_produccion.sh" "$d"
     fi
   done
 else

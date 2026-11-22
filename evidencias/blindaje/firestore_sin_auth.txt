@@ -5,3 +5,5 @@ GET sin auth mesaayuda-p7/databases/(default)/documents/turnos	403
 GET sin auth mesaayuda-p7/databases/(default)/documents/dispositivos	200
 GET sin auth mesaayuda-p7/databases/(default)/documents/contadores	403
 POST sin auth reportes (escritura)	403
+GET sin auth practica7-8-941cb/databases/(default)/documents/dispositivos	403
+GET sin auth practica7-8-941cb/databases/(default)/documents/usuarios	403
