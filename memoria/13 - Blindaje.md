@@ -47,7 +47,7 @@ Plan en 3 etapas antes de la evaluación (1 de 4 profesores: usabilidad, funcion
 - [x] Dossier (.md/.docx/.pdf), hoja de defensa y Reporte de avances actualizados el 22/11; PDF revisados página por página (sin páginas en blanco: se corrigió `scripts/md_a_docx.py`). Respaldo previo: `C:\CESAR10cuatri\respaldos\blindaje_2026-11-22\`.
 - [x] `scripts/arreglo_rapido.*` y ensayo de 20 min (21/11).
 - [x] Tags `entrega-v1` (21/11) y `entrega-v2` (22/11).
-- [x] Tab S9: release v2 instalado encima (misma firma, datos conservados) y Reloj reinstalado con su última compilación; TV ya estaba al día.
+- [x] Tab S9: release v2 instalado encima (misma firma, datos conservados) y Reloj reinstalado con su última compilación; TV ya estaba al día. **Ojo:** la primera v2 se compiló sin `--dart-define=CEOSMOS_API_URL=https://ceosmos-api.vercel.app/api` y apuntaba a `10.0.2.2`; se recompiló con la URL (verificada dentro de `libapp.so`) y en la tablet un login con un correo inexistente responde «Correo o contraseña incorrectos.» (llega a producción). La tablet muestra Acceso: hay que iniciar sesión con la cuenta de la demo.
 - [ ] S24: instalar el release v2 cuando tenga batería: `adb -s R5CXA1DRLAF install -r release/CEOSMOS-entrega-v2-release-llave-depuracion.apk`.
 - [ ] Consolidación de la memoria — **no se hace** hasta cerrar las casillas de arriba.
 
