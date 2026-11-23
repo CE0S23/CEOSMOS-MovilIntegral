@@ -51,6 +51,7 @@ actualizado: 2026-11-19
   - [x] Recorrido en S24 / Tab S9 hecho por la tarde (ver [[12 - Mapa de funciones]]); quedan agente y usuarios de Soporte (contraseñas del usuario).
 
 - **22/11/2026** — **Blindaje completado** → [[13 - Blindaje]]: usabilidad, funcionalidad, redes y seguridad medidas; API endurecida en producción (Red Box 27/27 en prod, 13 + 37 en local); Reloj, TV y Soporte probados de punta a punta (reconexión BLE corregida); incidente del usuario torpe corregido; 331/331 pruebas; `entrega-v4` (1.2.1) en los dos equipos.
+- **22/11/2026 (noche)** — Documentación final: Reporte de avances actualizado a 1.2.1 y Manual de usuario nuevo (`Reporte de avances - CEOSMOS revicion.docx/.pdf`, `Manual de usuario - CEOSMOS.docx/.pdf`).
 
 ## Estado de las tareas pedidas (18/11)
 - [x] Tarea 1 · Actividades 4–12 validadas (P7 completada el 19/11).
