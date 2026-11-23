@@ -37,6 +37,7 @@ actualizado: 2026-11-22
 
 - [ ] **Blindaje:** regla de Firestore de `mesaayuda-p7/dispositivos` (legible sin sesión, medido 22/11 noche): exigir `request.auth != null`; la hace el dueño de ese proyecto. → [[13 - Blindaje]]
 - [ ] **Blindaje:** cerrar las sesiones de prueba de Soporte (S24: admin · Tab S9: agente).
+- [ ] **Manual de usuario:** con el S24 y la Tab S9 conectados, capturas reales (1.2.1) de Explorar, Perfil y Administración para reemplazar las descripciones en texto (`Manual de usuario - CEOSMOS.docx`, capturas en `evidencias/manual/`).
 
 - [ ] **Blindaje · F-14:** registro real en producción (no verificado: requiere acceso al correo del código).
 
