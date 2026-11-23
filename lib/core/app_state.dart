@@ -59,7 +59,7 @@ class AppState extends ChangeNotifier {
     return AppState(
       auth: AuthRepository(api, SecureTokenStore()),
       data: CeosmosRepository(api),
-      ble: EcosistemaBle(transporte: BleTransporteFbp(), pines: AlmacenPinSeguro()),
+      ble: EcosistemaBle(transporte: BleTransporteFbp(), pines: AlmacenPinSeguro(), latido: const Duration(seconds: 5)),
     );
   }
 

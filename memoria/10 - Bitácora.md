@@ -50,9 +50,7 @@ actualizado: 2026-11-19
   - [x] 216/216 pruebas, analyze limpio, companion verde, capturas en `evidencias/reestructura/`.
   - [x] Recorrido en S24 / Tab S9 hecho por la tarde (ver [[12 - Mapa de funciones]]); quedan agente y usuarios de Soporte (contraseñas del usuario).
 
-- **22/11/2026** — Blindaje (etapas 1 y 2, ver [[13 - Blindaje]]): errores globales, accesibilidad, barrido de 91 tamaños y ventana flotante real (cómoda desde 260 × 440 dp), usuario torpe por bloques en copia aislada (S24 5 000 OK; Tab S9: 4 desbordes del diálogo de biblioteca corregidos), confirmación al borrar, TLS con mensaje claro, red mínima y geografía medidas, gitleaks, Red Box ampliado 37/37 con 6 correcciones en la API (rama `blindaje-api`, sin promover), mapa MASVS. 319/319 pruebas. Release v2 (llave de depuración) instalado en la Tab S9; S24 sin batería.
-
-- **22/11/2026 (tarde)** — Cierre del blindaje (parcial): **incidente**: el usuario torpe había desinstalado la app real del S24 (aislamiento no aplicado; causa reproducida y corregida con marcador + aapt2 + alarma). Release v3 1.2.0 (producción por defecto) en el S24; `arreglo_rapido` sin `adb monkey` y con verificación de producción (164 s). Dependencias auditadas. Regiones de Firestore confirmadas. API: secretos sin aplicar y sin despliegue (decisión del usuario: después). Tag `entrega-v3`.
+- **22/11/2026** — **Blindaje completado** → [[13 - Blindaje]]: usabilidad, funcionalidad, redes y seguridad medidas; API endurecida en producción (Red Box 27/27 en prod, 13 + 37 en local); Reloj, TV y Soporte probados de punta a punta (reconexión BLE corregida); incidente del usuario torpe corregido; 331/331 pruebas; `entrega-v4` (1.2.1) en los dos equipos.
 
 ## Estado de las tareas pedidas (18/11)
 - [x] Tarea 1 · Actividades 4–12 validadas (P7 completada el 19/11).

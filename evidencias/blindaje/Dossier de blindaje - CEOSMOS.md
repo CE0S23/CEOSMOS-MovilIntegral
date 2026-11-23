@@ -1,10 +1,10 @@
 # Dossier de blindaje · CEOSMOS Integral
 
-Versión de entrega `entrega-v2` · 22/11/2026 (actualiza la del 21/11) · Samsung Galaxy S24 (Android 17) y Galaxy Tab S9 (Android 16).
+Versión de entrega `entrega-v4` (app 1.2.1) · 22/11/2026, cierre final (actualiza la del 21/11) · Samsung Galaxy S24 (Android 17) y Galaxy Tab S9 (Android 16).
 
 Regla de este documento: lo **medido** se distingue de lo **inferido**, y lo que no se hizo se dice. El 22/11 se ejecutaron las partes medibles de las etapas 1 y 2: robustez, accesibilidad, barrido de tamaños, red mínima, geografía, Red Box ampliado, secretos y mapa MASVS. Lo que sigue sin hacer está en §6.
 
-**Novedades del 22/11 (todas con prueba de regresión):** manejo global de errores con aviso amigable; áreas táctiles de 48 dp y fuente al 200 % sin desbordes; barra lateral desplazable en ventanas anchas y bajas; diálogo «Agregar a mi biblioteca» desplazable y confirmación antes de borrar (los dos hallados por el usuario torpe en la tablet); mensaje claro ante un certificado no confiable; 6 correcciones de seguridad en la API (rama `blindaje-api`, pendiente de promover a producción).
+**Novedades del 22/11 (todas con prueba de regresión):** manejo global de errores con aviso amigable; áreas táctiles de 48 dp y fuente al 200 % sin desbordes; barra lateral desplazable en ventanas anchas y bajas; diálogo «Agregar a mi biblioteca» desplazable y confirmación antes de borrar (los dos hallados por el usuario torpe en la tablet); mensaje claro ante un certificado no confiable; 6 correcciones de seguridad en la API, **en producción desde el 22/11** (PR CEOSMOSV2 #1, Red Box de producción 27/27); reconexión BLE sin PIN corregida tras la prueba de punta a punta (§9).
 
 ## 1. Resumen ejecutivo y alcance
 
@@ -14,11 +14,13 @@ CEOSMOS Integral es una app Flutter de concentración, calma e inspiración cone
 
 | Indicador | Resultado | Tipo |
 |---|---|---|
-| Pruebas de Flutter | **319/319** (`flutter test`; 217 el 21/11 + barrido de 91 tamaños, accesibilidad, errores, TLS, doble toque y biblioteca), análisis estático sin avisos | medido |
+| Pruebas de Flutter | **331/331** (`flutter test`; 217 el 21/11 + barrido de 91 tamaños, accesibilidad, errores, TLS, doble toque, biblioteca, scripts y reconexión BLE), análisis estático sin avisos | medido |
 | Pruebas de Kotlin | Reloj, TV y Companion: 14/14 por app más lint sin errores | medido |
 | Cobertura de líneas (toda `lib/`) | **52.9 %** (3 074 / 5 814, medida el 21/11); núcleo `core`/`data`/`domain` 78.9 % (P11) | medido |
 | Usuario torpe dentro de la app | S24: 5 000 acciones, 0 errores, 0 crashes, 0 ANR. Tab S9: 5 000 acciones, 0 crashes, 0 ANR, 4 desbordes → corregidos y verificados (2 100 acciones con la misma semilla, 0 errores) | medido |
-| Red Box de la API (local) | **13/13** + ampliado **37/37** (27/37 antes de corregir la API) | medido |
+| Red Box de la API | Local: **13/13** + ampliado **37/37** (27/37 antes de corregir). Producción (22/11, sin credenciales, ≤ 4 req/s): **27/27** | medido |
+| Reloj y TV de punta a punta (S24 + Tab S9) | 6 de 7 pruebas aprobadas en hardware; la reconexión sin PIN falló y se corrigió (v4); el tercer dispositivo, no verificado en hardware | medido |
+| Soporte con roles (F-05) | admin, agente y usuario1: ticket, chat, adjunto, asignación y presencia aprobados; usuario2 no verificado | medido |
 | Red mínima | API: 5 kbps o RTT 4 s dentro del timeout de 15 s; Firebase: 5 kbps, falla con RTT 4 s | medido |
 | Geografía | API 200 desde los 6 continentes; Madrid 373 ms | medido |
 | Tamaño mínimo funcional | Barrido: sin desbordes desde **240 dp** de ancho (91 tamaños). Ventana flotante real: cómodo desde **260 × 440 dp**, sin errores hasta 220 × 380 dp | medido |
@@ -74,12 +76,12 @@ Capturas: `evidencias/blindaje/ventana/` y `evidencias/reestructura/dispositivos
 | F-02 | Validación de campos en Acceso (vacíos, correo inválido) | prueba automática | aprobado |
 | F-03 | Sesión de enfoque: iniciar, pausar, continuar y terminar | prueba automática | aprobado |
 | F-04 | Soporte como administrador: menú de asignados, todos y dispositivos; ⓘ; Atrás | S24 | aprobado (21/11) |
-| F-05 | Soporte con el agente y los dos usuarios | — | **no verificado**: hay que escribir las contraseñas de las cuentas de P7 en el equipo (lo hace el usuario; el asistente no introduce contraseñas en servicios de producción) |
+| F-05 | Soporte con roles (22/11 noche; el usuario escribió las contraseñas) | S24 + Tab S9 | **aprobado** con admin, agente y usuario1 (§9); usuario2 **no verificado** (mismo rol que usuario1) |
 | F-06 | Incidencias en tiempo real: alta en la tablet visible al instante en el S24 | S24 + Tab S9 | aprobado (21/11) |
 | F-07 | Reportes compartidos (Flutter y Android) conectados a la nube | S24 | aprobado |
 | F-08 | Mis incidencias y acceso: solo lo propio | S24 | aprobado |
 | F-09 | Mensajería entre equipos por Wi-Fi | S24 → Tab S9 | aprobado (21/11) |
-| F-10 | Reloj y TV conectados a la vez por BLE, con lecturas en vivo | S24 + Tab S9 | aprobado (con un reintento por error transitorio de GATT) |
+| F-10 | Reloj y TV conectados a la vez por BLE, con lecturas en vivo | S24 + Tab S9 | aprobado; de punta a punta el 22/11 (§9) |
 | F-11 | Seguridad de la cuenta, Directorio de alumnos y Citas de bienestar abren desde Perfil | S24 | aprobado |
 | F-12 | Ningún texto visible contiene «Práctica», «P» + número, «Examen» ni «Eval.» | prueba automática | aprobado (`navegacion_funciones_test.dart`) |
 | F-13 | Atrás vuelve a la sección y no cierra la app (Android 16/17) | prueba + equipos | aprobado |
@@ -162,7 +164,7 @@ El mapa completo control por control (MASVS v2 y Top 10) está en `evidencias/bl
 | El login revelaba si la cuenta existe | inferido | Mismo mensaje siempre |
 | Certificado no confiable → excepción cruda en la app | — | Mensaje claro (`tls_rechazo_test.dart`) |
 
-Las 6 correcciones de la API están en la rama `blindaje-api` (repo CEOSMOSV2, commit `605776c`): 79/79 pruebas, el preview de Vercel compiló en verde, pero está protegido con el inicio de sesión de Vercel y **no se pudo probar**. **Producción aún no las tiene.** Rollback: volver a promover el despliegue anterior (`a4d8d6a`).
+Las 6 correcciones de la API se fusionaron a producción el 22/11 (PR CEOSMOSV2 #1, merge `c07b01f`; 79/79 pruebas; despliegue «Ready»). **Verificado en producción** (`scripts/redbox_produccion.sh`, 27/27): CORS ajeno sin 500, JSON anidado sin sesión sin 500, tokens HS512 o de otra forma → 401, `alg:none` cortado por el firewall de Vercel (403), mensaje de login genérico, CSP presente, 429 por fuerza bruta. Lo que exige iniciar sesión (IDOR, `javascript:` en medios, rol) **no se repitió en producción**: el asistente no escribe contraseñas en servicios de producción; queda cubierto en local (13/13, 37/37) y en Jest. Rollback sin usar: redesplegar `a4d8d6a` con las variables actuales (no promover el despliegue viejo, que guarda los secretos anteriores).
 
 **Firestore sin sesión (22/11, medido):** lecturas y escrituras rechazadas (403) en `practica7-8` y `reportes-movil`; en `mesaayuda-p7`, `turnos` y `contadores` dan 403, pero **`dispositivos` se lee sin sesión** (3 documentos de presencia: nombre, modelo, rol y última conexión). CEOSMOS no usa esa colección (la presencia de Soporte vive en `practica7-8/dispositivos`, que sin sesión da **403**, medido el 22/11). La regla la debe ajustar el dueño del proyecto `mesaayuda-p7` (otra cuenta de Google; la sesión del usuario no tiene acceso).
 
@@ -178,8 +180,8 @@ Las 6 correcciones de la API están en la rama `blindaje-api` (repo CEOSMOSV2, c
 
 | Límite o riesgo | Impacto | Mitigación / estado |
 |---|---|---|
-| Correcciones de la API sin desplegar y secretos sin aplicar | Producción sigue en el despliegue del 12/11 (`a4d8d6a`): sin redeploy, Vercel sigue usando el `JWT_SECRET` y la conexión a Neon anteriores, así que los tokens previos siguen siendo válidos (inferido). Siguen el 500 ante CORS ajeno y JSON anidado y la falta de CSP | Tarea del usuario: guardar los secretos nuevos en Production y desplegar la rama `blindaje-api` (79/79, 37/37 en local) |
-| **Incidente 22/11: la app real del S24 se desinstaló** | El usuario torpe se corrió con la variable `ORG_GRADLE_PROJECT_ceosmosMonkey`, que no llega a Gradle (reproducido). `flutter test` instaló el paquete real y lo desinstaló al terminar (S24: `firstInstallTime` 22/11 14:03): se perdieron los datos locales (sesión, SQLite, emparejamiento del Reloj y la TV). Los datos en la nube no se afectaron | Corregido: marcador `android/app/.ceosmos_monkey`, comprobación del paquete con aapt2 antes de correr y alarma si la app real se reinstala (`scripts/mono_bloques.ps1`, `test/blindaje_scripts_test.dart`). Tablet: probablemente igual (no verificado hasta reconectarla) |
+| Pruebas con sesión de la API no repetidas en producción | IDOR, medios `javascript:` y rol solo se midieron en local | Mismo código desplegado (79/79 Jest, 37/37 local); producción verificada sin credenciales (27/27). Secretos rotados por el usuario el 22/11: las sesiones anteriores quedaron invalidadas (los dos equipos volvieron a Acceso) |
+| **Incidente 22/11: la app real del S24 se desinstaló** | El usuario torpe se corrió con la variable `ORG_GRADLE_PROJECT_ceosmosMonkey`, que no llega a Gradle (reproducido). `flutter test` instaló el paquete real y lo desinstaló al terminar (S24: `firstInstallTime` 22/11 14:03): se perdieron los datos locales (sesión, SQLite, emparejamiento del Reloj y la TV). Los datos en la nube no se afectaron | Corregido: marcador `android/app/.ceosmos_monkey`, comprobación del paquete con aapt2 antes de correr y alarma si la app real se reinstala (`scripts/mono_bloques.ps1`, `test/blindaje_scripts_test.dart`). Tablet: **confirmado**, su app real también se reinstaló (22/11 14:49). Desde entonces todo se instala encima con `install -r` (v3 y v4 conservaron la sesión) |
 | `mesaayuda-p7/dispositivos` legible sin sesión | Se ven 3 registros de presencia (nombre, modelo, rol, última conexión) | Exigir `request.auth != null` en la regla (tarea del usuario) |
 | Usuario torpe: 5 000 acciones por equipo, no 20 000 | Menos cobertura aleatoria que la planeada | El S24 se quedó sin batería; el usuario decidió no repetir lo ya probado. Los hallazgos de la tablet se corrigieron y se verificaron con la misma semilla |
 | Usabilidad con personas reales y recorrido con sesión en el equipo | Sin datos de usuarios reales; el recorrido con sesión del 22/11 no se hizo (la tablet estaba en Acceso y no se usaron credenciales) | Barrido automático, accesibilidad y usuario torpe; recorrido manual del 21/11 |
@@ -187,32 +189,33 @@ Las 6 correcciones de la API están en la rama `blindaje-api` (repo CEOSMOSV2, c
 | La entrega usa el APK firmado con la llave de depuración | Cualquiera con esa llave podría firmar una actualización | El APK con llave propia está listo (`release/CEOSMOS-entrega-v1-release.apk`), pero requiere registrar su SHA-1 en Firebase e instalarlo exige desinstalar (se pierden datos). Riesgo aceptado: decisión pendiente del usuario |
 | SQLite y SharedPreferences sin cifrar | Datos de funciones legibles con acceso root | No guardan credenciales; el token está en el Keystore |
 | Sin ofuscación ni detección de root | Ingeniería inversa más fácil | Dart se compila AOT a código nativo; aceptado para una app académica |
-| Rotación de `JWT_SECRET` y de la contraseña de Neon pendiente | Credenciales que estuvieron expuestas siguen vigentes | Tarea del usuario (08 - Pendientes) |
 | Clave de Firebase de `mesaayuda` sin restringir | Uso de la cuota por terceros | Restringir por paquete + SHA (tarea del usuario) |
 | Limitador de la API en memoria por instancia | En Vercel cada instancia cuenta por su lado | Upstash Redis (mejora futura) |
 | Mensajería entre equipos en texto plano en la LAN | Otra persona en la misma Wi-Fi podría leerla | Aceptado: es solo de demostración y en red local |
 | BLE: autenticación con reto + HMAC y PIN que nunca viaja; la carga útil no va cifrada | Se podría escuchar el tráfico de lecturas (pulso, pasos, estado de la TV) a pocos metros | Riesgo aceptado: el cifrado AES-256-GCM no se hizo porque tocaba las 3 apps a la vez justo antes de la entrega |
 | Errores transitorios de GATT (`ANDROID_SPECIFIC_ERROR`) | La primera conexión a veces falla | Reintento manual o automático; documentado en la guía |
+| Al abrir CEOSMOS, Reloj y TV no se conectan solos | Hay que pulsar «Conectar» (no pide el PIN: queda guardado) | Comportamiento actual; la reconexión automática cubre las caídas durante el uso |
+| Tercer central sin PIN | No se probó con un tercer equipo real | Pruebas automáticas + registro real del 22/11: «Escritura rechazada: central no autenticado» |
 
 ## 7. Pruebas
 
 | Conjunto | Cantidad | Cómo reproducir |
 |---|---|---|
-| Flutter (unidad, widgets, caja negra y blanca, BLE, funciones, accesibilidad, tamaños, TLS, CI) | 319 | `flutter test` |
+| Flutter (unidad, widgets, caja negra y blanca, BLE, funciones, accesibilidad, tamaños, TLS, CI) | 331 | `flutter test` |
 | Cobertura | 52.9 % de líneas (núcleo 78.9 %), medida el 21/11 | `flutter test --coverage` |
 | Kotlin (Reloj, TV, Companion) | 14 por app más lint | `cd companion; ./gradlew test lint` |
 | Usuario torpe en el teléfono | 5 000 acciones por equipo + verificación de 2 100 en la tablet | `powershell -File scripts\mono_bloques.ps1 -Serial <serial>` (copia aislada `.monkey`) |
-| Red Box de la API | 13 + 37 ampliado | `scripts\dev_backend.ps1`, luego `bash scripts/redbox_api.sh` y `bash scripts/redbox_ampliado.sh` |
+| Red Box de la API | 13 + 37 ampliado (local) + 27 en producción sin credenciales | `scripts\dev_backend.ps1`, luego `bash scripts/redbox_api.sh` y `bash scripts/redbox_ampliado.sh`; producción: `bash scripts/redbox_produccion.sh` |
 | API (Jest) | 79 | `npx jest` en `ceosmos-api` |
 | Red mínima | 65 mediciones | `bash scripts/medir_red.sh` |
 | Sin texto académico visible | 1 recorrido | `flutter test test/navegacion_funciones_test.dart` |
-| Scripts de operación (marcador, sin `monkey`, verificación de producción) | 4 | `flutter test test/blindaje_scripts_test.dart` |
+| Scripts de operación (marcador, sin `monkey`, verificación de producción) | 5 | `flutter test test/blindaje_scripts_test.dart` |
 | CI | Cada push y pull request | GitHub Actions `CI` (sin secretos ni producción) |
 
 ## 8. Plan de contingencia
 
 - **Script:** `scripts/arreglo_rapido.sh <área>` (o `.ps1`). Ejecuta el análisis y las pruebas del área, compila en modo debug, instala en los dos equipos sin borrar datos y muestra el logcat de la app, cronometrando cada paso.
-- **Volver atrás:** `git checkout entrega-v2` (o `entrega-v1`), o reinstalar `release\CEOSMOS-entrega-v2-release-llave-depuracion.apk` (se instala encima sin perder datos; misma firma que la v1).
+- **Volver atrás:** `git checkout entrega-v3` (o anteriores), o reinstalar `release\CEOSMOS-entrega-v3-release-llave-depuracion.apk` (se instala encima sin perder datos; misma firma). La entrega es `release\CEOSMOS-entrega-v4-release-llave-depuracion.apk` (1.2.1).
 - **Verificación automática tras instalar (22/11):** el paso 6 del script (`scripts/verificar_produccion.ps1` o `.sh`) intenta entrar con un correo inexistente y espera «Correo o contraseña incorrectos.»: prueba que la app instalada llega a producción. Ciclo completo medido en el S24 con el área `login`: **164 s** (análisis 30, pruebas 18, build 35, instalación 42, logcat 20, verificación 18). El release usa producción aunque se compile sin `--dart-define` (`lib/core/config.dart`, `test/config_api_test.dart`).
 - **Guía de fallos:** `evidencias/blindaje/Guia de fallos rapidos.md`.
 - **Lista previa:** `evidencias/blindaje/Lista de verificacion previa.md`.
@@ -226,3 +229,29 @@ Las 6 correcciones de la API están en la rama `blindaje-api` (repo CEOSMOSV2, c
 | F3 · permiso de Bluetooth mal manejado | `ble` | sí | 26 s | 86 s | 1.9 min |
 
 El ciclo medido no incluye el tiempo humano de escribir el arreglo: en el ensayo, la corrección fue restaurar el código. Con 2 minutos por ciclo quedan unos 15 minutos para diagnosticar y escribir el cambio dentro del margen de 20. Detalle en `evidencias/blindaje/ensayo/`. El código quedó idéntico al terminar (verificado con `git diff`).
+
+\pagebreak
+
+## 9. Cierre final en hardware (22/11, noche)
+
+Equipos: S24 como central y Tab S9 con las apps Reloj y TV. Los dos con CEOSMOS **1.2.1** (`entrega-v4`, instalada encima: la sesión se conservó). Evidencias en `evidencias/blindaje/final/`.
+
+**Producción.** Antes de fusionar: `/health` 200, sin token 401, login con correo inexistente → «Correo o contraseña incorrectos.» en los dos equipos, despliegue «Ready» y en los logs «Prisma connected to Neon» sin errores de base de datos ni de autenticación. Tras la rotación de secretos las sesiones anteriores se invalidaron; el usuario volvió a entrar y los dos equipos cargaron sus datos («Sincronizado»). Después de fusionar `blindaje-api` las sesiones siguieron válidas. `verificar_produccion` fallaba en la tablet aunque la app sí llegaba (espera fija de 6 s y la «ñ» mal decodificada por la consola): corregido con prueba de regresión.
+
+| # | Reloj y TV de punta a punta | Resultado |
+|---|---|---|
+| 1 | Conexión con PIN al Reloj y a la TV, pulso en vivo | aprobado (63–87 bpm en el S24) |
+| 2 | Notificación del S24 al Reloj | aprobado (aparece y vibra) |
+| 3 | «Siguiente» en la TV inicia la sesión en el S24; pausa desde la TV y desde el Reloj | aprobado |
+| 4 | Reconexión sin PIN tras cerrar y abrir las apps Reloj y TV | **falló en 1.2.0**: el S24 seguía en «Conectado» con lecturas congeladas (el enlace físico no cae porque las dos apps comparten el Bluetooth de la tablet). Corregido en 1.2.1: latido cada 5 s, reautenticación tras 2 envíos fallidos y vigilancia del silencio del Reloj (4 pruebas en `test/ble/ecosistema_ble_test.dart`). Repetido: los dos se reautentican solos en unos 4 s, sin PIN |
+| 5 | Bluetooth del S24 apagado y encendido | aprobado: «Reconectando…» y los dos vuelven en ≤ 8 s sin cancelarse; Bluetooth encendido al final |
+| 6 | Permiso de Bluetooth denegado y concedido | aprobado: «Permiso de Bluetooth denegado. Actívalo en Ajustes…», sin cierre; concedido de nuevo, reconecta |
+| 7 | Tercer dispositivo sin PIN | **no verificado en hardware** (no hay un tercer central); pruebas automáticas y registro real «Escritura rechazada: central no autenticado» |
+
+| F-05 · Soporte con roles (usuario2 no verificado: mismo rol que usuario1) | Resultado |
+|---|---|
+| Crear ticket (usuario1) | aprobado (REP901) |
+| Mensajes en tiempo real | admin ↔ agente 2 s; usuario1 → admin 3 s. El usuario recibe con «Actualizar» (diseño de la práctica) |
+| Adjunto ≤ 300 KB | aprobado: 203 KB enviado y recibido; 434 KB rechazado |
+| Asignación agente ↔ admin | aprobado: «Pasar al administrador» y «Devolver al agente», 3 s cada uno |
+| Presencia | aprobado (conectado/desconectado por rol) |

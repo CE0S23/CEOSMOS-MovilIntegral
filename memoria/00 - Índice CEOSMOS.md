@@ -38,7 +38,7 @@ en el código, en las pruebas automatizadas o en los dispositivos (Samsung S24 y
 - [[08 - Pendientes]] — **todo lo que falta**, con enlace a su nota.
 - [[09 - Decisiones técnicas]]
 - [[10 - Bitácora]]
-- [[13 - Blindaje]] — blindaje antes de la evaluación (etapa 3 hecha; etapas 1-2 sin registro; no consolidado).
+- [[13 - Blindaje]] — blindaje antes de la evaluación: completado el 22/11 (registro único).
 - [[12 - Mapa de funciones]] — cada práctica como función de la app: ubicación, rol, origen, código y BD; botón ⓘ.
 - [[11 - Sistema de diseño]] — paleta guinda/cian, reglas de contraste, tipografía y escala (app, prácticas, Reloj y TV).
 - [[Notas varias]]

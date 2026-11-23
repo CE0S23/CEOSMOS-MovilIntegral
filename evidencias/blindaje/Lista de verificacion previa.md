@@ -28,8 +28,8 @@ Revísala 30 minutos antes. Cada punto tiene el comando o la pantalla que lo com
 
 ## Servicios
 - [ ] API de producción: `200` en `/api/health` y `401` en `/api/devices` sin token.
-- [ ] **La app instalada llega a producción** (en cada equipo, con la app en Acceso): `powershell -File scripts\verificar_produccion.ps1 -Serial <serial>` debe decir «VERIFICACION OK» (escribe un correo inexistente y espera «Correo o contraseña incorrectos.»; tarda ~18 s). Si dice FALLÓ: reinstala `release\CEOSMOS-entrega-v3-release-llave-depuracion.apk`.
-- [ ] Versión igual en los dos equipos: `adb -s <serial> shell dumpsys package com.ceosmos.ceosmos_movil_integral | findstr versionName` → `1.2.0`.
+- [ ] **La app instalada llega a producción** (en cada equipo, con la app en Acceso): `powershell -File scripts\verificar_produccion.ps1 -Serial <serial>` debe decir «VERIFICACION OK» (escribe un correo inexistente y espera «Correo o contraseña incorrectos.»; tarda ~18 s). Si dice FALLÓ: reinstala `release\CEOSMOS-entrega-v4-release-llave-depuracion.apk`.
+- [ ] Versión igual en los dos equipos: `adb -s <serial> shell dumpsys package com.ceosmos.ceosmos_movil_integral | findstr versionName` → `1.2.1`.
 - [ ] Reloj y TV **emparejados de nuevo** en el S24 (el 22/11 se perdió su emparejamiento al reinstalarse la app).
 - [ ] Firestore: Reportes compartidos muestra un UID y «Consultar desde servidor» responde.
 - [ ] Citas de bienestar (solo si se va a mostrar): `scripts\dev_backend.ps1` levantado y `adb reverse tcp:3443 tcp:3443`.

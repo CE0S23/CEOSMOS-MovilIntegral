@@ -41,19 +41,11 @@ actualizado: 2026-11-19
 - [x] P10: suplantación pura de propietario, lectura/modificación/eliminación ajena y acceso sin sesión rechazados por las reglas de Firestore.
 - [x] P7: usuario2 no puede leer el ticket de usuario1; la cuenta debe tener documento de rol y coincidir con la URL; la API key restringida a paquete + SHA-1 sigue funcionando.
 
-## Blindaje (22/11)
-- [x] **319/319** pruebas Flutter (+102: barrido de 91 tamaños, accesibilidad 48 dp y fuente 200 %, errores globales, TLS, doble toque, biblioteca); analyze limpio.
-- [x] Red Box ampliado `scripts/redbox_ampliado.sh`: 27/37 → **37/37** tras 6 correcciones de la API (rama `blindaje-api` de CEOSMOSV2, 79/79 Jest). **Producción sin promover.**
-- [x] Firestore sin sesión: 403 salvo `mesaayuda-p7/dispositivos` (legible, pendiente del usuario).
-- [x] Certificado no confiable rechazado con mensaje claro (`test/tls_rechazo_test.dart`).
-- [x] gitleaks sobre historial y árbol: sin credenciales de servidor (`evidencias/blindaje/secretos_gitleaks.txt`).
-- [x] Red mínima y geografía medidas (`evidencias/blindaje/red/`). Usuario torpe: S24 5 000 sin errores; Tab S9 5 000 → 4 desbordes corregidos y verificados.
-- Mapa completo: `evidencias/blindaje/masvs.md` · [[13 - Blindaje]]
-
-### Cierre (22/11, tarde)
-- [x] **326/326** pruebas Flutter (+ `config_api_test`, `blindaje_scripts_test`); companion `./gradlew test lint` en verde con `org.json` 20260719; API 79/79.
-- [x] Dependencias: OSV/npm (`evidencias/blindaje/dependencias.md`): 0 en lo distribuido.
-- [ ] API en producción sin desplegar (Red Box contra producción **no verificado**). F-05 **no verificado** (contraseñas).
+## Blindaje (21–22/11)
+- [x] **331/331** pruebas Flutter; API 79/79; companion test + lint; CI verde.
+- [x] Red Box 13/13 + 37/37 (local) y **27/27 en producción** sin credenciales (`scripts/redbox_produccion.sh`); las 6 correcciones de la API están en producción.
+- [x] Reloj y TV de punta a punta en S24 + Tab S9 (6/7; reconexión sin PIN corregida con latido BLE, 4 pruebas de regresión); F-05 con admin, agente y usuario1.
+- Resumen, cifras, límites y no verificados: [[13 - Blindaje]] · `evidencias/blindaje/masvs.md`
 
 ## Riesgos que quedan (con mitigación)
 - [ ] APK firmado con llave de depuración → crear keystore propio (ver [[08 - Pendientes]]).

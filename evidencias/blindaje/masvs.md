@@ -7,7 +7,7 @@ Estado: **cumple** (con evidencia) · **parcial** · **riesgo aceptado** · **no
 |---|---|---|
 | STORAGE-1 Datos sensibles en almacenamiento seguro | cumple | JWT en `FlutterSecureStorage` (Keystore): `lib/data/token_store.dart`. SQLite y SharedPreferences guardan datos de funciones (sin credenciales) **sin cifrar**: riesgo aceptado |
 | STORAGE-2 Sin fugas (registros, respaldos) | cumple | `allowBackup="false"`; 0 `debugPrint` con token o contraseña (grep); errores globales sin datos sensibles (`lib/core/errores_globales.dart`) |
-| CRYPTO-1/2 Criptografía fuerte y bien gestionada | parcial | TLS 1.2+/HSTS; HMAC-SHA256 en el reto BLE; JWT solo HS256 (rama `blindaje-api`). **BLE sin cifrado de carga útil**: riesgo aceptado |
+| CRYPTO-1/2 Criptografía fuerte y bien gestionada | parcial | TLS 1.2+/HSTS; HMAC-SHA256 en el reto BLE; JWT solo HS256 (en producción). **BLE sin cifrado de carga útil**: riesgo aceptado |
 | AUTH-1 Autenticación en el servidor | cumple | JWT + sesión en BD; Red Box RB-01..03, RB-13..20, RB-47 (`redbox_api_entrega.txt`, `redbox_ampliado.txt`) |
 | AUTH-2 Autorización por recurso y rol | cumple | IDOR → 403/404 (RB-05..07, 33, 34); USER en `/admin` y `/users` → 403 (RB-11, 35, 36); Firestore con reglas por propietario, salvo `mesaayuda-p7/dispositivos` (ver abajo) |
 | AUTH-3 Sesión: expiración, cierre, reutilización | cumple | Token expirado → 401 (RB-14); tras logout → 401 (RB-13, RB-47) |
@@ -33,7 +33,7 @@ Estado: **cumple** (con evidencia) · **parcial** · **riesgo aceptado** · **no
 | M5 Comunicación insegura | cumple | NETWORK-1/2. Mensajería TCP en LAN en texto plano: riesgo aceptado (demostración local) |
 | M6 Privacidad | parcial | ver PRIVACY |
 | M7 Protección del binario | riesgo aceptado | AOT nativo; sin ofuscación |
-| M8 Configuración incorrecta | cumple | `allowBackup=false`, release no depurable, cabeceras: HSTS, nosniff, DENY, referrer; CSP y CORS sin 500 en la rama `blindaje-api` |
+| M8 Configuración incorrecta | cumple | `allowBackup=false`, release no depurable, cabeceras: HSTS, nosniff, DENY, referrer; CSP y CORS sin 500 en producción (medido 22/11) |
 | M9 Almacenamiento inseguro | cumple / aceptado | Token en Keystore; SQLite sin cifrar (sin credenciales) |
 | M10 Criptografía insuficiente | parcial | HMAC en BLE sin cifrado de carga útil (aceptado); JWT HS256 fijo |
 
@@ -48,4 +48,4 @@ Estado: **cumple** (con evidencia) · **parcial** · **riesgo aceptado** · **no
 | 6 | El login revelaba si la cuenta existe («N intentos restantes») | API `auth.service.ts` | `p12-auth.spec.ts`, RB-44 |
 | 7 | Certificado no confiable → excepción cruda en la app | `lib/data/api_client.dart` | `test/tls_rechazo_test.dart` |
 
-Las correcciones de la API están en la rama `blindaje-api` del repo CEOSMOSV2 (commit 605776c), con 79/79 pruebas y Red Box 13/13 + 37/37 en local. **Producción todavía no las tiene**: hay que promoverlas (tarea del usuario). Rollback: volver a desplegar el commit anterior (`a4d8d6a`) o «Promote» del despliegue previo en Vercel.
+Las correcciones de la API están **en producción desde el 22/11** (PR CEOSMOSV2 #1, `c07b01f`): 79/79 pruebas, Red Box 13/13 + 37/37 en local y 27/27 en producción sin credenciales (`evidencias/blindaje/final/redbox_produccion.txt`). Rollback: redesplegar `a4d8d6a` con las variables actuales.

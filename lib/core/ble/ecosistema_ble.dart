@@ -78,6 +78,7 @@ class EcosistemaBle extends ChangeNotifier {
     this.maxReintentos = 6,
     this.duracionEscaneo = const Duration(seconds: 8),
     this.maxMensajesPorSegundo = 20,
+    this.latido,
   }) : pines = pines ?? AlmacenPinMemoria() {
     adaptador = transporte.adaptadorAhora;
     _subAdaptador = transporte.adaptador.listen(_alCambiarAdaptador);
@@ -87,6 +88,19 @@ class EcosistemaBle extends ChangeNotifier {
   final AlmacenPinBle pines;
   final Duration esperaBase, duracionEscaneo;
   final int maxReintentos, maxMensajesPorSegundo;
+
+  /// Cada cuánto se comprueba que el periférico sigue autenticado (null = sin latido).
+  /// Prueba final 22/11: con Reloj y TV en la MISMA tablet, cerrar y abrir la app Reloj
+  /// reinicia su servidor GATT sin que caiga el enlace físico (lo mantiene la TV). El
+  /// central seguía mostrando «Conectado» con lecturas congeladas y, sin escrituras,
+  /// nada revelaba el problema. El latido escribe si no hubo envío reciente y vigila el
+  /// silencio del Reloj; dos envíos fallidos seguidos (aunque el error no sea de
+  /// autorización) fuerzan una nueva autenticación con el PIN guardado.
+  final Duration? latido;
+  static const maxFallosEnvio = 2;
+  Timer? _temporizadorLatido;
+  final _fallosEnvio = <RolBle, int>{};
+  final _ultimoEnvioOk = <RolBle, DateTime>{};
 
   late AdaptadorBle adaptador;
   late final StreamSubscription<AdaptadorBle> _subAdaptador;
@@ -266,6 +280,9 @@ class EcosistemaBle extends ChangeNotifier {
         ..reintento = 0
         ..error = null;
       _ultimoEnviado.remove(rol);
+      _fallosEnvio.remove(rol);
+      e.ultimoDato = DateTime.now();
+      _asegurarLatido();
       _cambio();
       await enviar(rol, {'t': 'hello', 'name': 'CEOSMOS'});
       publicarSesion();
@@ -329,6 +346,45 @@ class EcosistemaBle extends ChangeNotifier {
     if (_disposed || _manual.contains(rol) || e.estado != EstadoEnlace.conectado) return;
     e.error = 'El ${rol.nombre} se reinició. Autenticando de nuevo…';
     unawaited(_soltar(enlace, rol).then((_) => _reconectar(rol)));
+  }
+
+  void _asegurarLatido() {
+    final l = latido;
+    if (l == null || _temporizadorLatido != null || _disposed) return;
+    _temporizadorLatido = Timer.periodic(l, (_) => comprobarEnlaces());
+  }
+
+  /// Latido: confirma que cada rol conectado sigue autenticado (ver [latido]).
+  @visibleForTesting
+  void comprobarEnlaces() {
+    final l = latido ?? const Duration(seconds: 10);
+    final ahora = DateTime.now();
+    final conectados = RolBle.values.where((r) => this[r].estado == EstadoEnlace.conectado).toList();
+    if (conectados.isEmpty) {
+      _temporizadorLatido?.cancel();
+      _temporizadorLatido = null;
+      return;
+    }
+    for (final rol in conectados) {
+      final enlace = _activos.values.where((a) => a.roles.contains(rol)).firstOrNull;
+      if (enlace == null) continue;
+      // El Reloj envía lecturas cada segundo: un silencio largo indica un servidor reiniciado.
+      final dato = this[rol].ultimoDato;
+      if (rol == RolBle.reloj && dato != null && ahora.difference(dato) > l * 3) {
+        _autorizacionPerdida(rol, enlace);
+        continue;
+      }
+      final ok = _ultimoEnvioOk[rol];
+      if (ok == null || ahora.difference(ok) >= l) unawaited(enviar(rol, {'t': 'hello', 'name': 'CEOSMOS'}));
+    }
+  }
+
+  void _falloEnvio(RolBle rol, _Enlace enlace) {
+    final n = (_fallosEnvio[rol] ?? 0) + 1;
+    _fallosEnvio[rol] = n;
+    if (n < maxFallosEnvio) return;
+    _fallosEnvio[rol] = 0;
+    _autorizacionPerdida(rol, enlace);
   }
 
   void _alPerder(String remoteId) {
@@ -428,12 +484,15 @@ class EcosistemaBle extends ChangeNotifier {
     _cola[rol] = (_cola[rol] ?? Future.value()).then((_) async {
       try {
         await enlace.conexion.escribir(rol.servicio, rol.aDispositivo, bytes);
+        _fallosEnvio[rol] = 0;
+        _ultimoEnvioOk[rol] = DateTime.now();
         ok.complete(true);
       } on FalloBle catch (f) {
         ok.complete(false);
-        if (f.autorizacion) _autorizacionPerdida(rol, enlace);
+        f.autorizacion ? _autorizacionPerdida(rol, enlace) : _falloEnvio(rol, enlace);
       } catch (_) {
         ok.complete(false);
+        _falloEnvio(rol, enlace);
       }
     });
     return ok.future;
@@ -482,6 +541,7 @@ class EcosistemaBle extends ChangeNotifier {
   @override
   void dispose() {
     _disposed = true;
+    _temporizadorLatido?.cancel();
     unawaited(_subAdaptador.cancel());
     for (final a in _activos.values.toList()) {
       for (final s in a.subs.values) {

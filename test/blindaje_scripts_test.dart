@@ -40,4 +40,18 @@ void main() {
     }
     expect(leer('scripts/verificar_produccion.ps1'), contains('Correo o contrase'));
   });
+
+  test('verificar_produccion espera el formulario en vez de una pausa fija (Tab S9, 22/11)', () {
+    final ps = leer('scripts/verificar_produccion.ps1');
+    expect(ps, isNot(contains('Start-Sleep -Seconds 6')));
+    expect(ps, contains('foreach (\$i in 1..10)'));
+    final sh = leer('scripts/verificar_produccion.sh');
+    expect(sh, isNot(contains('MainActivity" >/dev/null; sleep 6')));
+    expect(sh, contains('for i in 1 2 3 4 5 6 7 8 9 10'));
+    // El mensaje se reconoce aunque la consola decodifique mal la «ñ».
+    for (final s in [ps, sh]) {
+      expect(s, contains('Correo o contrase.{1,8}a incorrectos'));
+    }
+    expect(sh, contains('MSYS_NO_PATHCONV=1'));
+  });
 }

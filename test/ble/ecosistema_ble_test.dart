@@ -284,4 +284,57 @@ void main() {
     expect(ble[RolBle.reloj].estado, EstadoEnlace.conectado);
     expect(ble[RolBle.tv].estado, EstadoEnlace.conectado);
   });
+
+  // Prueba final 22/11 (S24 + Tab S9): cerrar y abrir la app Reloj en la misma tablet que
+  // la TV dejaba el central en «Conectado» con lecturas congeladas y sin reautenticar.
+  test('dos envíos fallidos seguidos (error que no es de autorización) → se reautentica', () async {
+    await ble.conectar(RolBle.reloj, pin: '123456');
+    tablet.autenticados.clear();
+    tablet.escrituraRota = true;
+    expect(await ble.notificarReloj('uno'), isFalse);
+    expect(ble[RolBle.reloj].estado, EstadoEnlace.conectado, reason: 'un fallo aislado no corta');
+    expect(await ble.notificarReloj('dos'), isFalse);
+    await esperarHasta(
+        () => tablet.autenticados.contains(RolBle.reloj) && ble[RolBle.reloj].estado == EstadoEnlace.conectado);
+    expect(tablet.autenticados, contains(RolBle.reloj));
+    expect(await ble.notificarReloj('tres'), isTrue);
+    expect(tablet.recibidos[RolBle.reloj]!.last['msg'], 'tres');
+  });
+
+  test('latido sin sesión en curso: detecta el servidor reiniciado y reautentica sin PIN', () async {
+    final b = EcosistemaBle(
+        transporte: radio,
+        pines: pines,
+        esperaBase: const Duration(milliseconds: 5),
+        latido: const Duration(milliseconds: 40));
+    addTearDown(b.dispose);
+    await b.conectar(RolBle.tv, pin: '123456');
+    tablet.autenticados.clear(); // la app TV se cerró y se abrió; nadie escribe nada
+    await esperarHasta(() => tablet.autenticados.contains(RolBle.tv) && b[RolBle.tv].estado == EstadoEnlace.conectado);
+    expect(tablet.autenticados, contains(RolBle.tv), reason: 'el latido escribió, lo rechazaron y reautenticó');
+    expect(pines.valores['ab0102ff'], '123456', reason: 'sin volver a pedir el PIN');
+  });
+
+  test('latido: el Reloj en silencio prolongado se reautentica aunque las escrituras no fallen', () async {
+    final b = EcosistemaBle(
+        transporte: radio,
+        pines: pines,
+        esperaBase: const Duration(milliseconds: 5),
+        latido: const Duration(milliseconds: 30));
+    addTearDown(b.dispose);
+    await b.conectar(RolBle.reloj, pin: '123456');
+    tablet.autenticados.clear();
+    tablet.silencioso = true; // las escrituras «pasan» pero no llega ninguna lectura
+    await esperarHasta(
+        () => tablet.autenticados.contains(RolBle.reloj) && b[RolBle.reloj].estado == EstadoEnlace.conectado);
+    expect(tablet.autenticados, contains(RolBle.reloj));
+  });
+
+  test('sin enlaces conectados el latido se detiene', () async {
+    final b = EcosistemaBle(transporte: radio, pines: pines, latido: const Duration(milliseconds: 20));
+    await b.conectar(RolBle.tv, pin: '123456');
+    await b.desconectar(RolBle.tv);
+    b.comprobarEnlaces();
+    b.dispose();
+  });
 }

@@ -2,3 +2,4 @@ ec838d1cfc454b85c8eaf563907cec9967ca10bbeaf70ec1a09c6f98b9b0f84f *release/CEOSMO
 8b94e8c49d4c387b980b038e77c478d086d6e4e82391592af780e74b1288f12e *release/CEOSMOS-entrega-v1-release.apk
 d1ebc2b3496cc888f36ffd5059e3663df2263d7d910a626d5b049de429b6fa91 *release/CEOSMOS-entrega-v2-release-llave-depuracion.apk
 affe5c678a3b69f5b24b505c5e976b8ab910a55979adf035d36295c94eb650f0 *release/CEOSMOS-entrega-v3-release-llave-depuracion.apk
+f17e6f919a178812e66bf976152811c61c8c8fee2b429f532ebb8851fbd9066e *release/CEOSMOS-entrega-v4-release-llave-depuracion.apk

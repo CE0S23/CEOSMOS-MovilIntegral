@@ -1,0 +1,56 @@
+11-22 19:22:12.386  6541  6541 I CeosmosCompanion: Anunciando servicio Reloj
+11-22 19:23:40.243 16645 15482 I CeosmosCompanion: Central conectado
+11-22 19:23:40.246  6541  6555 I CeosmosCompanion: Central conectado
+11-22 19:23:42.297 16645 15482 I CeosmosCompanion: MTU 517
+11-22 19:23:42.297  6541  6555 I CeosmosCompanion: MTU 517
+11-22 19:23:47.361  6541  6555 I CeosmosCompanion: Central desconectado
+11-22 19:23:47.362 16645 15482 I CeosmosCompanion: Central desconectado
+11-22 19:24:14.027  6541  6555 I CeosmosCompanion: Central conectado
+11-22 19:24:14.029 16645 15482 I CeosmosCompanion: Central conectado
+11-22 19:24:14.413 16645 15482 I CeosmosCompanion: MTU 517
+11-22 19:24:14.414  6541  6572 I CeosmosCompanion: MTU 517
+11-22 19:24:14.567  6541  6572 I CeosmosCompanion: Central autenticado para Reloj
+11-22 19:24:55.346 16645 15482 I CeosmosCompanion: Central autenticado para TV
+11-22 19:25:21.971  6541  6541 I CeosmosCompanion: CEOSMOS → Reloj: Notificacion
+11-22 19:25:47.049 16645 16645 I CeosmosCompanion: TV → CEOSMOS: next
+11-22 19:25:47.242  6541  6541 I CeosmosCompanion: CEOSMOS → Reloj: Notificacion
+11-22 19:26:36.843 16645 16645 I CeosmosCompanion: TV → CEOSMOS: toggle
+11-22 19:28:00.621  6541  6541 I CeosmosCompanion: Reloj → CEOSMOS: toggle
+11-22 19:28:29.111  8752  8780 I CeosmosCompanion: Central conectado
+11-22 19:28:29.158  8752  8752 I CeosmosCompanion: Anunciando servicio Reloj
+11-22 19:28:32.396  8857  8878 I CeosmosCompanion: Central conectado
+11-22 19:28:32.463  8857  8857 I CeosmosCompanion: Anunciando servicio TV
+11-22 19:30:53.529  8857  8878 I CeosmosCompanion: Escritura rechazada: central no autenticado
+11-22 19:30:56.595  8857  8878 I CeosmosCompanion: Central autenticado para TV
+11-22 19:48:29.126  8857  8907 I CeosmosCompanion: Central desconectado
+11-22 19:48:29.127  8752  8795 I CeosmosCompanion: Central desconectado
+11-22 19:49:14.643  8857  8873 I CeosmosCompanion: Central conectado
+11-22 19:49:14.643  8752  8779 I CeosmosCompanion: Central conectado
+11-22 19:49:15.061  8857  8873 I CeosmosCompanion: MTU 517
+11-22 19:49:15.063  8752  8779 I CeosmosCompanion: MTU 517
+11-22 19:49:15.199  8752  8779 I CeosmosCompanion: Central autenticado para Reloj
+11-22 19:49:29.604  8857  8873 I CeosmosCompanion: Central autenticado para TV
+11-22 19:49:52.530 12212 12244 I CeosmosCompanion: Central conectado
+11-22 19:49:52.674 12212 12212 I CeosmosCompanion: Anunciando servicio TV
+11-22 19:49:54.954 12353 12380 I CeosmosCompanion: Central conectado
+11-22 19:49:55.138 12353 12353 I CeosmosCompanion: Anunciando servicio Reloj
+11-22 19:49:56.397 12212 12264 I CeosmosCompanion: Escritura rechazada: central no autenticado
+11-22 19:49:56.432 12353 12380 I CeosmosCompanion: Escritura rechazada: central no autenticado
+11-22 19:49:58.242 12353 12380 I CeosmosCompanion: Central autenticado para Reloj
+11-22 19:49:59.561 12212 12264 I CeosmosCompanion: Central autenticado para TV
+11-22 19:51:57.654 12353 12365 I CeosmosCompanion: Central desconectado
+11-22 19:51:57.655 12212 12238 I CeosmosCompanion: Central desconectado
+11-22 19:52:10.916 12353 12365 I CeosmosCompanion: Central conectado
+11-22 19:52:10.917 12212 12238 I CeosmosCompanion: Central conectado
+11-22 19:52:11.285 12212 12238 I CeosmosCompanion: MTU 517
+11-22 19:52:11.285 12353 12365 I CeosmosCompanion: MTU 517
+11-22 19:52:11.407 12353 12365 I CeosmosCompanion: Central autenticado para Reloj
+11-22 19:52:12.066 12212 12238 I CeosmosCompanion: Central autenticado para TV
+11-22 19:52:34.048 12353 12365 I CeosmosCompanion: Central desconectado
+11-22 19:52:34.048 12212 12264 I CeosmosCompanion: Central desconectado
+11-22 19:53:34.377 12353 12365 I CeosmosCompanion: Central conectado
+11-22 19:53:34.378 12212 12264 I CeosmosCompanion: Central conectado
+11-22 19:53:34.745 12212 12264 I CeosmosCompanion: MTU 517
+11-22 19:53:34.746 12353 12365 I CeosmosCompanion: MTU 517
+11-22 19:53:34.900 12353 12365 I CeosmosCompanion: Central autenticado para Reloj
+11-22 19:53:47.561 12212 12306 I CeosmosCompanion: Central autenticado para TV

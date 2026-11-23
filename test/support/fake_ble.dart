@@ -26,6 +26,8 @@ class PerifericoFalso {
   final notificadores = <RolBle, StreamController<List<int>>>{};
   int fallos = 0;
   bool authRota = false; // la escritura del reto falla por otra causa (no PIN)
+  bool escrituraRota = false; // servidor GATT reiniciado: las escrituras fallan sin error de autorización
+  bool silencioso = false; // las escrituras «pasan» pero el periférico no responde
   bool anunciando = true;
   ConexionFalsa? conexion;
 
@@ -143,11 +145,15 @@ class ConexionFalsa implements ConexionBle {
       final reto = p._retos.remove(rol);
       if (reto != null && const ListEquality<int>().equals(datos, respuestaReto(p.pin, reto, rol))) {
         p.autenticados.add(rol);
+        p.escrituraRota = false; // nueva autenticación = servicios redescubiertos
+        p.silencioso = false;
         return;
       }
       if (++p.fallos >= 3) cortar();
       throw const FalloBle('GATT_INSUFFICIENT_AUTHORIZATION', autorizacion: true);
     }
+    if (p.escrituraRota) throw const FalloBle('GATT_ERROR 133');
+    if (p.silencioso) return;
     if (!p.autenticados.contains(rol)) {
       throw const FalloBle('GATT_INSUFFICIENT_AUTHORIZATION', autorizacion: true);
     }

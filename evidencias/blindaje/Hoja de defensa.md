@@ -38,7 +38,7 @@ Una página por profesor: qué enseñar en la app, qué abrir y las 10 preguntas
 | 5 | ¿Los datos se comparten en tiempo real? | Sí. Medido el 21/11: una incidencia creada en la tablet apareció en el S24 sin recargar | `evidencias/reestructura/dispositivos/s24_14_*.png` |
 | 6 | ¿Qué pasa sin internet? | Las sesiones de enfoque quedan pendientes y se reenvían sin duplicarse (idempotencia); las incidencias se sincronizan al volver la red | `test/p12`, nota P12 |
 | 7 | ¿Cómo se conectan el Reloj y la TV? | Por BLE: CEOSMOS es el central y las apps Reloj y TV son periféricos GATT, autenticados con reto + HMAC a partir de un PIN de 6 dígitos | Nota «06 - BLE Wearable y TV» |
-| 8 | ¿Cuántas pruebas hay? | 217 de Flutter más 14 de Kotlin por app, en CI en cada push | §7 |
+| 8 | ¿Cuántas pruebas hay? | 331 de Flutter más 14 de Kotlin por app, en CI en cada push | §7 |
 | 9 | ¿Qué falló en las pruebas y cómo se corrigió? | Botón de la TV partido, tarjetas grises en modo oscuro, encabezado desbordado a 280 dp: todo corregido y con prueba | Bitácora del 21/11 |
 | 10 | ¿Se puede arreglar algo en vivo? | Sí, con `scripts/arreglo_rapido.sh <área>`; el ensayo midió el ciclo completo | §8 |
 
@@ -58,7 +58,7 @@ Una página por profesor: qué enseñar en la app, qué abrir y las 10 preguntas
 | 5 | ¿Funciona en España o Europa? | **Sí, medido** el 22/11 con sondas públicas: desde Madrid y Logroño la API responde 200 en 373–400 ms y Firestore en 783 ms. También funciona desde los 6 continentes (137–763 ms). Datos en EE. UU. (Vercel `iad1`, Neon `us-east-1`); para usuarios reales en la UE faltaría el aviso RGPD | `evidencias/blindaje/red/geografia.md` |
 | 6 | ¿Qué red mínima necesita? | **Medido** con un proxy que degrada la red: en EDGE/2G (50 kbps, +400 ms) la API responde en 2.5 s; con 20 % de pérdida, en ≤ 5 s. Mínimo: 5 kbps o RTT de 4 s dentro del timeout de 15 s. Firebase falla con RTT de 4 s (Google corta a los 10 s) | `evidencias/blindaje/red/red_minima.md` |
 | 7 | ¿Qué pasa si se cae la API? | Aviso «Sin conexión», reintento con espera progresiva y las escrituras pendientes se reenvían sin duplicarse | `test/p13_14/aut05_*`, `test/p12` |
-| 8 | ¿Por qué falla a veces el BLE? | Error transitorio de GATT de Android (`ANDROID_SPECIFIC_ERROR`); la app reintenta y conecta (visto el 21/11) | Recorrido del 21/11 |
+| 8 | ¿Por qué falla a veces el BLE? | Error transitorio de GATT; la app reintenta. Si se cierra la app Reloj o TV, se reautentica sola en ~4 s sin PIN (medido 22/11) | §9 del dossier |
 | 9 | ¿Cómo se comunican los dos teléfonos? | Mensajería por TCP en el puerto 5000 dentro de la misma Wi-Fi; uno crea la sala y el otro se une por IP | `lib/practicas/p06/` |
 | 10 | ¿Hay límite de peticiones? | Sí, 120 por minuto por IP (auth 10/min). Detrás de un mismo NAT, los equipos comparten el cupo | Reporte P12, «09 - Decisiones técnicas» |
 
@@ -73,11 +73,11 @@ Una página por profesor: qué enseñar en la app, qué abrir y las 10 preguntas
 |---|---|---|---|
 | 1 | ¿La comunicación va cifrada? | Sí: HTTPS con HSTS (2 años, `preload`), y HTTP redirige con 308. El tráfico en texto claro solo se permite a `localhost` y al emulador | `api_produccion_health.txt`, `network_security_config.xml` |
 | 2 | ¿Dónde se guarda el token? | En almacenamiento seguro (Keystore de Android), nunca en texto plano | `lib/data/token_store.dart` |
-| 3 | ¿Qué ataques resiste la API? | Red Box 13/13 + ampliado 37/37 (22/11): tokens expirados, HS512, `alg:none`, inyección SQL/NoSQL, XSS, IDOR, asignación masiva, JSON anidado, CORS, enumeración y fuerza bruta (429). La primera pasada dio 27/37: se corrigieron 6 fallos en la API (rama `blindaje-api`, **falta promoverla a producción**) | `evidencias/blindaje/redbox_ampliado.txt`, `masvs.md` |
+| 3 | ¿Qué ataques resiste la API? | Red Box 13/13 + ampliado 37/37 (22/11): tokens expirados, HS512, `alg:none`, inyección SQL/NoSQL, XSS, IDOR, asignación masiva, JSON anidado, CORS, enumeración y fuerza bruta (429). La primera pasada dio 27/37: se corrigieron 6 fallos en la API (en producción desde el 22/11; Red Box de producción sin credenciales 27/27) | `evidencias/blindaje/redbox_ampliado.txt`, `masvs.md` |
 | 4 | ¿Y el Bluetooth? | El PIN no viaja por el aire: reto + HMAC. Un central no autenticado no puede escribir ni suscribirse. El enlace BLE no usa bonding cifrado | Nota 06; §6 del dossier |
 | 5 | ¿Un usuario puede ver datos de otro? | No: la API filtra por usuario (404 ante IDOR) y las reglas de Firestore bloquean leer o modificar lo ajeno | Red Box, nota P10 |
 | 6 | ¿Hay secretos en el código? | Solo claves de cliente de Firebase (públicas por diseño y protegidas por reglas y por paquete + SHA) y la credencial simulada de la práctica de código seguro | §5 del dossier |
 | 7 | ¿El APK es seguro? | Release no depurable, `allowBackup=false`, solo las actividades necesarias exportadas y firmado con llave propia (APK de respaldo) | `release/`, nota 07 |
 | 8 | ¿Se revisó contra OWASP? | Sí: mapa MASVS v2 y Mobile Top 10 control por control, con su estado (cumple, parcial o riesgo aceptado) y su evidencia | `evidencias/blindaje/masvs.md` |
-| 9 | ¿Qué riesgos quedan? | Limitador en memoria por instancia, cesión en «Mis incidencias», clave de `mesaayuda-p7` sin restringir y rotación de secretos pendiente | §6 |
+| 9 | ¿Qué riesgos quedan? | Limitador en memoria por instancia, cesión en «Mis incidencias», clave y regla de `mesaayuda-p7` (proyecto de otra cuenta) y BLE sin cifrado de carga útil. Los secretos se rotaron el 22/11 | §6 |
 | 10 | ¿Se hizo pentest completo? | No es un pentest profesional: es un Red Box de 50 casos sobre la API, Firestore sin sesión (se halló `mesaayuda-p7/dispositivos` legible: hay que cerrar la regla), gitleaks sobre el historial y una prueba de certificado no confiable. No se usó mitmproxy en el teléfono (exige cambiar el proxy del sistema) | `evidencias/blindaje/masvs.md` |
