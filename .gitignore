@@ -66,3 +66,6 @@ android/key.properties
 
 # Blindaje: marcador local de la build aislada del usuario torpe (scripts/mono_bloques.ps1)
 /android/app/.ceosmos_monkey
+
+# Capturas crudas del arnés del manual (se publican solo las anotadas m_*.png)
+/evidencias/manual/arnes_*.png
