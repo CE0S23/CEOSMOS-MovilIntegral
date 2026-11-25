@@ -53,6 +53,12 @@ actualizado: 2026-11-19
 - **22/11/2026** — **Blindaje completado** → [[13 - Blindaje]]: usabilidad, funcionalidad, redes y seguridad medidas; API endurecida en producción (Red Box 27/27 en prod, 13 + 37 en local); Reloj, TV y Soporte probados de punta a punta (reconexión BLE corregida); incidente del usuario torpe corregido; 331/331 pruebas; `entrega-v4` (1.2.1) en los dos equipos.
 - **22/11/2026 (noche)** — Documentación final: Reporte de avances actualizado a 1.2.1 y Manual de usuario nuevo (`Reporte de avances - CEOSMOS revicion.docx/.pdf`, `Manual de usuario - CEOSMOS.docx/.pdf`).
 
+- **25/11/2026** — Commit y CI de la 1.3.0 (`fc37eed`, [corrida 45686893198](https://github.com/CE0S23/CEOSMOS-MovilIntegral/actions/runs/45686893198) en verde) y documentación final:
+  - [x] Cifras medidas hoy: Flutter 344/344, API 79/79, Kotlin 14/14 por app, cobertura 56.0 % (núcleo 84.8 %), 29 corridas de CI → `evidencias/documentacion/cifras.md`.
+  - [x] Nuevo `Documento de seguimiento del proyecto - CEOSMOS.docx/.pdf`; Reporte de avances reorganizado (sin A1–B2); Manual con índice automático, figuras y texto alternativo; Matriz, prácticas 13-14, Hoja de defensa y Lista previa al día. Diagramas nuevos: `evidencias/diagramas/despliegue.png`, `datos.png`.
+  - [x] Copias finales en `entrega/` (LEEME.md). Respaldo previo: `C:/CESAR10cuatri/respaldos/documentacion_2026-11-25/`.
+  - [ ] APK 1.3.0 en los equipos, Web Bluetooth en hardware y capturas de Explorar, Perfil, Administración y PWA instalada (equipos no conectados).
+
 ## Estado de las tareas pedidas (18/11)
 - [x] Tarea 1 · Actividades 4–12 validadas (P7 completada el 19/11).
 - [x] Tarea 2 · Requerimientos contrastados; BLE y TV desarrollados; BD propia por práctica verificada.
@@ -62,6 +68,14 @@ actualizado: 2026-11-19
 - [x] Tarea 6 · Memoria reestructurada (esta carpeta) con respaldo.
 - [x] Tarea 7 · Reporte Word actualizado (P7 completa desde el 19/11).
 - [x] Cerrar P7 (19/11) → [[Práctica 07 - Roles y mensajería (Sistema de tickets)]].
+
+- **24/11/2026** — Revisión contra la rúbrica del profesor → [[14 - PWA y rúbrica]]:
+  - [x] PWA: `web/sw.js` propio (el de Flutter 3.41 se desregistra solo), manifiesto completo, `scripts/construir_pwa.ps1`, tarea `pwa` en CI. Chrome: 0 errores de instalabilidad.
+  - [x] Modo sin conexión (app y PWA): perfil + pendientes persistidos, reconexión automática; verificado en Chromium (sesión offline enviada una vez al volver la red).
+  - [x] Web Bluetooth en la PWA (selector probado en Chromium; hardware no verificado) y mensajes para navegadores sin BLE.
+  - [x] Avatar a media cabecera en tabletas corregido. Versión 1.3.0+5. 344/344 pruebas, analyze limpio.
+  - [x] Reporte: planteamiento, objetivos, seguimiento, decisiones, arquitectura (diagramas), UX, PWA, dispositivos. Matriz de cumplimiento en `evidencias/rubrica/`. Respaldo previo en `C:/CESAR10cuatri/respaldos/rubrica_2026-11-24/`.
+  - [ ] APK 1.3.0 en S24/Tab S9 y Web Bluetooth con el Reloj/TV reales (sin equipos conectados).
 
 ---
 Navegación: [[00 - Índice CEOSMOS]] · [[08 - Pendientes]] · [[09 - Decisiones técnicas]]

@@ -22,6 +22,10 @@ actualizado: 2026-11-18
 | 18/11 | Repo propio y público para la app (`CEOSMOS-MovilIntegral`), no `CEOSMOSV2` | CEOSMOSV2 es la web/API con historia distinta y despliegue a Vercel/Neon; el profesor ve el repo sin invitación |
 | 18/11 | CI sin secretos: servidor HTTP local, MockClient, BLE simulado y SQLite FFI | Las pruebas nunca deben tocar producción ([[Práctica 13-14 - Automatización de pruebas y CI]]) |
 | 18/11 | Escaneo BLE en serie y reautenticación al recibir «sin autorización» | Defectos encontrados en hardware (ver [[06 - BLE Wearable y TV]]) |
+| 24/11 | Service worker propio `web/sw.js` en vez del de Flutter | El de Flutter 3.41 se desregistra solo: sin modo offline |
+| 24/11 | Modo sin conexión con perfil y pendientes en SharedPreferences/localStorage; token sigue en almacén seguro | Una sesión terminada sin red se perdía al cerrar la app |
+| 24/11 | PWA servida en `localhost:4200` para la demostración | Origen ya admitido por CORS en producción y contexto seguro; un dominio propio exige tocar la lista CORS |
+| 24/11 | El pulso del Reloj sigue simulado y se declara como límite | La tablet no tiene sensor de pulso; código de sensores sin hardware para probar sería un riesgo antes de la entrega |
 
 ---
 Navegación: [[00 - Índice CEOSMOS]] · [[03 - Arquitectura y stack]] · [[06 - BLE Wearable y TV]] · [[10 - Bitácora]]

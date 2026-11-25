@@ -40,6 +40,7 @@ en el código, en las pruebas automatizadas o en los dispositivos (Samsung S24 y
 - [[10 - Bitácora]]
 - Documentos finales (22/11): `C:\CESAR10cuatri\CEOSMOS.MovilIntegral\Reporte de avances - CEOSMOS revicion.docx/.pdf` y `Manual de usuario - CEOSMOS.docx/.pdf` (capturas en `evidencias/manual/`).
 - [[13 - Blindaje]] — blindaje antes de la evaluación: completado el 22/11 (registro único).
+- [[14 - PWA y rúbrica]] — 24/11: PWA con service worker propio, modo sin conexión y matriz de la rúbrica.
 - [[12 - Mapa de funciones]] — cada práctica como función de la app: ubicación, rol, origen, código y BD; botón ⓘ.
 - [[11 - Sistema de diseño]] — paleta guinda/cian, reglas de contraste, tipografía y escala (app, prácticas, Reloj y TV).
 - [[Notas varias]]
@@ -59,5 +60,10 @@ Auditorías anteriores a la integración, conservadas tal cual (ya no describen 
 - `README.md` del repositorio (cómo ejecutar).
 - `docs/PRACTICA_8_BLACK_BOX_TESTING.md`, `p11yp12/p11/REPORTE_P11_WHITEBOX.md`, `p11yp12/p12/REPORTE_P12_OPTIMIZACION.md`, `evidencias/p13_14/REPORTE_P13_14_AUTOMATIZACION.md` (+ Word en la misma carpeta).
 - `lib/practicas/README.md` (adaptaciones `[CEOSMOS]` de cada práctica).
-- `Reporte de avances - CEOSMOS revicion.docx`.
+- Documentación final (25/11/2026, versión 1.3.0), cada uno en .docx y .pdf en la raíz del repo:
+  - `Documento de seguimiento del proyecto - CEOSMOS` (A1–A3, B1, B2, resumen C–F, trazabilidad A1–F2).
+  - `Reporte de avances - CEOSMOS revicion` (prácticas como funciones, calidad y pruebas, blindaje, riesgos).
+  - `Manual de usuario - CEOSMOS`.
+  - Matriz: `evidencias/rubrica/Matriz de cumplimiento - CEOSMOS.*` · prácticas 13-14: `evidencias/p13_14/Practicas 13-14 - Automatizacion de pruebas - CEOSMOS.*`.
+  - Copias finales: `entrega/` (con `LEEME.md`). Cifras únicas: `evidencias/documentacion/cifras.md`. Generadores: `tool/documentacion/`.
 - Evidencias de esta revisión: carpeta `evidencias/`.

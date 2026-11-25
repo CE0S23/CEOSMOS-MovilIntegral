@@ -38,7 +38,7 @@ Una página por profesor: qué enseñar en la app, qué abrir y las 10 preguntas
 | 5 | ¿Los datos se comparten en tiempo real? | Sí. Medido el 21/11: una incidencia creada en la tablet apareció en el S24 sin recargar | `evidencias/reestructura/dispositivos/s24_14_*.png` |
 | 6 | ¿Qué pasa sin internet? | Las sesiones de enfoque quedan pendientes y se reenvían sin duplicarse (idempotencia); las incidencias se sincronizan al volver la red | `test/p12`, nota P12 |
 | 7 | ¿Cómo se conectan el Reloj y la TV? | Por BLE: CEOSMOS es el central y las apps Reloj y TV son periféricos GATT, autenticados con reto + HMAC a partir de un PIN de 6 dígitos | Nota «06 - BLE Wearable y TV» |
-| 8 | ¿Cuántas pruebas hay? | 331 de Flutter más 14 de Kotlin por app, en CI en cada push | §7 |
+| 8 | ¿Cuántas pruebas hay? | 344 de Flutter, 79 de la API y 14 de Kotlin por app (medido el 25/11), en CI en cada push | §7 |
 | 9 | ¿Qué falló en las pruebas y cómo se corrigió? | Botón de la TV partido, tarjetas grises en modo oscuro, encabezado desbordado a 280 dp: todo corregido y con prueba | Bitácora del 21/11 |
 | 10 | ¿Se puede arreglar algo en vivo? | Sí, con `scripts/arreglo_rapido.sh <área>`; el ensayo midió el ciclo completo | §8 |
 

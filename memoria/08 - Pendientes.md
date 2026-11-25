@@ -1,7 +1,7 @@
 ---
 tags: [ceosmos, pendientes]
 estado: abierto
-actualizado: 2026-11-22
+actualizado: 2026-11-25
 ---
 
 # Pendientes
@@ -9,6 +9,13 @@ actualizado: 2026-11-22
 Única lista de lo que falta. Todo lo demás está hecho y verificado (ver [[10 - Bitácora]] › Estado de las tareas).
 
 ## 1. Para cerrar la revisión (lo siguiente que se hace)
+
+**Siguiente sesión (tras la revisión de la rúbrica del 24/11, ver [[14 - PWA y rúbrica]]):**
+- [x] Commit y push de la 1.3.0 (25/11, `fc37eed`, CI en verde) y documentación final (ver [[10 - Bitácora]]).
+- [ ] Recompilar la PWA contra producción: `scripts\construir_pwa.ps1 -Servir` (la última quedó con `-Local`).
+- [ ] Con el S24 y la Tab S9 conectados: instalar APK 1.3.0 (`install -r`, sin desinstalar) y probar la PWA con Web Bluetooth (`adb reverse tcp:4200 tcp:4200`, Chrome → `http://localhost:4200` → Equipos › Conectar). Registrar resultado en el Reporte (hoy «no verificado en hardware»).
+- [ ] Ensayar el guion de 8 min de `evidencias/rubrica/Matriz de cumplimiento - CEOSMOS.md`.
+- [ ] Decidir: ¿PWA en dominio propio? (exige agregar el origen a CORS en `ceosmos-api/src/app.factory.ts`) · ¿pulso real con un reloj Wear OS? (hoy simulado, declarado como límite).
 - [x] Cuentas P7 nuevas en Firebase Auth `practica7-8-941cb` (`admin|agente|usuario1|usuario2.ceosmos.p7@example.com`; contraseña en `.devdb/CUENTAS_DEV.txt`).
 - [x] Documento de rol en Firestore › `dispositivos` para las 4 cuentas (19/11, desde la consola; ID = UID; `rol`, `nombre`, `conectado: false`):
   - `eWgOEvECUeUpay6x7DBAxGmp6Hf2` → `admin` · `Administrador`
