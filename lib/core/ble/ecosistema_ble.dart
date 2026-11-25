@@ -9,6 +9,12 @@ import '../wearable.dart';
 import 'ble_protocolo.dart';
 import 'ble_transporte.dart';
 
+/// Sin Bluetooth LE: en la PWA casi siempre es un navegador sin Web Bluetooth.
+String get mensajeSinBle => kIsWeb
+    ? 'Este navegador no tiene Bluetooth LE (Web Bluetooth). Usa Chrome o Edge en Android, '
+        'Windows, macOS o ChromeOS, o la app de Android.'
+    : 'Este equipo no tiene Bluetooth LE disponible.';
+
 enum EstadoEnlace { desconectado, buscando, conectando, autenticando, conectado, reconectando, error }
 
 enum ResultadoConexion { conectado, requierePin, pinIncorrecto, noEncontrado, bluetoothApagado, sinPermiso, fallo }
@@ -195,9 +201,11 @@ class EcosistemaBle extends ChangeNotifier {
       return ResultadoConexion.pinIncorrecto;
     }
     if (transporte.adaptadorAhora != AdaptadorBle.encendido) {
-      e.error = transporte.adaptadorAhora == AdaptadorBle.sinPermiso
-          ? 'CEOSMOS no tiene permiso de Bluetooth.'
-          : 'Enciende el Bluetooth para conectar.';
+      e.error = switch (transporte.adaptadorAhora) {
+        AdaptadorBle.sinPermiso => 'CEOSMOS no tiene permiso de Bluetooth.',
+        AdaptadorBle.noDisponible => mensajeSinBle,
+        _ => 'Enciende el Bluetooth para conectar.',
+      };
       return transporte.adaptadorAhora == AdaptadorBle.sinPermiso
           ? ResultadoConexion.sinPermiso
           : ResultadoConexion.bluetoothApagado;
@@ -288,7 +296,9 @@ class EcosistemaBle extends ChangeNotifier {
       publicarSesion();
       return ResultadoConexion.conectado;
     } on PermisoBleDenegado {
-      e.error = 'Permiso de Bluetooth denegado. Actívalo en Ajustes › Apps › CEOSMOS › Permisos.';
+      e.error = kIsWeb
+          ? 'El navegador no permitió usar Bluetooth. Pulsa «Conectar» otra vez y elige el ${rol.nombre} CEOSMOS.'
+          : 'Permiso de Bluetooth denegado. Actívalo en Ajustes › Apps › CEOSMOS › Permisos.';
       if (enlace != null) await _soltar(enlace, rol);
       return ResultadoConexion.sinPermiso;
     } on FalloBle catch (f) {

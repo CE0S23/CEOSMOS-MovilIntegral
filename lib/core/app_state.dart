@@ -6,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import '../data/api_client.dart';
 import '../data/catalog.dart';
 import '../data/auth_repository.dart';
+import '../data/cache_sin_conexion.dart';
 import '../data/ceosmos_repository.dart';
 import '../data/token_store.dart';
 import '../domain/models.dart';
@@ -41,7 +42,9 @@ class AppState extends ChangeNotifier {
     DateTime Function()? now,
     bool startTicker = true,
     this.reintentos = const PoliticaReintento(),
+    CacheSinConexion? cache,
   }) : wearable = wearable ?? WearableClient(),
+       cache = cache ?? CacheEnMemoria(),
        ble = ble ?? EcosistemaBle(transporte: const BleTransporteInactivo()),
        _now = now ?? DateTime.now {
     auth.api.onUnauthorized = _sesionVencida;
@@ -60,6 +63,7 @@ class AppState extends ChangeNotifier {
       auth: AuthRepository(api, SecureTokenStore()),
       data: CeosmosRepository(api),
       ble: EcosistemaBle(transporte: BleTransporteFbp(), pines: AlmacenPinSeguro(), latido: const Duration(seconds: 5)),
+      cache: CachePreferencias(),
     );
   }
 
@@ -70,6 +74,13 @@ class AppState extends ChangeNotifier {
   /// Reloj y TV compañeros por Bluetooth LE (CEOSMOS es el central).
   final EcosistemaBle ble;
   final PoliticaReintento reintentos;
+
+  /// Perfil y sesiones pendientes guardados en el equipo para abrir sin red.
+  final CacheSinConexion cache;
+
+  /// true si la app se abrió sin conexión con el perfil guardado; vuelve a false en
+  /// cuanto el servidor responde.
+  bool sinConexion = false;
   final DateTime Function() _now;
   Timer? _ticker;
   bool _disposed = false;
@@ -150,10 +161,63 @@ class AppState extends ChangeNotifier {
       }
       await acceptSession(session);
     } on ApiException catch (e) {
+      if (e.sinRed && await _abrirSinConexion()) return;
       status = AuthStatus.signedOut;
       notice = e.message;
       _changed();
     }
+  }
+
+  /// Sin red pero con token y perfil guardados: entra con lo local (catálogo incluido,
+  /// temporizador, audios y sesiones pendientes). El token NO se da por válido: el
+  /// servidor lo vuelve a comprobar en la primera petición y un 401 cierra la sesión.
+  Future<bool> _abrirSinConexion() async {
+    final token = auth.api.token;
+    final perfil = await cache.leerPerfil();
+    if (token == null || perfil == null) return false;
+    authentication = AuthSession(user: perfil, token: token);
+    status = AuthStatus.signedIn;
+    sinConexion = true;
+    workspace = UserWorkspace()..preferredMinutes = perfil.preferredMinutes;
+    targetMinutes = _minutosValidos(perfil.preferredMinutes);
+    await _recuperarPendientes(perfil.id);
+    workspace.history.addAll(_pendientes);
+    dataError = 'Sin conexión: se muestran tus datos guardados en este equipo.';
+    notice = 'Sin conexión. Puedes usar CEOSMOS; tus sesiones se enviarán al volver la red.';
+    _programarReintento();
+    _programarReconexion();
+    _changed();
+    return true;
+  }
+
+  Timer? _reconexion;
+  int _intentosReconexion = 0;
+
+  /// Mientras se esté sin conexión, intenta recargar con espera progresiva (2 s, 4 s…
+  /// hasta 60 s). Al responder el servidor se envían los pendientes y todo vuelve solo.
+  void _programarReconexion() {
+    if (_disposed || !sinConexion || _reconexion != null) return;
+    _reconexion = Timer(reintentos.espera(_intentosReconexion++), () async {
+      _reconexion = null;
+      if (_disposed || user == null || !sinConexion) return;
+      await loadWorkspace();
+      if (sinConexion) {
+        _programarReconexion();
+      } else {
+        _intentosReconexion = 0;
+      }
+    });
+  }
+
+  /// Sesiones terminadas sin red en una ejecución anterior (no se pierden al cerrar).
+  Future<void> _recuperarPendientes(String userId) async {
+    if (_pendientes.isNotEmpty) return;
+    _pendientes.addAll(await cache.leerPendientes(userId));
+  }
+
+  void _persistirPendientes() {
+    final id = user?.id;
+    if (id != null) unawaited(cache.guardarPendientes(id, List.of(_pendientes)));
   }
 
   Future<void> acceptSession(AuthSession session) async {
@@ -163,6 +227,8 @@ class AppState extends ChangeNotifier {
     targetMinutes = _minutosValidos(session.user.preferredMinutes);
     notice = null;
     _changed();
+    unawaited(cache.guardarPerfil(session.user));
+    await _recuperarPendientes(session.user.id);
     await loadWorkspace();
   }
 
@@ -201,6 +267,7 @@ class AppState extends ChangeNotifier {
         ..addAll(_pendientes)
         ..addAll(pagina);
       historyHasMore = pagina.length == historialPorPagina;
+      sinConexion = false;
       totalSessions = resumen.sesiones;
       _totalSegundos = resumen.segundos;
       workspace.devices
@@ -255,6 +322,10 @@ class AppState extends ChangeNotifier {
     status = AuthStatus.signedOut;
     workspace = UserWorkspace();
     _pendientes.clear();
+    sinConexion = false;
+    _reconexion?.cancel();
+    _reconexion = null;
+    unawaited(cache.borrar());
     _reintento?.cancel();
     _reintento = null;
     _intentosFallidos = 0;
@@ -277,6 +348,7 @@ class AppState extends ChangeNotifier {
   Future<void> updateUsername(String username) async {
     final updated = await data.updateUsername(username);
     authentication = AuthSession(user: updated, token: authentication!.token);
+    unawaited(cache.guardarPerfil(updated));
     _changed();
   }
 
@@ -287,6 +359,8 @@ class AppState extends ChangeNotifier {
     _changed();
     try {
       await data.updatePreferredMinutes(minutes);
+      final u = user;
+      if (u != null) unawaited(cache.guardarPerfil(u.copyWith(preferredMinutes: minutes)));
     } on ApiException catch (e) {
       workspace.preferredMinutes = anterior;
       notice = 'No se guardó la preferencia: ${e.message}';
@@ -397,6 +471,7 @@ class AppState extends ChangeNotifier {
       if (e.unauthorized) return;
       if (PoliticaReintento.reintentable(e)) {
         _pendientes.add(local);
+        _persistirPendientes();
         notice = 'La sesión se guardará cuando vuelva la conexión (${e.message})';
         _programarReintento();
       } else {
@@ -428,6 +503,7 @@ class AppState extends ChangeNotifier {
       try {
         final saved = await data.saveFocusSession(p);
         _pendientes.remove(p);
+        _persistirPendientes();
         _confirmada(p, saved);
         _intentosFallidos = 0;
       } on ApiException catch (e) {
@@ -437,6 +513,7 @@ class AppState extends ChangeNotifier {
           return;
         }
         _pendientes.remove(p);
+        _persistirPendientes();
         workspace.history.remove(p);
         notice = 'Se descartó una sesión que el servidor no acepta: ${e.message}';
       }
@@ -649,6 +726,7 @@ class AppState extends ChangeNotifier {
     _disposed = true;
     _ticker?.cancel();
     _reintento?.cancel();
+    _reconexion?.cancel();
     wearable.dispose();
     ble.dispose();
     _reloj.dispose();

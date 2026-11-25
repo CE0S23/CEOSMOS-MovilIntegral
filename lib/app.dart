@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/app_state.dart';
@@ -60,6 +61,14 @@ class _CeosmosAppState extends State<CeosmosApp> {
   );
 }
 
+/// Pestaña inicial desde la URL de la PWA (atajos del manifiesto:
+/// `?pestana=explorar`, `?pestana=equipos`). Fuera de la web o sin parámetro: Inicio.
+int pestanaDesdeUrl(Uri? url) {
+  const nombres = ['inicio', 'explorar', 'sesion', 'equipos', 'soporte', 'perfil'];
+  final i = nombres.indexOf(url?.queryParameters['pestana']?.toLowerCase() ?? '');
+  return i < 0 ? 0 : i;
+}
+
 class AppShell extends StatefulWidget {
   const AppShell({super.key, required this.state});
   final AppState state;
@@ -95,6 +104,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    _tab = pestanaDesdeUrl(kIsWeb ? Uri.base : null);
     WidgetsBinding.instance.addObserver(this);
     widget.state.addListener(_sessionChanged);
   }
@@ -401,10 +411,14 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                           // Ventanas angostas (< 340 dp, p. ej. ventana flotante):
                           // solo el ícono, para que el avatar siga visible.
                           // Flexible: con la fuente del sistema al 200 % la marca se encoge en lugar de desbordarse.
-                          Flexible(
-                            flex: 3,
-                            child: Brand(
-                              compact: MediaQuery.sizeOf(context).width < 340,
+                          // Expanded + Align: el avatar queda siempre al borde derecho (con
+                          // Flexible + Spacer quedaba a media barra en teléfonos anchos y tabletas).
+                          Expanded(
+                            child: Align(
+                              alignment: AlignmentDirectional.centerStart,
+                              child: Brand(
+                                compact: MediaQuery.sizeOf(context).width < 340,
+                              ),
                             ),
                           )
                         else
@@ -414,7 +428,7 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                               color: context.paleta.textoSecundario,
                             ),
                           ),
-                        const Spacer(),
+                        if (wide) const Spacer(),
                         if (state.user!.isAdmin) ...[
                           // Insignia de rol: ámbar con texto guinda.
                           Container(

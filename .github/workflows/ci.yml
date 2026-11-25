@@ -85,6 +85,40 @@ jobs:
           path: coverage/lcov.info
           if-no-files-found: warn
 
+  pwa:
+    name: PWA · compilación web + service worker
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+          pub-cache: true
+
+      - name: Compilar PWA (CanvasKit local, API de producción)
+        run: |
+          flutter pub get
+          bash scripts/construir_pwa.sh
+
+      - name: Verificar manifiesto y service worker
+        run: |
+          test -f build/web/manifest.json
+          test -f build/web/sw.js
+          ! grep -q "const VERSION = 'dev'" build/web/sw.js
+          grep -q "register('sw.js'" build/web/flutter_bootstrap.js
+          test -f build/web/canvaskit/canvaskit.wasm
+
+      - name: Subir PWA compilada
+        uses: actions/upload-artifact@v6
+        with:
+          name: ceosmos-pwa
+          path: build/web
+          if-no-files-found: error
+
   kotlin:
     name: Kotlin · ${{ matrix.app }} (test + lint)
     runs-on: ubuntu-latest

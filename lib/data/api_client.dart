@@ -5,9 +5,13 @@ import 'package:http/http.dart' as http;
 
 /// Error de la API de CEOSMOS con un mensaje listo para mostrarse.
 class ApiException implements Exception {
-  const ApiException(this.message, {this.statusCode});
+  const ApiException(this.message, {this.statusCode, this.sinRed = false});
   final String message;
   final int? statusCode;
+
+  /// true cuando la petición no llegó al servidor (sin red o tiempo agotado). Permite
+  /// abrir la app sin conexión con el perfil guardado (PWA instalada o teléfono sin datos).
+  final bool sinRed;
   bool get unauthorized => statusCode == 401;
   @override
   String toString() => message;
@@ -63,11 +67,13 @@ class ApiClient {
     } on TimeoutException {
       throw const ApiException(
         'El servidor de CEOSMOS tardó demasiado en responder. Intenta de nuevo.',
+        sinRed: true,
       );
     } on http.ClientException {
       // package:http envuelve los SocketException en ClientException.
       throw const ApiException(
         'No hay conexión con el servidor de CEOSMOS. Revisa tu red.',
+        sinRed: true,
       );
     } on Exception catch (e) {
       // Blindaje (22/11): package:http no envuelve los errores de TLS
@@ -84,6 +90,7 @@ class ApiClient {
       }
       throw const ApiException(
         'No hay conexión con el servidor de CEOSMOS. Revisa tu red.',
+        sinRed: true,
       );
     }
 

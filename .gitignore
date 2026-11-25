@@ -69,3 +69,6 @@ android/key.properties
 
 # Capturas crudas del arnés del manual (se publican solo las anotadas m_*.png)
 /evidencias/manual/arnes_*.png
+
+# Salidas de la herramienta de navegador (Playwright MCP)
+.playwright-mcp/

@@ -1,36 +1,31 @@
 {
+  "id": "./",
   "name": "CEOSMOS · Móvil Integral",
   "short_name": "CEOSMOS",
-  "start_url": ".",
+  "description": "Tu espacio de concentración, calma e inspiración: sesiones de enfoque, audios y paisajes, con tu reloj y tu TV conectados.",
+  "lang": "es-MX",
+  "dir": "ltr",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
-  "background_color": "#0b0d18",
-  "theme_color": "#141725",
-  "description": "Tu espacio de concentración, calma e inspiración.",
-  "orientation": "portrait-primary",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#fff8f3",
+  "theme_color": "#5b011d",
+  "categories": ["health", "lifestyle", "productivity"],
   "prefer_related_applications": false,
   "icons": [
-    {
-      "src": "icons/Icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/Icon-512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    },
-    {
-      "src": "icons/Icon-maskable-192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
-    },
-    {
-      "src": "icons/Icon-maskable-512.png",
-      "sizes": "512x512",
-      "type": "image/png",
-      "purpose": "maskable"
-    }
+    { "src": "icons/Icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/Icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/Icon-maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/Icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ],
-  "lang": "es"
+  "screenshots": [
+    { "src": "capturas/movil.png", "sizes": "412x860", "type": "image/png", "form_factor": "narrow", "label": "Inicio de CEOSMOS en el teléfono" },
+    { "src": "capturas/escritorio.png", "sizes": "1280x800", "type": "image/png", "form_factor": "wide", "label": "CEOSMOS en una ventana de escritorio" }
+  ],
+  "shortcuts": [
+    { "name": "Explorar", "short_name": "Explorar", "url": "./?pestana=explorar", "icons": [{ "src": "icons/Icon-192.png", "sizes": "192x192" }] },
+    { "name": "Equipos", "short_name": "Equipos", "url": "./?pestana=equipos", "icons": [{ "src": "icons/Icon-192.png", "sizes": "192x192" }] }
+  ]
 }

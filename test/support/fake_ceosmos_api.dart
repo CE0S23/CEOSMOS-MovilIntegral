@@ -9,6 +9,7 @@ import 'package:ceosmos_movil_integral/core/reintentos.dart';
 import 'package:ceosmos_movil_integral/core/wearable.dart';
 import 'package:ceosmos_movil_integral/data/api_client.dart';
 import 'package:ceosmos_movil_integral/data/auth_repository.dart';
+import 'package:ceosmos_movil_integral/data/cache_sin_conexion.dart';
 import 'package:ceosmos_movil_integral/data/ceosmos_repository.dart';
 import 'package:ceosmos_movil_integral/data/token_store.dart';
 import 'package:http/http.dart' as http;
@@ -203,6 +204,7 @@ class FakeCeosmosApi {
     EcosistemaBle? ble,
     MemoryTokenStore? tokens,
     PoliticaReintento reintentos = const PoliticaReintento(),
+    CacheSinConexion? cache,
   }) {
     final api = ApiClient(baseUrl: 'http://api.test/api', client: client);
     return AppState(
@@ -213,6 +215,7 @@ class FakeCeosmosApi {
       now: now,
       startTicker: false,
       reintentos: reintentos,
+      cache: cache,
     );
   }
 }

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Secuencia BLE CEOSMOS</title>
+<style>
+  @font-face { font-family: DM; src: url(../../assets/fonts/DMSans-Regular.ttf); }
+  @font-face { font-family: DM; font-weight: 700; src: url(../../assets/fonts/DMSans-Bold.ttf); }
+  @font-face { font-family: Bri; font-weight: 800; src: url(../../assets/fonts/BricolageGrotesque-ExtraBold.ttf); }
+  body { margin: 0; background: #fff; }
+  svg { display: block; font-family: DM, sans-serif; }
+  .t { font-family: Bri; font-weight: 800; fill: #5B011D; }
+  .h { font-weight: 700; fill: #1E0A12; font-size: 15px; }
+  .s { fill: #6B5A60; font-size: 12.5px; }
+  .m { fill: #1E0A12; font-size: 13px; }
+  .vida { stroke: #8C7880; stroke-width: 1.4; stroke-dasharray: 5 5; }
+  .l { stroke: #1E0A12; stroke-width: 1.6; marker-end: url(#f); }
+  .r { stroke: #0A7FA3; stroke-width: 1.6; marker-end: url(#fb); }
+  .fase { fill: #FFF8F3; stroke: #EADDE1; }
+  .ft { font-weight: 700; font-size: 11.5px; letter-spacing: .08em; fill: #8A1C3D; }
+</style></head><body>
+<svg width="1200" height="900" viewBox="0 0 1200 900">
+  <defs>
+    <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1E0A12"/></marker>
+    <marker id="fb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0A7FA3"/></marker>
+  </defs>
+  <text x="40" y="50" class="t" font-size="28">Conexión e intercambio con el Reloj (BLE · GATT)</text>
+  <text x="40" y="76" class="s" font-size="14">Mismo flujo para la TV con su propio servicio. En la PWA el paso 1 es el selector de Web Bluetooth del navegador.</text>
+
+  <rect x="120" y="100" width="200" height="56" rx="12" fill="#F6E4EA" stroke="#8A1C3D"/>
+  <text x="140" y="124" class="h">CEOSMOS (central)</text><text x="140" y="144" class="s">S24 o PWA en Chrome</text>
+  <rect x="520" y="100" width="200" height="56" rx="12" fill="#DDF7FF" stroke="#0A7FA3"/>
+  <text x="540" y="124" class="h">CEOSMOS Reloj</text><text x="540" y="144" class="s">periférico GATT (tablet)</text>
+  <rect x="900" y="100" width="200" height="56" rx="12" fill="#fff" stroke="#8C7880"/>
+  <text x="920" y="124" class="h">API CEOSMOS</text><text x="920" y="144" class="s">Vercel + PostgreSQL</text>
+  <line x1="220" y1="156" x2="220" y2="880" class="vida"/>
+  <line x1="620" y1="156" x2="620" y2="880" class="vida"/>
+  <line x1="1000" y1="156" x2="1000" y2="880" class="vida"/>
+
+  <rect x="30" y="170" width="1140" height="120" rx="10" class="fase"/>
+  <text x="44" y="190" class="ft">1 · DESCUBRIR Y CONECTAR</text>
+  <line x1="620" y1="212" x2="224" y2="212" class="r"/><text x="300" y="206" class="m">Anuncio: UUID de servicio 6c3e1000-… + fabricante 0xFFFF [rol, id 4 B]</text>
+  <line x1="220" y1="244" x2="616" y2="244" class="l"/><text x="300" y="238" class="m">Escaneo filtrado por servicio → connect (Android: MTU 247)</text>
+  <line x1="220" y1="274" x2="616" y2="274" class="l"/><text x="300" y="268" class="m">discoverServices: AUTH · A_DISP (write) · DE_DISP (notify)</text>
+
+  <rect x="30" y="300" width="1140" height="150" rx="10" class="fase"/>
+  <text x="44" y="320" class="ft">2 · AUTENTICAR SIN ENVIAR EL PIN</text>
+  <line x1="220" y1="344" x2="616" y2="344" class="l"/><text x="300" y="338" class="m">read AUTH</text>
+  <line x1="620" y1="372" x2="224" y2="372" class="r"/><text x="300" y="366" class="m">reto aleatorio (un solo uso, vence en 30 s)</text>
+  <line x1="220" y1="402" x2="616" y2="402" class="l"/><text x="300" y="396" class="m">write AUTH = HMAC-SHA256(PIN de 6 dígitos, reto ‖ rol)</text>
+  <line x1="620" y1="432" x2="224" y2="432" class="r"/><text x="300" y="426" class="m">OK · o GATT 8 (sin autorización); 3 fallos → bloqueo 60 s</text>
+
+  <rect x="30" y="460" width="1140" height="210" rx="10" class="fase"/>
+  <text x="44" y="480" class="ft">3 · INTERCAMBIO (JSON ≤ 180 BYTES, VALIDADO, MÁX. 20 MENSAJES/S)</text>
+  <line x1="220" y1="504" x2="616" y2="504" class="l"/><text x="300" y="498" class="m">setNotify(DE_DISP) · write {"t":"hello","name":"CEOSMOS"}</text>
+  <line x1="620" y1="534" x2="224" y2="534" class="r"/><text x="300" y="528" class="m">notify {"t":"hr","hr":72,"steps":1200}  (sensor: pulso y pasos)</text>
+  <line x1="220" y1="564" x2="616" y2="564" class="l"/><text x="300" y="558" class="m">write {"t":"session", estado, título, restante, hr}  cada cambio</text>
+  <line x1="620" y1="594" x2="224" y2="594" class="r"/><text x="300" y="588" class="m">notify {"t":"btn","a":"toggle"} → CEOSMOS pausa / reanuda la sesión</text>
+  <line x1="220" y1="624" x2="616" y2="624" class="l"/><text x="300" y="618" class="m">latido cada 5 s: si el Reloj se reinició, reautentica sin pedir el PIN (~4 s)</text>
+  <text x="300" y="656" class="s">Procesamiento en CEOSMOS: descarta lecturas fuera de 30–230 bpm, promedia y guarda muestras de la sesión.</text>
+
+  <rect x="30" y="680" width="1140" height="190" rx="10" class="fase"/>
+  <text x="44" y="700" class="ft">4 · PERSISTIR</text>
+  <line x1="220" y1="730" x2="996" y2="730" class="l"/><text x="300" y="724" class="m">POST /api/devices  {tipo WEARABLE/TV, transporte BLE, dirección CE:05:&lt;id&gt;}  (la MAC real rota)</text>
+  <line x1="220" y1="770" x2="996" y2="770" class="l"/><text x="300" y="764" class="m">POST /api/focus-sessions  {…, clientId, metadata.wearable: {avgHeartRate, samples, transport}}</text>
+  <line x1="1000" y1="806" x2="224" y2="806" class="r"/><text x="300" y="800" class="m">201 · o la misma sesión si el clientId ya existía (reintento idempotente)</text>
+  <text x="300" y="842" class="s">Sin red: la sesión queda pendiente en el equipo y se reenvía con espera progresiva al volver la conexión.</text>
+</svg>
+</body></html>

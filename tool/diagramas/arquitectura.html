@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8"><title>Arquitectura CEOSMOS</title>
+<style>
+  @font-face { font-family: DM; src: url(../../assets/fonts/DMSans-Regular.ttf); }
+  @font-face { font-family: DM; font-weight: 700; src: url(../../assets/fonts/DMSans-Bold.ttf); }
+  @font-face { font-family: Bri; font-weight: 800; src: url(../../assets/fonts/BricolageGrotesque-ExtraBold.ttf); }
+  body { margin: 0; background: #fff; }
+  svg { display: block; font-family: DM, sans-serif; }
+  .t { font-family: Bri; font-weight: 800; fill: #5B011D; }
+  .h { font-weight: 700; fill: #1E0A12; font-size: 15px; }
+  .s { fill: #6B5A60; font-size: 12px; }
+  .zona { fill: #FFF8F3; stroke: #EADDE1; stroke-width: 1.5; }
+  .zt { font-weight: 700; font-size: 12px; letter-spacing: .08em; fill: #8A1C3D; }
+  .caja { fill: #fff; stroke: #8C7880; stroke-width: 1.2; }
+  .cian { fill: #DDF7FF; stroke: #0A7FA3; }
+  .guinda { fill: #F6E4EA; stroke: #8A1C3D; }
+  .ambar { fill: #FFF1DA; stroke: #9A5800; }
+  .l { stroke: #1E0A12; stroke-width: 1.6; fill: none; marker-end: url(#f); }
+  .lb { stroke: #0A7FA3; stroke-width: 2.2; fill: none; marker-end: url(#fb); marker-start: url(#fbi); }
+  .lt { stroke: #9A5800; stroke-width: 1.8; stroke-dasharray: 6 4; fill: none; marker-end: url(#ft); }
+  .et { font-size: 11.5px; fill: #1E0A12; font-weight: 700; }
+  .etb { font-size: 11.5px; fill: #08708F; font-weight: 700; }
+</style></head><body>
+<svg width="1400" height="860" viewBox="0 0 1400 860">
+  <defs>
+    <marker id="f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#1E0A12"/></marker>
+    <marker id="fb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#0A7FA3"/></marker>
+    <marker id="fbi" viewBox="0 0 10 10" refX="1" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M10 0L0 5L10 10z" fill="#0A7FA3"/></marker>
+    <marker id="ft" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" fill="#9A5800"/></marker>
+  </defs>
+  <text x="40" y="52" class="t" font-size="30">CEOSMOS Móvil Integral · Arquitectura de la solución</text>
+  <text x="40" y="78" class="s" font-size="14">Un solo código Flutter (lib/) compilado como app Android y como PWA; una API y una base de datos; Reloj y TV por Bluetooth LE.</text>
+
+  <!-- Zona clientes -->
+  <rect x="30" y="105" width="520" height="560" rx="16" class="zona"/>
+  <text x="50" y="132" class="zt">CLIENTES · MISMO CÓDIGO FLUTTER 3.41 (DART 3.11)</text>
+
+  <rect x="50" y="148" width="230" height="200" rx="12" class="caja guinda"/>
+  <text x="66" y="174" class="h">App Android (APK)</text>
+  <text x="66" y="196" class="s">Galaxy S24 · central BLE</text>
+  <text x="66" y="216" class="s">flutter_blue_plus (BLE)</text>
+  <text x="66" y="236" class="s">Socket TCP (wearable)</text>
+  <text x="66" y="256" class="s">Token: Android Keystore</text>
+  <text x="66" y="276" class="s">Caché LRU 150 MB (disco)</text>
+  <text x="66" y="296" class="s">Perfil + pendientes:</text>
+  <text x="66" y="314" class="s">SharedPreferences</text>
+  <text x="66" y="334" class="s">Permisos BLUETOOTH_SCAN/CONNECT</text>
+
+  <rect x="300" y="148" width="230" height="200" rx="12" class="caja cian"/>
+  <text x="316" y="174" class="h">PWA (Flutter web)</text>
+  <text x="316" y="196" class="s">Chrome / Edge · instalable</text>
+  <text x="316" y="216" class="s">manifest.json + sw.js propio</text>
+  <text x="316" y="236" class="s">Cache Storage: app shell 19 MB</text>
+  <text x="316" y="256" class="s">Web Bluetooth (selector)</text>
+  <text x="316" y="276" class="s">Perfil + pendientes:</text>
+  <text x="316" y="294" class="s">localStorage</text>
+  <text x="316" y="314" class="s">API y Firebase: nunca en caché</text>
+  <text x="316" y="334" class="s">Responsivo: 240–1600 dp</text>
+
+  <rect x="50" y="370" width="480" height="275" rx="12" class="caja"/>
+  <text x="66" y="396" class="h">Capas compartidas (lib/)</text>
+  <rect x="66" y="410" width="448" height="44" rx="8" class="caja guinda"/>
+  <text x="80" y="430" class="et">ui/</text><text x="110" y="430" class="s">Inicio · Explorar · Mi sesión · Equipos · Soporte · Perfil · Admin</text>
+  <text x="80" y="446" class="s">Sistema de diseño (core/theme): paleta AA, Bricolage + DM Sans, claro/oscuro</text>
+  <rect x="66" y="462" width="448" height="44" rx="8" class="caja"/>
+  <text x="80" y="482" class="et">core/app_state</text><text x="186" y="482" class="s">estado (ChangeNotifier), temporizador,</text>
+  <text x="80" y="498" class="s">reintentos exponenciales, modo sin conexión, cola de pendientes</text>
+  <rect x="66" y="514" width="448" height="44" rx="8" class="caja"/>
+  <text x="80" y="534" class="et">data/</text><text x="122" y="534" class="s">ApiClient (JWT Bearer, plazo 15 s), AuthRepository,</text>
+  <text x="80" y="550" class="s">CeosmosRepository, TokenStore seguro, CacheSinConexion</text>
+  <rect x="66" y="566" width="448" height="62" rx="8" class="caja cian"/>
+  <text x="80" y="586" class="et">core/ble</text><text x="142" y="586" class="s">protocolo (UUID, reto + HMAC-SHA256, JSON ≤ 180 B),</text>
+  <text x="80" y="602" class="s">EcosistemaBle (PIN, latido 5 s, reconexión), BleTransporte</text>
+  <text x="80" y="618" class="s">(Android: flutter_blue_plus · Web: Web Bluetooth)</text>
+
+  <!-- Nube -->
+  <rect x="640" y="105" width="360" height="400" rx="16" class="zona"/>
+  <text x="660" y="132" class="zt">NUBE</text>
+  <rect x="660" y="148" width="320" height="130" rx="12" class="caja guinda"/>
+  <text x="676" y="174" class="h">API CEOSMOS · Vercel</text>
+  <text x="676" y="196" class="s">NestJS 11 + Prisma 5 · /api</text>
+  <text x="676" y="216" class="s">JWT HS256, roles USER/ADMIN, CORS por lista,</text>
+  <text x="676" y="234" class="s">CSP, HSTS, límite 120/min (auth 10/min),</text>
+  <text x="676" y="252" class="s">clientId idempotente en sesiones</text>
+  <text x="676" y="270" class="s">Red Box: 27/27 en producción</text>
+  <rect x="660" y="300" width="155" height="90" rx="12" class="caja"/>
+  <text x="676" y="326" class="h">PostgreSQL</text>
+  <text x="676" y="346" class="s">Neon us-east-1</text>
+  <text x="676" y="366" class="s">relacional + JSONB</text>
+  <rect x="830" y="300" width="150" height="90" rx="12" class="caja"/>
+  <text x="846" y="326" class="h">Resend</text>
+  <text x="846" y="346" class="s">verificación y</text>
+  <text x="846" y="366" class="s">recuperación</text>
+  <rect x="660" y="410" width="320" height="80" rx="12" class="caja ambar"/>
+  <text x="676" y="436" class="h">Firebase (proyectos propios)</text>
+  <text x="676" y="456" class="s">Soporte (app Android): tickets, chat, reportes</text>
+  <text x="676" y="474" class="s">Auth + Firestore + Storage, reglas por rol</text>
+
+  <!-- Dispositivos -->
+  <rect x="1080" y="105" width="300" height="560" rx="16" class="zona"/>
+  <text x="1100" y="132" class="zt">DISPOSITIVOS INTELIGENTES</text>
+  <rect x="1100" y="148" width="260" height="300" rx="12" class="caja"/>
+  <text x="1116" y="174" class="h">Galaxy Tab S9 (periférico)</text>
+  <rect x="1116" y="188" width="228" height="118" rx="10" class="caja cian"/>
+  <text x="1130" y="210" class="h">CEOSMOS Reloj</text>
+  <text x="1130" y="230" class="s">Servidor GATT · Kotlin + Compose</text>
+  <text x="1130" y="250" class="s">Envía: pulso 30–230 bpm, pasos,</text>
+  <text x="1130" y="268" class="s">botón pausa/fin</text>
+  <text x="1130" y="288" class="s">Recibe: sesión y notificaciones</text>
+  <rect x="1116" y="316" width="228" height="118" rx="10" class="caja cian"/>
+  <text x="1130" y="338" class="h">CEOSMOS TV</text>
+  <text x="1130" y="358" class="s">Servidor GATT · control D-pad</text>
+  <text x="1130" y="378" class="s">Envía: iniciar, pausar, siguiente</text>
+  <text x="1130" y="396" class="s">Recibe: sesión a proyectar</text>
+  <text x="1130" y="416" class="s">(título, restante, pulso)</text>
+  <rect x="1100" y="470" width="260" height="110" rx="12" class="caja ambar"/>
+  <text x="1116" y="496" class="h">Wearable por Wi-Fi</text>
+  <text x="1116" y="516" class="s">TCP/IP · una línea JSON por lectura</text>
+  <text x="1116" y="536" class="s">{"hr":72,"steps":1200}</text>
+  <text x="1116" y="556" class="s">Solo app Android (sin sockets en web)</text>
+
+  <!-- Flechas -->
+  <path d="M550 200 L655 200" class="l"/>
+  <text x="562" y="190" class="et">HTTPS + JWT</text>
+  <path d="M550 236 L620 236 Q630 236 630 246 L630 450 L655 450" class="l"/>
+  <text x="562" y="226" class="et">SDK Firebase</text>
+  <path d="M740 278 L740 296" class="l"/>
+  <path d="M900 278 L900 296" class="l"/>
+  <path d="M530 600 Q820 600 1040 420 L1095 300" class="lb"/>
+  <text x="760" y="560" class="etb">Bluetooth LE · GATT</text>
+  <text x="760" y="576" class="etb">reto + HMAC (el PIN no viaja) · notify/write</text>
+  <path d="M50 300 L40 300 L40 678 L1230 678 L1230 586" class="lt"/>
+  <text x="1010" y="672" class="et" fill="#9A5800">TCP/IP · red local (solo Android)</text>
+
+  <!-- Pie -->
+  <rect x="30" y="690" width="1350" height="140" rx="16" class="zona"/>
+  <text x="50" y="718" class="zt">CALIDAD Y ENTREGA</text>
+  <text x="50" y="746" class="s" font-size="13">GitHub Actions en cada push: análisis estático, 344 pruebas Flutter (unitarias, widget, caja negra/blanca, BLE simulado, modo sin conexión, PWA),</text>
+  <text x="50" y="766" class="s" font-size="13">compilación de la PWA con su service worker, y pruebas + lint de las apps Kotlin Reloj, TV y Companion. Ninguna prueba usa producción.</text>
+  <text x="50" y="794" class="s" font-size="13">Construcción: APK release (scripts de blindaje) · PWA: scripts/construir_pwa.ps1 (CanvasKit local, lista de precarga con versión por hash del contenido).</text>
+  <text x="50" y="814" class="s" font-size="13">Modo sin conexión: perfil y sesiones pendientes en el equipo; el token sigue en almacenamiento seguro y el servidor lo revalida al volver la red.</text>
+</svg>
+</body></html>

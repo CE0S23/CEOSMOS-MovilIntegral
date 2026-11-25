@@ -47,7 +47,7 @@ class BleSection extends StatelessWidget {
               onAccion: _abrirAjustes,
             )
           else if (ble.adaptador == AdaptadorBle.noDisponible)
-            const _Aviso(icono: Icons.bluetooth_disabled, texto: 'Este equipo no tiene Bluetooth LE disponible.'),
+            _Aviso(icono: Icons.bluetooth_disabled, texto: mensajeSinBle),
           for (final rol in RolBle.values) ...[
             _TarjetaBle(state: state, rol: rol),
             const SizedBox(height: 14),

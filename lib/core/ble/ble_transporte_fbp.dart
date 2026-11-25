@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
@@ -9,6 +10,11 @@ import 'ble_transporte.dart';
 /// escolar). flutter_blue_plus pide en tiempo de ejecución BLUETOOTH_SCAN y
 /// BLUETOOTH_CONNECT (Android 12+) o ACCESS_FINE_LOCATION (Android ≤ 11) la primera
 /// vez que se escanea o conecta; los permisos se declaran en el AndroidManifest.
+///
+/// En la PWA usa Web Bluetooth (Chrome/Edge): «escanear» abre el selector del
+/// navegador filtrado por el servicio del rol, y el usuario elige el equipo; ese
+/// gesto es el permiso. Firefox y Safari no tienen Web Bluetooth: el adaptador se
+/// informa como no disponible y la interfaz lo explica.
 class BleTransporteFbp implements BleTransporte {
   static const _gattSinAutorizacion = 8; // GATT_INSUFFICIENT_AUTHORIZATION
 
@@ -20,7 +26,8 @@ class BleTransporteFbp implements BleTransporte {
           AdaptadorBle.apagado,
         BluetoothAdapterState.unavailable => AdaptadorBle.noDisponible,
         BluetoothAdapterState.unauthorized => AdaptadorBle.sinPermiso,
-        _ => AdaptadorBle.desconocido,
+        // En la web «unknown» significa que el navegador no tiene Web Bluetooth.
+        _ => kIsWeb ? AdaptadorBle.noDisponible : AdaptadorBle.desconocido,
       };
 
   @override
@@ -64,6 +71,10 @@ class BleTransporteFbp implements BleTransporte {
     } on FlutterBluePlusException catch (e) {
       await sub.cancel();
       throw FalloBle(e.description ?? 'No se pudo escanear.');
+    } catch (e) {
+      // Web Bluetooth: el usuario cerró el selector o el navegador lo bloqueó.
+      await sub.cancel();
+      throw traducirErrorWeb('$e');
     }
     unawaited(fin);
     try {
@@ -87,6 +98,20 @@ class BleTransporteFbp implements BleTransporte {
       throw _traducir(e);
     }
     return _ConexionFbp(d);
+  }
+
+  /// Errores de Web Bluetooth (DOMException) a mensajes de CEOSMOS.
+  @visibleForTesting
+  static Exception traducirErrorWeb(String texto) {
+    final t = texto.toLowerCase();
+    if (t.contains('cancel')) return const FalloBle('Se cerró el selector sin elegir un equipo.');
+    if (t.contains('securityerror') || t.contains('permission') || t.contains('not allowed')) {
+      return const PermisoBleDenegado();
+    }
+    if (t.contains('notfounderror') || t.contains('no devices')) {
+      return const FalloBle('El navegador no encontró equipos CEOSMOS cerca.');
+    }
+    return FalloBle('El navegador no pudo usar Bluetooth ($texto).');
   }
 
   static Exception _traducir(PlatformException e) {

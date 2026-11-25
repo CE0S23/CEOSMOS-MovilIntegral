@@ -57,6 +57,22 @@ flutter test integration_test/critical_flow_test.dart -d emulator-5554 `
   --dart-define=E2E_EMAIL=<correo> --dart-define=E2E_PASSWORD=<contraseña>
 ```
 
+## PWA (aplicación web instalable)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\construir_pwa.ps1 -Servir          # API de producción
+powershell -ExecutionPolicy Bypass -File scripts\construir_pwa.ps1 -Local -Servir   # API local (8080)
+```
+
+- Abre `http://localhost:4200` en Chrome o Edge y pulsa **Instalar**. El puerto 4200 ya está
+  admitido por la lista CORS de la API y `localhost` es contexto seguro (service worker y Web Bluetooth).
+  En el teléfono: `adb reverse tcp:4200 tcp:4200` y la misma dirección en Chrome.
+- `web/sw.js` es el service worker propio (el de Flutter 3.41 se desregistra solo): precarga el app shell
+  (lista y versión las escribe `scripts/pwa_precache.py`), red primero para navegar y **nunca** guarda la API.
+- Modo sin conexión (app y PWA): perfil y sesiones pendientes en el equipo (`lib/data/cache_sin_conexion.dart`);
+  al volver la red se envían solas, sin duplicar.
+- Matriz de la rúbrica y guion de demostración: `evidencias/rubrica/`.
+
 ## Reloj y TV por Bluetooth LE
 
 - Apps compañeras en `companion/` (Kotlin + Compose): `cd companion && ./gradlew assembleRelojDebug assembleTvDebug`
