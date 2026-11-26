@@ -1,0 +1,5 @@
+# dumpsys sensorservice · Tab S9 (SM-X710) · 2026-11-26 11:32:57 · filtrado a pasos y acelerómetro
+0x0000000b) lsm6dso LSM6DSO Accelerometer Non-wakeup | STMicro         | ver: 15933 | type: android.sensor.accelerometer(1) | perm: n/a | flags: 0x00000000
+0x000000b5) step_detector  Non-wakeup | Samsung         | ver: 1 | type: android.sensor.step_detector(18) | perm: android.permission.ACTIVITY_RECOGNITION | flags: 0x00000006
+0x000000bf) step_counter  Non-wakeup  | Samsung         | ver: 1 | type: android.sensor.step_counter(19) | perm: android.permission.ACTIVITY_RECOGNITION | flags: 0x00000002
+0x00000840) Seq Step  Wakeup          | Samsung         | ver: 1 | type: com.samsung.sensor.seq_step(65647) | perm: com.samsung.permission.SSENSOR | flags: 0x00000003

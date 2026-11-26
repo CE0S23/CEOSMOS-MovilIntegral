@@ -1,0 +1,10 @@
+{
+ "errores": {
+  "installabilityErrors": []
+ },
+ "manifiesto": "http://localhost:4200/manifest.json",
+ "erroresManifiesto": [],
+ "serviceWorker": [
+  "http://localhost:4200/sw.js"
+ ]
+}
