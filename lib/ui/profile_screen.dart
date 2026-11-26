@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../core/app_state.dart';
 import '../core/media_cache.dart';
+import '../core/sin_espacios.dart';
 import '../data/api_client.dart';
 import '../data/auth_repository.dart';
 import '../data/catalog.dart';
@@ -63,6 +64,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             initial: state.user!.username,
             maxLength: 30,
             validator: AuthRepository.validarUsuario,
+            inputFormatters: SinEspacios.formateadores(context),
           ),
         ],
       ),

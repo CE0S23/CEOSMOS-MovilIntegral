@@ -97,4 +97,6 @@ dependencies {
     implementation("androidx.activity:activity-compose:1.9.3")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
     debugImplementation("androidx.compose.ui:ui-tooling")
+    // 1.4.0: reglas puras de los campos nativos (sin espacios) con JUnit.
+    testImplementation("junit:junit:4.13.2")
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_state.dart';
+import '../core/sin_espacios.dart';
 import '../data/api_client.dart';
 import '../data/auth_repository.dart';
 import 'theme.dart';
@@ -131,6 +132,9 @@ class _AuthScreenState extends State<AuthScreen> {
     key: const ValueKey('campo-contrasena'),
     controller: _password,
     obscureText: _obscure,
+    autocorrect: false,
+    enableSuggestions: false,
+    inputFormatters: SinEspacios.formateadores(context),
     onFieldSubmitted: (_) => _enviar(),
     decoration: InputDecoration(
       labelText: nueva ? 'Contraseña nueva' : 'Contraseña',
@@ -154,6 +158,8 @@ class _AuthScreenState extends State<AuthScreen> {
       if (_paso == _Paso.registro) ...[
         TextFormField(
           controller: _name,
+          autocorrect: false,
+          inputFormatters: SinEspacios.formateadores(context),
           decoration: const InputDecoration(
             labelText: 'Nombre de usuario',
             prefixIcon: Icon(Icons.person_outline),
@@ -167,6 +173,8 @@ class _AuthScreenState extends State<AuthScreen> {
         TextFormField(
           controller: _email,
           keyboardType: TextInputType.emailAddress,
+          autocorrect: false,
+          inputFormatters: SinEspacios.formateadores(context),
           textInputAction: TextInputAction.next,
           autofillHints: const [AutofillHints.email],
           decoration: const InputDecoration(
@@ -180,6 +188,7 @@ class _AuthScreenState extends State<AuthScreen> {
       if (_paso == _Paso.verificar)
         TextFormField(
           controller: _code,
+          inputFormatters: SinEspacios.formateadores(context),
           textCapitalization: TextCapitalization.characters,
           maxLength: 6,
           onFieldSubmitted: (_) => _enviar(),
@@ -192,6 +201,8 @@ class _AuthScreenState extends State<AuthScreen> {
       if (_paso == _Paso.restablecer) ...[
         TextFormField(
           controller: _token,
+          autocorrect: false,
+          inputFormatters: SinEspacios.formateadores(context),
           decoration: const InputDecoration(
             labelText: 'Código del enlace',
             prefixIcon: Icon(Icons.key_outlined),

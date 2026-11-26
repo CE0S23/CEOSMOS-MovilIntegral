@@ -34,6 +34,9 @@ chk "P-09 inyección NoSQL en login → 400" 400 "$(code -X POST "$API/auth/logi
 chk "P-10 tipos incorrectos en login → 400" 400 "$(code -X POST "$API/auth/login" "${JS[@]}" -d '{"email":123,"password":["a"]}')"
 chk "P-11 JSON malformado → 400" 400 "$(code -X POST "$API/auth/login" "${JS[@]}" -d '{"email":')"
 chk "P-12 text/plain → 400/401/415" 1 "$(en "$(code -X POST "$API/auth/login" -H 'Content-Type: text/plain' -d 'hola')" 400 401 415)"
+# 1.4.0 · Campos sin espacios (correo inexistente: no toca cuentas reales ni el bloqueo).
+chk "P-24 login con espacios en el correo → 400" 400 "$(code -X POST "$API/auth/login" "${JS[@]}" -d '{"email":"qa noexiste@example.com","password":"Clave#2026x"}')"
+chk "P-25 login con espacios en la contraseña → 400" 400 "$(code -X POST "$API/auth/login" "${JS[@]}" -d '{"email":"qa.noexiste.espacios@example.com","password":"Clave #2026x"}')"
 # Sin sesión el guard CSRF responde 403 antes de procesar el cuerpo: lo que importa es que no haya 500.
 chk "P-13 JSON anidado 5000 niveles sin sesión → 400/403/413, no 500" 1 "$(en "$(python -c 'print("{\"a\":"*5000+"1"+"}"*5000)' | code -X POST "$API/tasks" "${JS[@]}" --data-binary @-)" 400 403 413)"
 chk "P-14 cuerpo de 2 MB → 400/403/413" 1 "$(en "$(head -c 2000000 /dev/zero | tr '\0' 'a' | sed 's/^/{"name":"/;s/$/"}/' | code -X POST "$API/devices" "${JS[@]}" --data-binary @-)" 400 403 413)"

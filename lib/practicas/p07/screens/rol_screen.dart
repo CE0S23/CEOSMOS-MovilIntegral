@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../services/auth_service.dart';
 import '../utils/rol_url.dart';
+import '../../../core/sin_espacios.dart';
 import '../../../ui/widgets.dart' show Aviso;
 
 class RolScreen extends StatefulWidget {
@@ -119,6 +120,8 @@ class _RolScreenState extends State<RolScreen> {
               const SizedBox(height: 16),
               TextField(
                 controller: _correo,
+                autocorrect: false,
+                inputFormatters: SinEspacios.formateadores(context),
                 decoration: const InputDecoration(labelText: 'Correo'),
                 keyboardType: TextInputType.emailAddress,
                 autofillHints: const [AutofillHints.username],
@@ -126,6 +129,9 @@ class _RolScreenState extends State<RolScreen> {
               const SizedBox(height: 16),
               TextField(
                 controller: _clave,
+                autocorrect: false,
+                enableSuggestions: false,
+                inputFormatters: SinEspacios.formateadores(context),
                 decoration: InputDecoration(
                   labelText: 'Contraseña',
                   suffixIcon: IconButton(

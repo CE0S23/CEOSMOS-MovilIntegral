@@ -1,5 +1,6 @@
 package com.ceosmos.practicas.p05
 
+import com.ceosmos.practicas.SinEspacios
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodChannel
 
@@ -30,7 +31,8 @@ class AccesoSeguroChannel {
             }
     }
 
-    private fun validateLogin(user: String, password: String): Map<String, Any> {
+    // Regla pura (sin canal) para probarla con JUnit.
+    internal fun validateLogin(user: String, password: String): Map<String, Any> {
         // Ambos campos son obligatorios.
         if (user.isEmpty() || password.isEmpty()) {
             return answer(false, "Completa usuario y contraseña.")
@@ -38,8 +40,12 @@ class AccesoSeguroChannel {
 
         // Flutter bloquea espacios al escribir y pegar. Kotlin los rechaza también
         // para que una llamada directa al canal no omita esta regla.
-        if (user.any { it.isWhitespace() }) {
+        if (SinEspacios.tieneEspacios(user)) {
             return answer(false, "El usuario no puede contener espacios.")
+        }
+        // 1.4.0: la contraseña tampoco admite espacios.
+        if (SinEspacios.tieneEspacios(password)) {
+            return answer(false, "La contraseña no puede contener espacios.")
         }
 
         // El usuario admite hasta 18 caracteres y la contraseña hasta 64.

@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart' show TextInputFormatter;
 import '../domain/models.dart';
 import 'theme.dart';
 
@@ -484,8 +485,10 @@ class DialogField {
     this.validator,
     this.keyboardType,
     this.maxLength,
+    this.inputFormatters,
   });
   final String label;
+  final List<TextInputFormatter>? inputFormatters;
   final String initial;
   final String? hint;
   final FormFieldValidator<String>? validator;
@@ -538,6 +541,7 @@ class _FormDialogState extends State<FormDialog> {
               autofocus: i == 0,
               keyboardType: widget.fields[i].keyboardType,
               maxLength: widget.fields[i].maxLength,
+              inputFormatters: widget.fields[i].inputFormatters,
               validator: widget.fields[i].validator,
               decoration: InputDecoration(
                 labelText: widget.fields[i].label,

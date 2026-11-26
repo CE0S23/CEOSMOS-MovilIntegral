@@ -1,3 +1,4 @@
+import '../core/sin_espacios.dart';
 import '../domain/models.dart';
 import 'api_client.dart';
 import 'token_store.dart';
@@ -14,14 +15,16 @@ class AuthRepository {
   );
 
   static String? validarCorreo(String? v) {
-    final value = (v ?? '').trim();
-    if (value.isEmpty) return 'Escribe tu correo.';
+    final value = v ?? '';
+    if (value.trim().isEmpty) return 'Escribe tu correo.';
+    if (SinEspacios.tieneEspacios(value)) return SinEspacios.error;
     return _email.hasMatch(value) ? null : 'Escribe un correo válido.';
   }
 
   /// Misma política que el backend (registro y cambio de contraseña).
   static String? validarContrasenaNueva(String? v) {
     final value = v ?? '';
+    if (SinEspacios.tieneEspacios(value)) return SinEspacios.error;
     if (value.length < 8) return 'Mínimo 8 caracteres.';
     if (value.length > 72) return 'Máximo 72 caracteres.';
     return _password.hasMatch(value)
@@ -30,26 +33,29 @@ class AuthRepository {
   }
 
   static String? validarUsuario(String? v) {
-    final value = (v ?? '').trim();
-    if (value.length < 3 || value.length > 30) return 'Entre 3 y 30 caracteres.';
+    final value = v ?? '';
+    if (value.trim().length < 3 || value.length > 30) return 'Entre 3 y 30 caracteres.';
+    if (SinEspacios.tieneEspacios(value)) return SinEspacios.error;
     return null;
   }
 
   /// Contraseña del inicio de sesión: solo se exige que no esté vacía (la política
   /// completa se aplica al crearla; una cuenta antigua puede no cumplirla).
-  static String? validarContrasenaLogin(String? v) =>
-      (v ?? '').isEmpty ? 'Escribe tu contraseña.' : null;
+  static String? validarContrasenaLogin(String? v) => (v ?? '').isEmpty
+      ? 'Escribe tu contraseña.'
+      : SinEspacios.tieneEspacios(v) ? SinEspacios.error : null;
 
   static final _codigo = RegExp(r'^[0-9A-Fa-f]{6}$');
 
   /// Código de verificación de correo: 6 caracteres hexadecimales.
-  static String? validarCodigoVerificacion(String? v) => _codigo.hasMatch(v?.trim() ?? '')
+  static String? validarCodigoVerificacion(String? v) => _codigo.hasMatch(v ?? '')
       ? null
       : 'El código tiene 6 caracteres (0-9, A-F).';
 
   /// Token del enlace para restablecer la contraseña (se pega completo).
-  static String? validarTokenRestablecer(String? v) =>
-      (v?.trim().length ?? 0) < 10 ? 'Pega el código completo del enlace.' : null;
+  static String? validarTokenRestablecer(String? v) => (v?.trim().length ?? 0) < 10
+      ? 'Pega el código completo del enlace.'
+      : SinEspacios.tieneEspacios(v) ? SinEspacios.error : null;
 
   static String normalizar(String email) => email.trim().toLowerCase();
 

@@ -59,6 +59,15 @@ actualizado: 2026-11-19
   - [x] Copias finales en `entrega/` (LEEME.md). Respaldo previo: `C:/CESAR10cuatri/respaldos/documentacion_2026-11-25/`.
   - [ ] APK 1.3.0 en los equipos, Web Bluetooth en hardware y capturas de Explorar, Perfil, Administración y PWA instalada (equipos no conectados).
 
+## 1.4.0 (26/11/2026) · retomar desde la primera fase sin marcar
+Respaldo: etiqueta `respaldo-pre-1.4.0` y `C:/CESAR10cuatri/respaldos/pre-1.4.0_2026-11-26/` (memoria + Reporte final sin commit). Plan completo: Fases 1–6 del pedido del 26/11; adenda en `evidencias/v1_4/LEEME.md`.
+- [x] Fase 1 · Campos de usuario sin espacios (Flutter `lib/core/sin_espacios.dart`, Kotlin `practicas/SinEspacios.kt`, API `@SinEspacios`). Pruebas: Flutter 23 (sin_espacios + AUT), JUnit app 5/5, Jest 89/89. API en PR CE0S23/CEOSMOSV2#2 **sin fusionar** (el permiso para fusionar a producción fue denegado): prod sigue sin la regla (Red Box prod 28/29, P-25 falla hasta fusionar).
+- [ ] Fase 2 · Reloj: simulación de actividades y alertas de salud.
+- [ ] Fase 3 · Reloj y TV robustos (medición antes/después).
+- [ ] Fase 4 · Tarjeta «Tu Reloj y TV» en Inicio.
+- [ ] Fase 5 · Equipos, Web Bluetooth, PWA, Lighthouse, capturas.
+- [ ] Fase 6 · Cierre 1.4.0 (versión, pruebas, cifras, adenda, entrega-v5, CI, release/).
+
 ## Estado de las tareas pedidas (18/11)
 - [x] Tarea 1 · Actividades 4–12 validadas (P7 completada el 19/11).
 - [x] Tarea 2 · Requerimientos contrastados; BLE y TV desarrollados; BD propia por práctica verificada.

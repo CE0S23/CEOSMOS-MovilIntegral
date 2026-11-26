@@ -8,6 +8,7 @@ import '../../core/network/api_client.dart';
 import '../../data/models/models.dart';
 import '../../data/repositories/repositories.dart';
 import '../state/app_state.dart';
+import '../../../../core/sin_espacios.dart';
 
 final _fmt = DateFormat('dd/MM/yyyy HH:mm');
 
@@ -50,9 +51,11 @@ class _LoginScreenState extends State<LoginScreen> {
           const Text('Inicia sesión para consultar y agendar tus citas', textAlign: TextAlign.center),
           const SizedBox(height: 32),
           TextField(controller: _email, keyboardType: TextInputType.emailAddress,
+              autocorrect: false, inputFormatters: SinEspacios.formateadores(context),
               decoration: const InputDecoration(labelText: 'Correo electrónico')),
           const SizedBox(height: 16),
           TextField(controller: _pass, obscureText: true,
+              autocorrect: false, enableSuggestions: false, inputFormatters: SinEspacios.formateadores(context),
               decoration: const InputDecoration(labelText: 'Contraseña')),
           const SizedBox(height: 16),
           if (_error != null)

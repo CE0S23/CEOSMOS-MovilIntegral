@@ -20,10 +20,10 @@ void main() {
   // ---------------------------------------------------------------------------
   group('AUT-01 · Entrada válida y entrada vacía / nula', () {
     test('Acceso: correo, contraseña, usuario y código válidos → sin error', () {
-      expect(AuthRepository.validarCorreo('  Ana@Ceosmos.mx '), isNull);
+      expect(AuthRepository.validarCorreo('Ana@Ceosmos.mx'), isNull);
       expect(AuthRepository.validarContrasenaNueva('Orbita#2026'), isNull);
       expect(AuthRepository.validarUsuario('ana'), isNull);
-      expect(AuthRepository.validarCodigoVerificacion(' a1b2c3 '), isNull);
+      expect(AuthRepository.validarCodigoVerificacion('a1b2c3'), isNull);
       expect(AuthRepository.validarTokenRestablecer('0123456789abcdef'), isNull);
       expect(AuthRepository.validarContrasenaLogin('cualquiera'), isNull);
     });

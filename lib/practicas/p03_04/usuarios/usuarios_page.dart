@@ -3,12 +3,15 @@ import 'package:flutter/material.dart';
 import 'app_database.dart';
 import 'usuario.dart';
 import 'usuario_dao.dart';
+import '../../../core/sin_espacios.dart';
 import '../../../ui/widgets.dart' show Aviso;
 
 /// [CEOSMOS] Práctica 4, caso 4: el correo es obligatorio y con formato válido.
 String? validarCorreoUsuario(String? valor) {
-  final correo = valor?.trim() ?? '';
-  if (correo.isEmpty) return 'Ingresa el correo.';
+  final correo = valor ?? '';
+  if (correo.trim().isEmpty) return 'Ingresa el correo.';
+  // 1.4.0: el correo no admite espacios en ninguna posición.
+  if (SinEspacios.tieneEspacios(correo)) return SinEspacios.error;
   if (correo.length > 120 ||
       !RegExp(r'^[^@\s]+@[^@\s]+\.[^@\s]{2,}$').hasMatch(correo)) {
     return 'Ingresa un correo válido.';
@@ -119,7 +122,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
     if (!_formulario.currentState!.validate()) return;
     final usuario = Usuario(
       id: _idSeleccionado,
-      nombre: _nombre.text.trim(),
+      nombre: SinEspacios.normalizarNombrePersona(_nombre.text),
       edad: int.parse(_edad.text.trim()),
       profesion: _profesion.text.trim(),
       correo: _correo.text.trim().toLowerCase(),
@@ -190,6 +193,8 @@ class _UsuariosPageState extends State<UsuariosPage> {
                 enabled: habilitado,
                 decoration: const InputDecoration(labelText: 'Nombre'),
                 textCapitalization: TextCapitalization.words,
+                // Sin espacio inicial ni dobles; los del final se quitan al guardar.
+                inputFormatters: [SinEspacios.nombrePersona()],
                 validator: validarObligatorio('Ingresa el nombre.'),
               ),
               const SizedBox(height: 12),
@@ -214,6 +219,8 @@ class _UsuariosPageState extends State<UsuariosPage> {
                 enabled: habilitado,
                 decoration: const InputDecoration(labelText: 'Correo'),
                 keyboardType: TextInputType.emailAddress,
+                autocorrect: false,
+                inputFormatters: SinEspacios.formateadores(context),
                 validator: validarCorreoUsuario,
               ),
               const SizedBox(height: 16),

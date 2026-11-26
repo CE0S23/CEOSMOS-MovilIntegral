@@ -1,6 +1,8 @@
 import '../atras_ceosmos.dart'; // [CEOSMOS]
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import '../../core/sin_espacios.dart';
 import '../../core/theme/theme.dart';
 import '../../ui/widgets.dart' show Aviso, TipoAviso;
 
@@ -163,9 +165,7 @@ class _LoginPageState extends State<LoginPage> {
                       _notice = false;
                     }),
                     // Impide teclear o pegar cualquier espacio en el usuario.
-                    inputFormatters: [
-                      FilteringTextInputFormatter.deny(RegExp(r'\s')),
-                    ],
+                    inputFormatters: SinEspacios.formateadores(context),
                     maxLength: 18,
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     textInputAction: TextInputAction.next,
@@ -182,6 +182,8 @@ class _LoginPageState extends State<LoginPage> {
                       _message = '';
                       _notice = false;
                     }),
+                    // 1.4.0: la contraseña tampoco admite espacios (tecleados o pegados).
+                    inputFormatters: SinEspacios.formateadores(context),
                     maxLength: 64,
                     maxLengthEnforcement: MaxLengthEnforcement.enforced,
                     obscureText: true,

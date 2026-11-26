@@ -214,6 +214,7 @@ private val CUENTAS_PRUEBA = listOf("Usuario A" to "usuario.a@incidencias-p10.co
 private fun PantallaLogin(vm: IncidenciasViewModel, snackbar: SnackbarHostState) {
     var correo by rememberSaveable { mutableStateOf("") }
     var clave by rememberSaveable { mutableStateOf("") }
+    var avisoEspacios by rememberSaveable { mutableStateOf(false) }
     Scaffold(snackbarHost = { SnackbarHost(snackbar) }) { relleno ->
         Column(
             Modifier.padding(relleno).fillMaxSize().imePadding().verticalScroll(rememberScrollState()).padding(24.dp),
@@ -230,14 +231,22 @@ private fun PantallaLogin(vm: IncidenciasViewModel, snackbar: SnackbarHostState)
                 }
             }
             OutlinedTextField(
-                correo, { correo = it.trim() }, label = { Text("Correo") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                correo, { val (limpio, habia) = com.ceosmos.practicas.SinEspacios.limpiar(it); correo = limpio; if (habia) avisoEspacios = true },
+                label = { Text("Correo") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             )
             OutlinedTextField(
-                clave, { clave = it }, label = { Text("Contraseña") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                clave, { val (limpio, habia) = com.ceosmos.practicas.SinEspacios.limpiar(it); clave = limpio; if (habia) avisoEspacios = true },
+                label = { Text("Contraseña") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
                 visualTransformation = PasswordVisualTransformation(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             )
+            if (avisoEspacios) {
+                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Icon(Icons.Filled.Info, contentDescription = "Aviso", tint = Color(0xFF8A5A00))
+                    Text(com.ceosmos.practicas.SinEspacios.MENSAJE, color = Color(0xFF8A5A00), style = MaterialTheme.typography.bodySmall)
+                }
+            }
             vm.errorSesion?.let { Aviso(it, Color(0xFFC42A3F)) }
             Button(onClick = { vm.iniciarSesion(correo, clave) }, enabled = !vm.autenticando, modifier = Modifier.fillMaxWidth().height(52.dp)) {
                 if (vm.autenticando) Progreso() else Text("Iniciar sesión")
