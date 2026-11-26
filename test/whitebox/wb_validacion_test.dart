@@ -156,9 +156,11 @@ void main() {
     test('Correo: vacío, con espacios, sin dominio y válido', () {
       expect(AuthRepository.validarCorreo(null), 'Escribe tu correo.');
       expect(AuthRepository.validarCorreo('   '), 'Escribe tu correo.');
-      expect(AuthRepository.validarCorreo('a b@c.com'), 'Escribe un correo válido.');
+      // 1.4.0: cualquier espacio se rechaza (antes «a b@c.com» era formato inválido y los de los extremos se recortaban).
+      expect(AuthRepository.validarCorreo('a b@c.com'), 'No uses espacios.');
       expect(AuthRepository.validarCorreo('ana@ceosmos'), 'Escribe un correo válido.');
-      expect(AuthRepository.validarCorreo(' ana@ceosmos.test '), isNull);
+      expect(AuthRepository.validarCorreo(' ana@ceosmos.test '), 'No uses espacios.');
+      expect(AuthRepository.validarCorreo('ana@ceosmos.test'), isNull);
     });
     test('Usuario: 2 y 31 rechazados; 3 y 30 aceptados', () {
       expect(AuthRepository.validarUsuario('ab'), isNotNull);

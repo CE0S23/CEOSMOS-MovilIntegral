@@ -62,7 +62,7 @@ actualizado: 2026-11-19
 ## 1.4.0 (26/11/2026) · retomar desde la primera fase sin marcar
 Respaldo: etiqueta `respaldo-pre-1.4.0` y `C:/CESAR10cuatri/respaldos/pre-1.4.0_2026-11-26/` (memoria + Reporte final sin commit). Plan completo: Fases 1–6 del pedido del 26/11; adenda en `evidencias/v1_4/LEEME.md`.
 - [x] Fase 1 · Campos de usuario sin espacios (Flutter `lib/core/sin_espacios.dart`, Kotlin `practicas/SinEspacios.kt`, API `@SinEspacios`). Pruebas: Flutter 23 (sin_espacios + AUT), JUnit app 5/5, Jest 89/89. API en PR CE0S23/CEOSMOSV2#2 **sin fusionar** (el permiso para fusionar a producción fue denegado): prod sigue sin la regla (Red Box prod 28/29, P-25 falla hasta fusionar).
-- [ ] Fase 2 · Reloj: simulación de actividades y alertas de salud.
+- [x] Fase 2 · Reloj con 8 modos de simulación (`Simulador.kt`), «Sensor real» de pasos (contador → detector → acelerómetro), campo `act` en el protocolo, alertas de salud (`lib/core/alertas_salud.dart`: notificación «Alertas de salud» + POST_NOTIFICATIONS, aviso interno, Reloj, TV, `metadata.wearable`), interruptor en Perfil. La API no necesitó cambios (metadata ≤ 4096 B). Pruebas: Dart 373/373, Kotlin 30×3. **No verificado en equipos** (sin adb): `dumpsys sensorservice` de la Tab S9, notificación real y vibración. El commit incluye también el código de la Fase 3 (comparte archivos).
 - [ ] Fase 3 · Reloj y TV robustos (medición antes/después).
 - [ ] Fase 4 · Tarjeta «Tu Reloj y TV» en Inicio.
 - [ ] Fase 5 · Equipos, Web Bluetooth, PWA, Lighthouse, capturas.

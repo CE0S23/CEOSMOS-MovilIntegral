@@ -15,7 +15,16 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.focusable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.ui.semantics.LiveRegionMode
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.selected
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.testTagsAsResourceId
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,13 +64,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.input.key.Key
-import androidx.compose.ui.input.key.KeyEventType
-import androidx.compose.ui.input.key.key
-import androidx.compose.ui.input.key.onKeyEvent
-import androidx.compose.ui.input.key.type
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -83,6 +86,23 @@ class MainActivity : ComponentActivity() {
     }
     private val pedirBt = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { revisar() }
 
+    // 1.4.0: «Sensor real» de pasos. Con el permiso se usa el contador; sin él, el acelerómetro.
+    private val pedirActividad = registerForActivityResult(ActivityResultContracts.RequestPermission()) {
+        Nucleo.usarPasosReales(true)
+    }
+
+    private fun alternarSensor() {
+        if (Nucleo.estado.value.pasosReales) {
+            Nucleo.usarPasosReales(false)
+        } else if (Build.VERSION.SDK_INT >= 29 && SensorPasos.tieneSensorDePasos(this) &&
+            checkSelfPermission(Manifest.permission.ACTIVITY_RECOGNITION) != PackageManager.PERMISSION_GRANTED
+        ) {
+            pedirActividad.launch(Manifest.permission.ACTIVITY_RECOGNITION)
+        } else {
+            Nucleo.usarPasosReales(true)
+        }
+    }
+
     private fun permisosNecesarios(): Array<String> = buildList {
         if (Build.VERSION.SDK_INT >= 31) {
             add(Manifest.permission.BLUETOOTH_ADVERTISE)
@@ -100,6 +120,7 @@ class MainActivity : ComponentActivity() {
         if (permisosOk) startForegroundService(Intent(this, ServicioCompanion::class.java))
     }
 
+    @OptIn(androidx.compose.ui.ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Nucleo.preparar(this)
@@ -108,7 +129,8 @@ class MainActivity : ComponentActivity() {
         setContent {
             TemaCeosmos(if (modo == Rol.RELOJ) Formato.RELOJ else Formato.TV) {
                 val e by Nucleo.estado.collectAsState()
-                Box(Modifier.fillMaxSize().background(LocalPaleta.current.fondo)) {
+                // testTagsAsResourceId: uiautomator ve los testTag como resource-id (medición de botones).
+                Box(Modifier.fillMaxSize().background(LocalPaleta.current.fondo).semantics { testTagsAsResourceId = true }) {
                     when {
                         !permisosOk -> Bloqueo(
                             "CEOSMOS ${modo.nombre} necesita el permiso «Dispositivos cercanos» para anunciarse por Bluetooth LE.",
@@ -117,7 +139,7 @@ class MainActivity : ComponentActivity() {
                         !btEncendido -> Bloqueo("El Bluetooth está apagado.", "Encender Bluetooth") {
                             pedirBt.launch(Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE))
                         }
-                        modo == Rol.RELOJ -> PantallaReloj(e, alCambiarModo())
+                        modo == Rol.RELOJ -> PantallaReloj(e, alCambiarModo(), ::alternarSensor)
                         else -> PantallaTv(e, alCambiarModo())
                     }
                 }
@@ -188,11 +210,103 @@ private fun EstadoConexion(e: Estado, rol: Rol, grande: Boolean = false) {
 // Reloj: carátula circular compacta
 // ---------------------------------------------------------------------------
 
+/** Feedback del último botón: ícono + texto (nunca solo color). Desaparece a los 4 s. */
 @Composable
-private fun PantallaReloj(e: Estado, cambiarModo: (() -> Unit)?) {
+private fun FeedbackEnvio(e: Estado, grande: Boolean = false) {
+    val p = LocalPaleta.current
+    val envio = e.envio ?: return
+    var ahora by remember { mutableStateOf(System.currentTimeMillis()) }
+    LaunchedEffect(envio) {
+        while (System.currentTimeMillis() - envio.instante < 4_000) {
+            kotlinx.coroutines.delay(250)
+            ahora = System.currentTimeMillis()
+        }
+        ahora = System.currentTimeMillis()
+    }
+    if (ahora - envio.instante >= 4_000 && envio.estado != EstadoEnvio.ENVIANDO) return
+    val (texto, color, icono) = when (envio.estado) {
+        EstadoEnvio.ENVIANDO -> Triple("Enviando «${nombreComando(envio.comando)}»…", p.enlace, Icons.Filled.Info)
+        EstadoEnvio.ENTREGADO -> Triple("«${nombreComando(envio.comando)}» recibido por CEOSMOS", p.exito, Icons.Filled.CheckCircle)
+        EstadoEnvio.FALLIDO -> Triple("No llegó «${nombreComando(envio.comando)}». Inténtalo de nuevo.", p.error, Icons.Filled.Warning)
+        EstadoEnvio.SIN_CEOSMOS -> Triple("CEOSMOS no está conectado: abre Equipos en el teléfono.", p.error, Icons.Filled.Warning)
+    }
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(6.dp),
+        modifier = Modifier.testTag("feedback").semantics { liveRegion = LiveRegionMode.Polite },
+    ) {
+        Icon(icono, contentDescription = null, tint = color, modifier = Modifier.size(if (grande) 22.dp else 16.dp))
+        Text(texto, color = color, style = if (grande) MaterialTheme.typography.titleSmall else MaterialTheme.typography.labelMedium, maxLines = 2)
+    }
+}
+
+/** Alerta de salud recibida de CEOSMOS: ícono + texto + botón para descartarla. */
+@Composable
+private fun AvisoAlerta(e: Estado, grande: Boolean = false) {
+    val p = LocalPaleta.current
+    val texto = e.alerta ?: return
+    val color = if (e.alertaUrgente) p.error else p.advertencia
+    Row(
+        Modifier.clip(RoundedCornerShape(12.dp)).background(color.copy(alpha = .12f)).border(2.dp, color, RoundedCornerShape(12.dp))
+            .padding(horizontal = 12.dp, vertical = 6.dp).testTag("alerta").semantics { liveRegion = LiveRegionMode.Assertive },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+    ) {
+        Icon(Icons.Filled.Warning, contentDescription = "Alerta de salud", tint = color, modifier = Modifier.size(if (grande) 32.dp else 20.dp))
+        Text(texto, color = p.tinta, style = if (grande) MaterialTheme.typography.titleLarge else MaterialTheme.typography.labelMedium, maxLines = 3, modifier = Modifier.weight(1f, fill = false))
+        TextButton(onClick = Nucleo::descartarAlerta, modifier = Modifier.height(48.dp)) { Text("Entendido", style = MaterialTheme.typography.labelLarge) }
+    }
+}
+
+/** Selector del modo de simulación (chips de 48 dp con texto; el elegido lleva ✓). */
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun SelectorModo(e: Estado, alternarSensor: () -> Unit) {
     val p = LocalPaleta.current
     val t = MaterialTheme.typography
-    Column(Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
+    Text("Simulación de actividad", color = p.enlace, style = t.titleSmall)
+    FlowRow(
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
+        modifier = Modifier.width(560.dp).padding(top = 4.dp),
+    ) {
+        ModoSimulacion.entries.forEach { m ->
+            val elegido = m == e.modo
+            OutlinedButton(
+                onClick = { Nucleo.elegirModo(m) },
+                modifier = Modifier.height(48.dp).testTag("modo-${m.name.lowercase()}").semantics { selected = elegido },
+                border = BorderStroke(if (elegido) 3.dp else 1.dp, if (elegido) p.marca else p.bordeControl),
+                colors = ButtonDefaults.outlinedButtonColors(containerColor = if (elegido) p.superficieAlta else Color.Transparent),
+            ) {
+                Text((if (elegido) "✓ " else "") + m.nombre + (if (m.alerta) " ⚠" else ""), color = p.tinta, style = t.labelMedium)
+            }
+        }
+    }
+    val sensor = remember { Nucleo.sensorDisponible() }
+    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Text(
+            if (e.pasosReales) "Pasos: sensor real (${e.sensorPasos})" else "Pasos: simulados",
+            color = p.textoSecundario, style = t.bodySmall,
+        )
+        if (sensor != null) {
+            TextButton(onClick = alternarSensor, modifier = Modifier.height(48.dp).testTag("sensor")) {
+                Text(if (e.pasosReales) "Usar simulación" else "Usar sensor real", style = t.labelLarge, color = p.enlace)
+            }
+        } else {
+            Text("· este equipo no tiene sensor de pasos", color = p.textoSecundario, style = t.bodySmall)
+        }
+    }
+}
+
+@Composable
+private fun PantallaReloj(e: Estado, cambiarModo: (() -> Unit)?, alternarSensor: () -> Unit) {
+    val p = LocalPaleta.current
+    val t = MaterialTheme.typography
+    Column(
+        Modifier.fillMaxSize().verticalScroll(rememberScrollState()).padding(vertical = 16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center,
+    ) {
         Box(
             Modifier.size(380.dp).clip(CircleShape).background(p.superficie).border(6.dp, p.marca, CircleShape),
             contentAlignment = Alignment.Center,
@@ -209,29 +323,38 @@ private fun PantallaReloj(e: Estado, cambiarModo: (() -> Unit)?) {
                         color = p.textoSecundario, style = t.bodyMedium, maxLines = 1, overflow = TextOverflow.Ellipsis,
                     )
                 } else {
-                    Text("♥ ${e.hr}", color = p.tinta, style = t.displayLarge.copy(fontFeatureSettings = Tabulares))
-                    Text("bpm · ${e.pasos} pasos", color = p.textoSecundario, style = t.bodyMedium)
+                    Text("♥ ${e.hr}", color = p.tinta, style = t.displayLarge.copy(fontFeatureSettings = Tabulares), modifier = Modifier.testTag("pulso"))
+                    Text("bpm simulado · ${e.pasos} pasos", color = p.textoSecundario, style = t.bodyMedium)
                 }
-                if (s != null && s.estado != "idle") Text("♥ ${e.hr} bpm · ${e.pasos} pasos", color = p.exito, style = t.labelMedium)
+                if (s != null && s.estado != "idle") Text("♥ ${e.hr} bpm simulado · ${e.pasos} pasos", color = p.exito, style = t.labelMedium)
+                Text(e.actividad.nombre, color = p.enlace, style = t.labelLarge, modifier = Modifier.testTag("actividad"))
                 Spacer(Modifier.height(8.dp))
                 // Primario: guinda con texto blanco (en oscuro, guinda aclarado con texto guinda).
                 Button(
                     onClick = { Nucleo.enviarComando(Rol.RELOJ, "toggle") },
                     enabled = Rol.RELOJ in e.suscrito,
                     shape = CircleShape,
-                    modifier = Modifier.testTag("accion"),
-                ) { Text(if (s?.estado == "running") "Pausar" else "Reanudar", style = t.labelLarge) }
+                    modifier = Modifier.height(48.dp).testTag("accion"),
+                ) { Text(if (s?.estado == "running") "❚❚ Pausar" else "▶ Reanudar", style = t.labelLarge) }
                 TextButton(
                     onClick = { Nucleo.enviarComando(Rol.RELOJ, "stop") },
                     enabled = Rol.RELOJ in e.suscrito && s != null && s.estado != "idle",
                     colors = ButtonDefaults.textButtonColors(contentColor = p.enlace),
-                ) { Text("Terminar", style = t.labelMedium) }
+                    modifier = Modifier.height(48.dp).testTag("terminar"),
+                ) { Text("■ Terminar", style = t.labelMedium) }
+                FeedbackEnvio(e)
                 e.notificaciones.firstOrNull()?.let {
                     Text(it, color = p.enlace, style = t.labelMedium, textAlign = TextAlign.Center, maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
             }
         }
-        Spacer(Modifier.height(20.dp))
+        AvisoAlerta(e)
+        Text(
+            "Pulso simulado: no es una medición médica.",
+            color = p.textoSecundario, style = t.bodySmall, modifier = Modifier.padding(top = 8.dp).testTag("aviso-simulado"),
+        )
+        SelectorModo(e, alternarSensor)
+        Spacer(Modifier.height(12.dp))
         Text("PIN  ${e.pin}", color = p.marca, style = t.displayMedium.copy(fontSize = 28.sp, fontFeatureSettings = Tabulares), modifier = Modifier.testTag("pin"))
         Text("id ${e.id} · centrales: ${e.conectados}" + if (e.bloqueos > 0) " · bloqueados: ${e.bloqueos}" else "", color = p.textoSecundario, style = t.bodyMedium)
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -267,7 +390,9 @@ private fun PantallaTv(e: Estado, cambiarModo: (() -> Unit)?) {
         Column(Modifier.weight(2f)) {
             Text("CEOSMOS TV", color = p.marca, style = t.headlineSmall.copy(letterSpacing = 0.04.em))
             EstadoConexion(e, Rol.TV, grande = true)
-            Spacer(Modifier.height(32.dp))
+            Spacer(Modifier.height(16.dp))
+            AvisoAlerta(e, grande = true)
+            Spacer(Modifier.height(16.dp))
             val s = e.sesion
             if (s == null || s.estado == "idle") {
                 Text("Sin sesión en curso", color = p.tinta, style = t.headlineLarge)
@@ -299,6 +424,8 @@ private fun PantallaTv(e: Estado, cambiarModo: (() -> Unit)?) {
                 BotonTv("■ Terminar", ok) { Nucleo.enviarComando(Rol.TV, "stop") }
                 BotonTv("Siguiente ▶", ok) { Nucleo.enviarComando(Rol.TV, "next") }
             }
+            Spacer(Modifier.height(12.dp))
+            FeedbackEnvio(e, grande = true)
         }
         Column(
             Modifier.weight(1f).clip(RoundedCornerShape(20.dp)).background(p.superficie)
@@ -323,11 +450,18 @@ private fun PantallaTv(e: Estado, cambiarModo: (() -> Unit)?) {
 /**
  * Botón enfocable con D-pad: al enfocar, fondo cian con texto guinda y anillo
  * de foco; ENTER / centro del D-pad para pulsar.
+ *
+ * 1.4.0: antes el botón llevaba además `onKeyEvent` + `.focusable()` propios. El botón
+ * de Compose ya pulsa con ENTER/centro, así que una tecla disparaba DOS comandos
+ * («toggle» dos veces = no cambia nada) y el `.focusable()` extra añadía una segunda
+ * parada de foco por botón (había que pulsar dos veces la flecha para avanzar).
+ * Ahora hay un único objetivo de foco y el foco se lee de su interactionSource.
  */
 @Composable
 private fun BotonTv(texto: String, habilitado: Boolean, modifier: Modifier = Modifier, chico: Boolean = false, alPulsar: () -> Unit) {
     val p = LocalPaleta.current
-    var enfocado by remember { mutableStateOf(false) }
+    val interaccion = remember { MutableInteractionSource() }
+    val enfocado by interaccion.collectIsFocusedAsState()
     val contenido = when {
         !habilitado -> p.tinta.copy(alpha = .38f)
         enfocado -> CeosmosColores.Guinda
@@ -342,14 +476,8 @@ private fun BotonTv(texto: String, habilitado: Boolean, modifier: Modifier = Mod
             containerColor = if (enfocado) CeosmosColores.Cian else Color.Transparent,
             disabledContainerColor = Color.Transparent,
         ),
-        modifier = modifier
-            .onFocusChanged { enfocado = it.isFocused }
-            .onKeyEvent {
-                if (it.type == KeyEventType.KeyUp && (it.key == Key.DirectionCenter || it.key == Key.Enter) && habilitado) {
-                    alPulsar(); true
-                } else false
-            }
-            .focusable(),
+        interactionSource = interaccion,
+        modifier = modifier.heightIn(min = 48.dp).testTag("tv-$texto"),
     ) {
         Text(
             texto,

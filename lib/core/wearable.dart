@@ -6,10 +6,13 @@ enum WearableEstado { desconectado, conectando, conectado, error }
 
 /// Lectura de métricas enviada por el wearable.
 class WearableLectura {
-  const WearableLectura({required this.heartRate, this.steps, required this.at});
+  const WearableLectura({required this.heartRate, this.steps, required this.at, this.actividad});
   final int heartRate;
   final int? steps;
   final DateTime at;
+
+  /// Actividad que informa el Reloj BLE (1.4.0); null en el wearable TCP.
+  final String? actividad;
 
   /// Protocolo CEOSMOS Band por TCP: una línea JSON por lectura, p. ej.
   /// `{"hr":72,"steps":1240}`. Devuelve null si la línea no es válida.

@@ -71,6 +71,16 @@ class _Enlace {
   final Set<String> servicios;
   final roles = <RolBle>{};
   final subs = <RolBle, StreamSubscription<List<int>>>{};
+  Future<void> _gatt = Future.value();
+
+  /// 1.4.0: UNA operación GATT a la vez por enlace físico. Reloj y TV en la misma
+  /// tablet comparten el enlace; antes cada rol tenía su propia cola y una escritura
+  /// de la TV podía coincidir con la autenticación o una escritura del Reloj.
+  Future<T> op<T>(Future<T> Function() f) {
+    final r = _gatt.then((_) => f());
+    _gatt = r.then<void>((_) {}, onError: (Object _) {});
+    return r;
+  }
 }
 
 /// Lado CENTRAL de CEOSMOS: busca, conecta, autentica e intercambia datos con
@@ -85,6 +95,7 @@ class EcosistemaBle extends ChangeNotifier {
     this.duracionEscaneo = const Duration(seconds: 8),
     this.maxMensajesPorSegundo = 20,
     this.latido,
+    this.esperaReintentoGatt = const Duration(milliseconds: 150),
   }) : pines = pines ?? AlmacenPinMemoria() {
     adaptador = transporte.adaptadorAhora;
     _subAdaptador = transporte.adaptador.listen(_alCambiarAdaptador);
@@ -92,7 +103,7 @@ class EcosistemaBle extends ChangeNotifier {
 
   final BleTransporte transporte;
   final AlmacenPinBle pines;
-  final Duration esperaBase, duracionEscaneo;
+  final Duration esperaBase, duracionEscaneo, esperaReintentoGatt;
   final int maxReintentos, maxMensajesPorSegundo;
 
   /// Cada cuánto se comprueba que el periférico sigue autenticado (null = sin latido).
@@ -134,6 +145,17 @@ class EcosistemaBle extends ChangeNotifier {
 
   /// Último comando recibido (para mostrarlo en pantalla).
   String? ultimoComando;
+
+  /// 1.4.0: lo asigna [AppState] para evaluar las alertas de salud con cada lectura.
+  void Function(WearableLectura lectura)? alLeer;
+
+  /// Segundos por actividad, alertas y pulso máximo desde [marcarInicio].
+  final Map<String, int> segundosPorActividad = {};
+  int alertasSesion = 0;
+  DateTime? _ultimaLecturaEn;
+
+  /// Escrituras que fallaron una vez y se reintentaron con éxito (diagnóstico).
+  int reintentosOk = 0;
 
   /// Mensajes descartados por inválidos o por exceso de frecuencia.
   int descartados = 0;
@@ -266,9 +288,10 @@ class EcosistemaBle extends ChangeNotifier {
       // 2. Autenticación por reto (el PIN nunca viaja por el aire).
       e.estado = EstadoEnlace.autenticando;
       _cambio();
-      final reto = await enlace.conexion.leer(rol.servicio, rol.auth);
+      final en = enlace;
+      final reto = await en.op(() => en.conexion.leer(rol.servicio, rol.auth));
       try {
-        await enlace.conexion.escribir(rol.servicio, rol.auth, respuestaReto(clave, reto, rol));
+        await en.op(() => en.conexion.escribir(rol.servicio, rol.auth, respuestaReto(clave, reto, rol)));
       } on FalloBle catch (f) {
         if (!f.autorizacion) rethrow;
         if (id != null) await pines.borrar(id);
@@ -279,7 +302,15 @@ class EcosistemaBle extends ChangeNotifier {
       if (id != null) await pines.guardar(id, clave);
 
       // 3. Datos del periférico.
-      final flujo = await enlace.conexion.suscribir(rol.servicio, rol.deDispositivo);
+      // La suscripción se reintenta una vez si falla por algo que no es autorización.
+      Stream<List<int>> flujo;
+      try {
+        flujo = await en.op(() => en.conexion.suscribir(rol.servicio, rol.deDispositivo));
+      } on FalloBle catch (f) {
+        if (f.autorizacion) rethrow;
+        await Future<void>.delayed(esperaReintentoGatt);
+        flujo = await en.op(() => en.conexion.suscribir(rol.servicio, rol.deDispositivo));
+      }
       unawaited(enlace.subs[rol]?.cancel());
       enlace.subs[rol] = flujo.listen((b) => _alRecibir(rol, b));
       enlace.roles.add(rol);
@@ -353,10 +384,14 @@ class EcosistemaBle extends ChangeNotifier {
   /// rechaza las escrituras por falta de autorización. Se vuelve a autenticar ese rol.
   void _autorizacionPerdida(RolBle rol, _Enlace enlace) {
     final e = this[rol];
-    if (_disposed || _manual.contains(rol) || e.estado != EstadoEnlace.conectado) return;
+    // 1.4.0: varias escrituras en cola fallan juntas; antes cada una lanzaba su propia
+    // reautenticación y la segunda cerraba el enlace que acababa de abrir la primera.
+    if (_disposed || _manual.contains(rol) || e.estado != EstadoEnlace.conectado || !_reautenticando.add(rol)) return;
     e.error = 'El ${rol.nombre} se reinició. Autenticando de nuevo…';
-    unawaited(_soltar(enlace, rol).then((_) => _reconectar(rol)));
+    unawaited(_soltar(enlace, rol).then((_) => _reconectar(rol)).whenComplete(() => _reautenticando.remove(rol)));
   }
+
+  final _reautenticando = <RolBle>{};
 
   void _asegurarLatido() {
     final l = latido;
@@ -464,10 +499,21 @@ class EcosistemaBle extends ChangeNotifier {
     }
     final e = this[rol]..ultimoDato = DateTime.now();
     switch (m) {
-      case LecturaReloj(:final hr, :final pasos):
-        ultimaLectura = WearableLectura(heartRate: hr, steps: pasos, at: DateTime.now());
+      case LecturaReloj(:final hr, :final pasos, :final actividad):
+        final ahora = DateTime.now();
+        final previa = _ultimaLecturaEn;
+        if (previa != null && actividad != null) {
+          // Tiempo por actividad (se acota a 5 s por lectura para no contar huecos).
+          final s = ahora.difference(previa).inMilliseconds.clamp(0, 5000);
+          _msActividad[actividad] = (_msActividad[actividad] ?? 0) + s;
+          segundosPorActividad[actividad] = _msActividad[actividad]! ~/ 1000;
+        }
+        _ultimaLecturaEn = ahora;
+        final lectura = WearableLectura(heartRate: hr, steps: pasos, at: ahora, actividad: actividad);
+        ultimaLectura = lectura;
         _muestras.add(hr);
         if (_muestras.length > 3600) _muestras.removeAt(0);
+        alLeer?.call(lectura);
       case ComandoRemoto(:final comando):
         ultimoComando = '${rol.nombre}: $comando';
         alComando?.call(rol, comando);
@@ -490,10 +536,20 @@ class EcosistemaBle extends ChangeNotifier {
       return Future.value(false);
     }
     final ok = Completer<bool>();
+    Future<void> escribir() => enlace.op(() => enlace.conexion.escribir(rol.servicio, rol.aDispositivo, bytes));
     // La cola nunca queda en error: un fallo no bloquea los envíos siguientes.
     _cola[rol] = (_cola[rol] ?? Future.value()).then((_) async {
       try {
-        await enlace.conexion.escribir(rol.servicio, rol.aDispositivo, bytes);
+        try {
+          await escribir();
+        } on FalloBle catch (f) {
+          // 1.4.0: un fallo transitorio (ocupado, tiempo agotado) se reintenta una vez,
+          // solo si el enlace sigue activo (si ya se soltó, falla rápido y no frena la cola).
+          if (f.autorizacion || !identical(_activos[enlace.conexion.remoteId], enlace)) rethrow;
+          await Future<void>.delayed(esperaReintentoGatt);
+          await escribir();
+          reintentosOk++;
+        }
         _fallosEnvio[rol] = 0;
         _ultimoEnvioOk[rol] = DateTime.now();
         ok.complete(true);
@@ -506,6 +562,14 @@ class EcosistemaBle extends ChangeNotifier {
       }
     });
     return ok.future;
+  }
+
+  /// 1.4.0: alerta de salud al Reloj (vibra y muestra el texto) y a la TV (mensaje).
+  Future<void> alertarEquipos(String texto, {bool urgente = false}) async {
+    final t = texto.trim();
+    if (t.isEmpty) return;
+    final m = {'t': 'alert', 'lvl': urgente ? 'urgente' : 'aviso', 'msg': t.length > 120 ? t.substring(0, 120) : t};
+    await Future.wait([for (final r in RolBle.values) if (this[r].activo) enviar(r, m)]);
   }
 
   Future<bool> notificarReloj(String texto) {
@@ -527,7 +591,15 @@ class EcosistemaBle extends ChangeNotifier {
     }
   }
 
-  void marcarInicio() => _muestras.clear();
+  final Map<String, int> _msActividad = {};
+
+  void marcarInicio() {
+    _muestras.clear();
+    _msActividad.clear();
+    segundosPorActividad.clear();
+    alertasSesion = 0;
+    _ultimaLecturaEn = null;
+  }
 
   /// Resumen del reloj BLE para el historial (JSONB `metadata`).
   Map<String, Object> resumenSesion({String? deviceId}) {
@@ -544,6 +616,10 @@ class EcosistemaBle extends ChangeNotifier {
         'minHeartRate': m.reduce(min),
         'maxHeartRate': m.reduce(max),
         if (ultimaLectura?.steps != null) 'lastSteps': ultimaLectura!.steps!,
+        // 1.4.0: tiempo por actividad (s) y alertas de la sesión. Pulso simulado.
+        if (segundosPorActividad.isNotEmpty) 'activitySeconds': Map<String, int>.of(segundosPorActividad),
+        'alerts': alertasSesion,
+        'simulated': true,
       },
     };
   }

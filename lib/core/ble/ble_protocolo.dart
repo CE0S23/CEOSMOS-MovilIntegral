@@ -18,6 +18,8 @@ import 'dart:convert';
 
 import 'package:crypto/crypto.dart';
 
+import '../alertas_salud.dart' show actividadesReloj;
+
 /// Base común de los UUID (los 4 primeros dígitos hexadecimales cambian).
 const _sufijoUuid = '-9b1a-4c5e-8a10-ce05a0b1e000';
 
@@ -100,11 +102,15 @@ sealed class MensajeEntrante {
   const MensajeEntrante();
 }
 
-/// Lectura simulada del reloj (frecuencia cardiaca y pasos).
+/// Lectura simulada del reloj (frecuencia cardiaca, pasos y, desde 1.4.0, actividad).
 class LecturaReloj extends MensajeEntrante {
-  const LecturaReloj(this.hr, this.pasos);
+  const LecturaReloj(this.hr, this.pasos, [this.actividad]);
   final int hr;
   final int? pasos;
+
+  /// `act`: reposo, durmiendo, caminando, trotando o corriendo. Null si el Reloj es
+  /// anterior a 1.4.0 o envía un valor desconocido (se ignora, no invalida la lectura).
+  final String? actividad;
 }
 
 /// Comando del reloj (botón de acción) o de la TV (control remoto / D-pad).
@@ -144,7 +150,8 @@ MensajeEntrante? decodificar(List<int> bytes, RolBle rol) {
       if (pasos != null && (pasos is! int || pasos < 0 || pasos > 1000000)) {
         return null;
       }
-      return LecturaReloj(hr, pasos as int?);
+      final act = json['act'];
+      return LecturaReloj(hr, pasos as int?, act is String && actividadesReloj.contains(act) ? act : null);
     case 'btn' when rol == RolBle.reloj:
       final a = json['a'];
       return a is String && comandosReloj.contains(a) ? ComandoRemoto(a) : null;

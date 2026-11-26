@@ -76,6 +76,9 @@ object Protocolo {
         data class Saludo(val nombre: String) : Entrante()
         data object Adios : Entrante()
         data class Notificacion(val texto: String) : Entrante()
+
+        /** 1.4.0: alerta de salud que CEOSMOS reenvía al Reloj (vibra) y a la TV (mensaje). */
+        data class Alerta(val texto: String, val nivel: String) : Entrante()
         data class Sesion(
             val estado: String,
             val titulo: String,
@@ -88,6 +91,7 @@ object Protocolo {
     }
 
     private val estados = setOf("idle", "running", "paused")
+    private val nivelesAlerta = setOf("aviso", "urgente")
 
     fun decodificar(bytes: ByteArray, rol: Rol): Entrante? {
         if (bytes.isEmpty() || bytes.size > MAX_BYTES) return null
@@ -101,6 +105,10 @@ object Protocolo {
             "bye" -> Entrante.Adios
             "notif" -> if (rol != Rol.RELOJ) null else
                 j.optString("msg").trim().takeIf { it.isNotEmpty() && it.length <= 120 }?.let { Entrante.Notificacion(it) }
+            "alert" -> {
+                val nivel = j.optString("lvl", "aviso").takeIf { it in nivelesAlerta } ?: return null
+                j.optString("msg").trim().takeIf { it.isNotEmpty() && it.length <= 120 }?.let { Entrante.Alerta(it, nivel) }
+            }
             "session" -> {
                 val estado = j.optString("state")
                 val rem = j.optInt("rem", -1)
@@ -126,7 +134,12 @@ object Protocolo {
     // ------------------------------------------------------------------
 
     fun saludo(nombre: String) = JSONObject().put("t", "hello").put("name", nombre.take(30)).toString().toByteArray()
-    fun lectura(hr: Int, pasos: Int) = JSONObject().put("t", "hr").put("hr", hr).put("steps", pasos).toString().toByteArray()
+    /** Lectura del Reloj. `act` (1.4.0) es opcional: un CEOSMOS anterior lo ignora. */
+    fun lectura(hr: Int, pasos: Int, actividad: String? = null): ByteArray {
+        val j = JSONObject().put("t", "hr").put("hr", hr.coerceIn(30, 230)).put("steps", pasos)
+        if (actividad != null) j.put("act", actividad)
+        return j.toString().toByteArray()
+    }
     fun boton(accion: String) = JSONObject().put("t", "btn").put("a", accion).toString().toByteArray()
     fun comando(c: String) = JSONObject().put("t", "cmd").put("c", c).toString().toByteArray()
 }

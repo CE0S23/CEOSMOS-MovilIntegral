@@ -21,6 +21,7 @@ import io.flutter.plugin.common.MethodChannel
  */
 class MainActivity : FlutterActivity() {
     private var mobileConnect: MobileConnectChannels? = null
+    private var alertas: AlertasSalud? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,7 @@ class MainActivity : FlutterActivity() {
         AccesoSeguroChannel().register(messenger)
         mobileConnect = MobileConnectChannels(this).also { it.register(messenger) }
         ReportesFirestoreChannel(applicationContext).register(messenger)
+        alertas = AlertasSalud(this).also { it.registrar(messenger) }
 
         // Permiso de Bluetooth denegado de forma permanente: abre los ajustes de la app.
         MethodChannel(messenger, "ceosmos/sistema").setMethodCallHandler { call, result ->
@@ -73,6 +75,11 @@ class MainActivity : FlutterActivity() {
                 else -> result.notImplemented()
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        if (alertas?.alResponder(requestCode, grantResults) == true) return
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onDestroy() {

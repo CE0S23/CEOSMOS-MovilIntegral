@@ -142,6 +142,11 @@ void main() {
 
     ahora = ahora.add(const Duration(minutes: 2));
     tablet.enviar(RolBle.tv, {'t': 'cmd', 'c': 'stop'});
+    // 1.4.0: todas las escrituras GATT van en una sola cola por enlace (Reloj + TV);
+    // se espera por condición y no un tiempo fijo.
+    for (var i = 0; i < 200 && tablet.recibidos[RolBle.tv]!.last['state'] != 'idle'; i++) {
+      await Future<void>.delayed(const Duration(milliseconds: 10));
+    }
     await Future<void>.delayed(const Duration(milliseconds: 20));
     expect(state.hasSession, isFalse);
     final guardada = api.users.values.single.sessions.single;

@@ -2,6 +2,8 @@
     <!-- CEOSMOS (API) y prácticas con red: Firebase, ConsultaWeb, MediConnect, MobileConnect (TCP). -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- 1.4.0: notificación local de las alertas de salud (Android 13+ la pide en tiempo de ejecución). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <!-- Reloj y TV compañeros por Bluetooth LE: CEOSMOS es solo CENTRAL (escanea y conecta).
          Android 12+: BLUETOOTH_SCAN (sin derivar ubicación) y BLUETOOTH_CONNECT, pedidos en tiempo
          de ejecución. No se pide BLUETOOTH_ADVERTISE porque CEOSMOS no anuncia (mínimo privilegio).

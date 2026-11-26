@@ -9,6 +9,7 @@ import '../data/catalog.dart';
 import '../domain/models.dart';
 import '../practicas/registro_practicas.dart' show Seccion;
 import 'admin_screen.dart';
+import 'alertas_ui.dart';
 import 'funciones.dart';
 import 'theme.dart';
 import 'widgets.dart';
@@ -217,6 +218,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
           descripcion: 'Protege tu acceso y usa las herramientas incluidas en CEOSMOS.',
           seccion: Seccion.perfil,
         ),
+        const SizedBox(height: Espacio.m),
+        InterruptorAlertas(state: state),
         const SizedBox(height: 28),
         Row(
           children: [

@@ -76,7 +76,8 @@ void main() {
     expect(find.text('Ingresa la profesión.'), findsOneWidget);
     expect(find.text('Ingresa una edad entera entre 1 y 120.'), findsOneWidget);
     expect(find.text('Ingresa el correo.'), findsOneWidget);
-    for (final correo in ['sin-arroba', 'a@b', 'a b@c.mx']) {
+    // 1.4.0: el campo ya no deja escribir espacios (se limpian), así que no se prueban aquí.
+    for (final correo in ['sin-arroba', 'a@b']) {
       await tester.enterText(find.byType(TextFormField).at(3), correo);
       await pulsar(tester, 'REGISTRAR');
       expect(find.text('Ingresa un correo válido.'), findsOneWidget);

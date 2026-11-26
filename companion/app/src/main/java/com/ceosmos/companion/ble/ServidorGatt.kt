@@ -45,7 +45,14 @@ class ServidorGatt(
         fun alCambiar()
         fun alRecibir(rol: Rol, mensaje: Protocolo.Entrante)
         fun registro(texto: String)
+
+        /** Resultado final de una notificación con [etiqueta] (botón o tecla); null = lectura. */
+        fun alEntregar(rol: Rol, etiqueta: String?, ok: Boolean) {}
     }
+
+    /** 1.4.0: una notificación en vuelo a la vez (ver [ColaNotificaciones]); solo en el hilo principal. */
+    private val cola = ColaNotificaciones(MAX_INTENTOS_NOTIFICACION)
+    private val vencida = Runnable { terminarEnVuelo(ok = true, motivo = "sin confirmación a tiempo") }
 
     private val manager = contexto.getSystemService(BluetoothManager::class.java)
     private var servidor: BluetoothGattServer? = null
@@ -100,6 +107,7 @@ class ServidorGatt(
         anuncios.values.forEach { runCatching { adv?.stopAdvertising(it) } }
         anuncios.clear()
         anunciando.clear()
+        handler.post { vaciarColas() }
         conectados.values.forEach { runCatching { servidor?.cancelConnection(it) } }
         runCatching { servidor?.close() }
         servidor = null
@@ -107,25 +115,72 @@ class ServidorGatt(
         oyente.alCambiar()
     }
 
-    /** Envía [bytes] por notificación a cada central autenticado y suscrito al rol. */
-    fun notificar(rol: Rol, bytes: ByteArray): Int {
-        val s = servidor ?: return 0
-        val c = s.getService(rol.servicio)?.getCharacteristic(rol.deDispositivo) ?: return 0
-        var enviados = 0
-        for (clave in suscritos.filter { it.rol == rol && it in autenticados }) {
-            val d = conectados[clave.direccion] ?: continue
-            val ok = if (Build.VERSION.SDK_INT >= 33) {
-                // P13-14 (lint WrongConstant): esta sobrecarga devuelve BluetoothStatusCodes, no GATT_*.
-                s.notifyCharacteristicChanged(d, c, false, bytes) == BluetoothStatusCodes.SUCCESS
-            } else {
-                @Suppress("DEPRECATION")
-                c.value = bytes
-                @Suppress("DEPRECATION")
-                s.notifyCharacteristicChanged(d, c, false)
-            }
-            if (ok) enviados++
+    /**
+     * Encola [bytes] por notificación para cada central autenticado y suscrito al rol y
+     * devuelve cuántos destinatarios hay. Con [etiqueta] (botón/tecla) va por la cola
+     * prioritaria y el resultado llega en [Oyente.alEntregar]; sin ella es una lectura y
+     * sustituye a la lectura anterior aún no enviada (no se acumula atraso).
+     */
+    fun notificar(rol: Rol, bytes: ByteArray, etiqueta: String? = null): Int {
+        if (servidor == null) return 0
+        val destinos = suscritos.filter { it.rol == rol && it in autenticados && conectados.containsKey(it.direccion) }
+        handler.post {
+            for (clave in destinos) cola.encolar(ColaNotificaciones.Pendiente(clave.direccion, rol, bytes, etiqueta))
+            bombear()
         }
-        return enviados
+        return destinos.size
+    }
+
+    /** Envía la siguiente notificación si no hay otra en vuelo (siempre en el hilo principal). */
+    private fun bombear() {
+        val p = cola.tomar() ?: return
+        val s = servidor
+        val d = conectados[p.direccion]
+        val c = s?.getService(p.rol.servicio)?.getCharacteristic(p.rol.deDispositivo)
+        if (s == null || d == null || c == null) {
+            if (p.etiqueta != null) oyente.alEntregar(p.rol, p.etiqueta, false)
+            bombear()
+            return
+        }
+        val estado = if (Build.VERSION.SDK_INT >= 33) {
+            // P13-14 (lint WrongConstant): esta sobrecarga devuelve BluetoothStatusCodes, no GATT_*.
+            s.notifyCharacteristicChanged(d, c, false, p.bytes)
+        } else {
+            @Suppress("DEPRECATION")
+            c.value = p.bytes
+            @Suppress("DEPRECATION")
+            if (s.notifyCharacteristicChanged(d, c, false)) BluetoothStatusCodes.SUCCESS else ERROR_OCUPADO
+        }
+        if (estado == BluetoothStatusCodes.SUCCESS) {
+            cola.enviada(p)
+            handler.postDelayed(vencida, ESPERA_CONFIRMACION_MS)
+        } else if (cola.reintentar(p)) {
+            // Ocupado: se reintenta en breve sin perder el orden.
+            handler.postDelayed({ bombear() }, REINTENTO_MS)
+        } else {
+            oyente.registro("Notificación descartada tras ${p.intentos} intentos (estado $estado)")
+            if (p.etiqueta != null) oyente.alEntregar(p.rol, p.etiqueta, false)
+            bombear()
+        }
+    }
+
+    private fun terminarEnVuelo(ok: Boolean, motivo: String? = null) {
+        val p = cola.confirmar() ?: return
+        handler.removeCallbacks(vencida)
+        // Error en la confirmación: vuelve al frente de su cola (si quedan intentos).
+        val reintenta = !ok && conectados.containsKey(p.direccion) && cola.reintentar(p)
+        if (!reintenta) {
+            if (motivo != null) oyente.registro("Notificación: $motivo")
+            if (p.etiqueta != null) oyente.alEntregar(p.rol, p.etiqueta, ok)
+        }
+        bombear()
+    }
+
+    private fun vaciarColas(direccion: String? = null) {
+        val habiaEnVuelo = cola.enVuelo
+        val conEtiqueta = cola.vaciar(direccion)
+        if (habiaEnVuelo != null && cola.enVuelo == null) handler.removeCallbacks(vencida)
+        conEtiqueta.forEach { oyente.alEntregar(it.rol, it.etiqueta, false) }
     }
 
     // ------------------------------------------------------------------
@@ -282,6 +337,7 @@ class ServidorGatt(
                 oyente.registro("Central conectado")
             } else if (newState == BluetoothProfile.STATE_DISCONNECTED) {
                 conectados.remove(device.address)
+                handler.post { vaciarColas(device.address) }
                 roles.forEach {
                     val c = Clave(device.address, it)
                     retos.remove(c); autenticados.remove(c); suscritos.remove(c)
@@ -289,6 +345,12 @@ class ServidorGatt(
                 oyente.registro("Central desconectado")
             }
             oyente.alCambiar()
+        }
+
+        override fun onNotificationSent(device: BluetoothDevice, status: Int) {
+            handler.post {
+                if (cola.enVuelo?.direccion == device.address) terminarEnVuelo(status == BluetoothGatt.GATT_SUCCESS)
+            }
         }
 
         override fun onMtuChanged(device: BluetoothDevice, mtu: Int) {
@@ -385,6 +447,10 @@ class ServidorGatt(
 
     companion object {
         const val TAG = "CeosmosCompanion"
+        const val ERROR_OCUPADO = 201 // BluetoothStatusCodes.ERROR_GATT_WRITE_REQUEST_BUSY
+        const val MAX_INTENTOS_NOTIFICACION = 6
+        const val REINTENTO_MS = 40L
+        const val ESPERA_CONFIRMACION_MS = 1_000L
         fun log(texto: String) = Log.i(TAG, texto)
     }
 }

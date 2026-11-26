@@ -31,6 +31,12 @@ class PerifericoFalso {
   bool anunciando = true;
   ConexionFalsa? conexion;
 
+  /// 1.4.0: las próximas N escrituras de datos fallan una vez (radio ocupada).
+  int fallosTransitorios = 0;
+
+  /// Operaciones GATT simultáneas en el enlace (Android admite una sola).
+  int opsEnVuelo = 0, maxOpsEnVuelo = 0;
+
   List<int> manufacturer(RolBle r) => [
         r.codigo,
         for (var i = 0; i < 8; i += 2) int.parse(id.substring(i, i + 2), radix: 16),
@@ -127,8 +133,17 @@ class ConexionFalsa implements ConexionBle {
   @override
   Future<Set<String>> servicios() async => {for (final r in p.roles) r.servicio};
 
+  /// Marca una operación GATT en vuelo durante [ms] para detectar solapamientos.
+  Future<void> _ocupar([int ms = 0]) async {
+    p.opsEnVuelo++;
+    if (p.opsEnVuelo > p.maxOpsEnVuelo) p.maxOpsEnVuelo = p.opsEnVuelo;
+    await Future<void>.delayed(Duration(milliseconds: ms));
+    p.opsEnVuelo--;
+  }
+
   @override
   Future<List<int>> leer(String servicio, String caracteristica) async {
+    await _ocupar();
     if (cerrada) throw const FalloBle('desconectado');
     final rol = _rol(servicio);
     if (caracteristica != rol.auth) throw const FalloBle('no legible');
@@ -138,6 +153,7 @@ class ConexionFalsa implements ConexionBle {
 
   @override
   Future<void> escribir(String servicio, String caracteristica, List<int> datos) async {
+    await _ocupar();
     if (cerrada) throw const FalloBle('desconectado');
     final rol = _rol(servicio);
     if (caracteristica == rol.auth) {
@@ -153,6 +169,10 @@ class ConexionFalsa implements ConexionBle {
       throw const FalloBle('GATT_INSUFFICIENT_AUTHORIZATION', autorizacion: true);
     }
     if (p.escrituraRota) throw const FalloBle('GATT_ERROR 133');
+    if (p.fallosTransitorios > 0) {
+      p.fallosTransitorios--;
+      throw const FalloBle('GATT_BUSY');
+    }
     if (p.silencioso) return;
     if (!p.autenticados.contains(rol)) {
       throw const FalloBle('GATT_INSUFFICIENT_AUTHORIZATION', autorizacion: true);

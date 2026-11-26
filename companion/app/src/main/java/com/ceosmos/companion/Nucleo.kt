@@ -28,7 +28,6 @@ import java.security.SecureRandom
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-import kotlin.random.Random
 
 /** Estado que observa la interfaz. */
 data class Estado(
@@ -47,10 +46,35 @@ data class Estado(
     val hr: Int = 72,
     val pasos: Int = 0,
     val simulando: Boolean = true,
+    /** 1.4.0: modo de simulación elegido y actividad que se informa en `act`. */
+    val modo: ModoSimulacion = ModoSimulacion.REPOSO,
+    val actividad: Actividad = Actividad.REPOSO,
+    /** Origen de los pasos: simulados o un sensor real de la tablet. */
+    val pasosReales: Boolean = false,
+    val sensorPasos: String? = null,
+    /** Último botón/tecla: texto, si sigue en curso y si llegó (feedback visible). */
+    val envio: Envio? = null,
+    /** Última alerta de salud recibida de CEOSMOS. */
+    val alerta: String? = null,
+    val alertaUrgente: Boolean = false,
     val notificaciones: List<String> = emptyList(),
     val sesion: Protocolo.Entrante.Sesion? = null,
     val registro: List<String> = emptyList(),
 )
+
+/** Resultado visible de un botón del Reloj o una tecla de la TV. */
+data class Envio(val comando: String, val estado: EstadoEnvio, val instante: Long = System.currentTimeMillis())
+
+enum class EstadoEnvio { ENVIANDO, ENTREGADO, FALLIDO, SIN_CEOSMOS }
+
+/** Texto legible de cada comando (feedback en pantalla). */
+fun nombreComando(c: String) = when (c) {
+    "toggle" -> "Pausar / reanudar"
+    "stop" -> "Terminar"
+    "next" -> "Siguiente"
+    "prev" -> "Anterior"
+    else -> c
+}
 
 /**
  * Núcleo del compañero: PIN e id persistentes, servidor GATT, simulación de
@@ -65,6 +89,13 @@ object Nucleo : ServidorGatt.Oyente {
     private val main = Handler(Looper.getMainLooper())
     private val hora = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
     private var pinActual = ""
+    private val simulador = Simulador()
+    private val rebote = com.ceosmos.companion.ble.Rebote(REBOTE_MS)
+    private var sensores: SensorPasos? = null
+    private var simuladorPasosReales: Int? = null
+
+    /** Rebote: la misma tecla repetida en menos de este tiempo se ignora (doble disparo). */
+    const val REBOTE_MS = 350L
 
     val roles: List<Rol> = Rol.deLista(BuildConfig.ROLES)
 
@@ -116,12 +147,61 @@ object Nucleo : ServidorGatt.Oyente {
         _estado.value = _estado.value.copy(simulando = !_estado.value.simulando)
     }
 
-    /** Botón de acción del reloj o tecla del control de la TV. */
+    /** Cambia el modo de simulación (la transición del pulso es gradual). */
+    fun elegirModo(modo: ModoSimulacion) {
+        simulador.cambiarModo(modo)
+        _estado.value = _estado.value.copy(modo = modo, actividad = simulador.perfil().actividad)
+        registro("Simulación: ${modo.nombre}")
+    }
+
+    /** Qué sensor de pasos tiene el equipo (null = ninguno: solo simulación). */
+    fun sensorDisponible(): String? = SensorPasos.disponible(app)
+
+    /** Activa o desactiva los pasos del sensor real (el pulso sigue simulado). */
+    fun usarPasosReales(activar: Boolean) {
+        sensores?.detener()
+        sensores = null
+        simuladorPasosReales = null
+        if (!activar) {
+            _estado.value = _estado.value.copy(pasosReales = false, sensorPasos = null)
+            return
+        }
+        val s = SensorPasos(app) { pasos -> main.post { simuladorPasosReales = pasos } }
+        val tipo = s.iniciar()
+        if (tipo == null) {
+            _estado.value = _estado.value.copy(pasosReales = false, sensorPasos = null)
+            registro("Sin sensor de pasos: se mantiene la simulación")
+            return
+        }
+        sensores = s
+        simuladorPasosReales = 0
+        _estado.value = _estado.value.copy(pasosReales = true, sensorPasos = tipo)
+        registro("Pasos del sensor real ($tipo)")
+    }
+
+    /** Botón de acción del reloj o tecla del control de la TV (con rebote y feedback). */
     fun enviarComando(rol: Rol, comando: String): Boolean {
+        if (!rebote.permitir("${rol.etiqueta}:$comando", System.currentTimeMillis())) return false
         val bytes = if (rol == Rol.RELOJ) Protocolo.boton(comando) else Protocolo.comando(comando)
-        val n = servidor?.notificar(rol, bytes) ?: 0
-        registro(if (n > 0) "${rol.nombre} → CEOSMOS: $comando" else "Sin CEOSMOS conectado: '$comando' no se envió")
+        val n = servidor?.notificar(rol, bytes, etiqueta = comando) ?: 0
+        _estado.value = _estado.value.copy(envio = Envio(comando, if (n > 0) EstadoEnvio.ENVIANDO else EstadoEnvio.SIN_CEOSMOS))
+        registro(if (n > 0) "${rol.nombre} → CEOSMOS: $comando" else "Sin CEOSMOS conectado: «$comando» no se envió")
         return n > 0
+    }
+
+    override fun alEntregar(rol: Rol, etiqueta: String?, ok: Boolean) {
+        if (etiqueta == null) return
+        main.post {
+            val actual = _estado.value.envio
+            // Línea para scripts/medir_botones.sh (latencia pulsación → confirmación GATT).
+            if (actual?.comando == etiqueta) {
+                Log.i(ServidorGatt.TAG, "MEDICION ${rol.etiqueta} $etiqueta ${if (ok) "ok" else "fallo"} ${System.currentTimeMillis() - actual.instante} ms")
+            }
+            if (actual?.comando == etiqueta) {
+                _estado.value = _estado.value.copy(envio = actual.copy(estado = if (ok) EstadoEnvio.ENTREGADO else EstadoEnvio.FALLIDO))
+            }
+            if (!ok) registro("${rol.nombre}: «$etiqueta» no llegó a CEOSMOS")
+        }
     }
 
     private fun programarSimulacion() {
@@ -129,16 +209,15 @@ object Nucleo : ServidorGatt.Oyente {
             override fun run() {
                 val s = servidor ?: return
                 val e = _estado.value
-                if (Rol.RELOJ in roles && e.simulando && s.suscrito(Rol.RELOJ)) {
-                    // Lectura simulada: frecuencia con paseo aleatorio y pasos crecientes.
-                    val hr = (e.hr + Random.nextInt(-3, 4)).coerceIn(58, 110)
-                    val pasos = e.pasos + Random.nextInt(0, 6)
-                    _estado.value = e.copy(hr = hr, pasos = pasos)
-                    s.notificar(Rol.RELOJ, Protocolo.lectura(hr, pasos))
+                if (Rol.RELOJ in roles && e.simulando) {
+                    // Lectura simulada cada segundo según el modo (pulso SIMULADO, no médico).
+                    val l = simulador.paso(1.0, simuladorPasosReales)
+                    _estado.value = e.copy(hr = l.hr, pasos = l.pasos, actividad = l.actividad)
+                    if (s.suscrito(Rol.RELOJ)) s.notificar(Rol.RELOJ, Protocolo.lectura(l.hr, l.pasos, l.actividad.clave))
                 }
-                main.postDelayed(this, 2000)
+                main.postDelayed(this, 1000)
             }
-        }, 2000)
+        }, 1000)
     }
 
     // ---- ServidorGatt.Oyente ----
@@ -166,8 +245,10 @@ object Nucleo : ServidorGatt.Oyente {
                     notificaciones = (listOf("${hora.format(Date())}  ${mensaje.texto}") + e.notificaciones).take(5)
                 )
                 is Protocolo.Entrante.Sesion -> e.copy(sesion = mensaje)
+                is Protocolo.Entrante.Alerta -> e.copy(alerta = "${hora.format(Date())}  ${mensaje.texto}", alertaUrgente = mensaje.nivel == "urgente")
             }
             if (mensaje is Protocolo.Entrante.Notificacion) vibrar()
+            if (mensaje is Protocolo.Entrante.Alerta && rol == Rol.RELOJ) vibrar(patron = true)
             registro("CEOSMOS → ${rol.nombre}: ${mensaje::class.simpleName}")
         }
     }
@@ -180,11 +261,19 @@ object Nucleo : ServidorGatt.Oyente {
         }
     }
 
+    /** Descarta la alerta visible (botón «Entendido»). */
+    fun descartarAlerta() {
+        _estado.value = _estado.value.copy(alerta = null, alertaUrgente = false)
+    }
+
     @SuppressLint("MissingPermission")
-    private fun vibrar() {
+    private fun vibrar(patron: Boolean = false) {
         runCatching {
             val v = app.getSystemService(android.os.Vibrator::class.java)
-            v?.vibrate(android.os.VibrationEffect.createOneShot(200, android.os.VibrationEffect.DEFAULT_AMPLITUDE))
+            v?.vibrate(
+                if (patron) android.os.VibrationEffect.createWaveform(longArrayOf(0, 300, 150, 300, 150, 300), -1)
+                else android.os.VibrationEffect.createOneShot(200, android.os.VibrationEffect.DEFAULT_AMPLITUDE)
+            )
         }
     }
 }

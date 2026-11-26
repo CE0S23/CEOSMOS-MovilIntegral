@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 import '../data/api_client.dart';
@@ -10,6 +11,7 @@ import '../data/cache_sin_conexion.dart';
 import '../data/ceosmos_repository.dart';
 import '../data/token_store.dart';
 import '../domain/models.dart';
+import 'alertas_salud.dart';
 import 'ble/ble_protocolo.dart';
 import 'ble/ble_transporte.dart';
 import 'ble/ble_transporte_fbp.dart';
@@ -43,14 +45,19 @@ class AppState extends ChangeNotifier {
     bool startTicker = true,
     this.reintentos = const PoliticaReintento(),
     CacheSinConexion? cache,
+    NotificadorAlertas? notificador,
+    MotorAlertas? motorAlertas,
   }) : wearable = wearable ?? WearableClient(),
        cache = cache ?? CacheEnMemoria(),
        ble = ble ?? EcosistemaBle(transporte: const BleTransporteInactivo()),
+       notificador = notificador ?? const NotificadorNulo(),
+       motorAlertas = motorAlertas ?? MotorAlertas(),
        _now = now ?? DateTime.now {
     auth.api.onUnauthorized = _sesionVencida;
     this.ble
       ..estadoSesion = _estadoSesionBle
-      ..alComando = _comandoBle;
+      ..alComando = _comandoBle
+      ..alLeer = _evaluarLectura;
     if (startTicker) {
       _ticker = Timer.periodic(const Duration(seconds: 1), (_) => tick());
     }
@@ -64,7 +71,79 @@ class AppState extends ChangeNotifier {
       data: CeosmosRepository(api),
       ble: EcosistemaBle(transporte: BleTransporteFbp(), pines: AlmacenPinSeguro(), latido: const Duration(seconds: 5)),
       cache: CachePreferencias(),
-    );
+      notificador: !kIsWeb && defaultTargetPlatform == TargetPlatform.android ? NotificadorAndroid() : null,
+    )..cargarPreferenciaAlertas();
+  }
+
+  // ---------------------------------------------------------------------------
+  // Alertas de salud (1.4.0). El pulso del Reloj es SIMULADO: no es una medición médica.
+  // ---------------------------------------------------------------------------
+
+  final NotificadorAlertas notificador;
+  final MotorAlertas motorAlertas;
+  static const _claveAlertas = 'ceosmos.alertas_salud';
+
+  /// Interruptor de Perfil › Cuenta y herramientas (activado por omisión).
+  bool alertasActivadas = true;
+
+  /// Alerta vigente (la muestran Inicio y el aviso interno) y la pendiente de anunciar.
+  AlertaSalud? alertaActiva;
+  AlertaSalud? _alertaNueva;
+
+  /// Historial corto de alertas de la sesión (también va al resumen de la sesión).
+  final List<AlertaSalud> alertasRecientes = [];
+
+  Future<void> cargarPreferenciaAlertas() async {
+    try {
+      final p = await SharedPreferences.getInstance();
+      alertasActivadas = p.getBool(_claveAlertas) ?? true;
+      _changed();
+    } catch (_) {
+      // Sin almacenamiento: queda el valor por omisión.
+    }
+  }
+
+  /// Activa o desactiva las alertas. Al activarlas pide el permiso de notificaciones
+  /// (Android 13+) y devuelve si se concedió; sin él siguen el aviso interno, el
+  /// Reloj y la TV.
+  Future<bool> setAlertasActivadas(bool valor) async {
+    alertasActivadas = valor;
+    if (!valor) alertaActiva = null;
+    _changed();
+    try {
+      final p = await SharedPreferences.getInstance();
+      await p.setBool(_claveAlertas, valor);
+    } catch (_) {}
+    return valor ? notificador.pedirPermiso() : false;
+  }
+
+  /// Toma la alerta recién emitida (una sola vez) para el aviso dentro de la app.
+  AlertaSalud? tomarAlertaNueva() {
+    final a = _alertaNueva;
+    _alertaNueva = null;
+    return a;
+  }
+
+  void descartarAlerta() {
+    alertaActiva = null;
+    _changed();
+  }
+
+  void _evaluarLectura(WearableLectura l) {
+    // Una alerta vieja deja de estar «activa» a los 2 minutos.
+    final activa = alertaActiva;
+    if (activa != null && l.at.difference(activa.at) > const Duration(minutes: 2)) alertaActiva = null;
+    if (!alertasActivadas) return;
+    final a = motorAlertas.evaluar(l.heartRate, l.actividad, l.at);
+    if (a == null) return;
+    alertaActiva = a;
+    _alertaNueva = a;
+    alertasRecientes.insert(0, a);
+    if (alertasRecientes.length > 10) alertasRecientes.removeLast();
+    ble.alertasSesion++;
+    unawaited(notificador.mostrar(a));
+    unawaited(ble.alertarEquipos(a.texto, urgente: a.urgente));
+    _changed();
   }
 
   final AuthRepository auth;
@@ -409,6 +488,7 @@ class AppState extends ChangeNotifier {
     _runningSince = _startedAt;
     wearable.marcarInicio();
     ble.marcarInicio();
+    motorAlertas.reiniciarSesion();
     _changed();
     ble.publicarSesion();
     unawaited(ble.notificarReloj('Sesión iniciada: ${item.title} · $minutes min'));
@@ -651,6 +731,7 @@ class AppState extends ChangeNotifier {
   Future<ResultadoConexion> connectBle(RolBle rol, {String? pin}) async {
     final r = await ble.conectar(rol, pin: pin, idCompanero: _idGuardado(rol));
     if (r != ResultadoConexion.conectado) return r;
+    if (rol == RolBle.reloj && !hasSession) motorAlertas.reiniciarSesion();
     final id = ble[rol].idCompanero;
     if (id == null) return r;
     try {
