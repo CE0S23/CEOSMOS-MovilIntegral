@@ -462,7 +462,7 @@ class _ConversationPageState extends State<ConversationPage> with WidgetsBinding
           ],
         ],
         Row(children: [
-          Expanded(child: Text('A: ${session.count(DeviceId.a)}  ·  B: ${session.count(DeviceId.b)} enviados')),
+          Expanded(child: Text('Enviados · A: ${session.count(DeviceId.a)}  ·  B: ${session.count(DeviceId.b)}')),
           TextButton.icon(
             onPressed: session.sending || session.clearing || session.resetPending
                 ? null : session.clearHistory,

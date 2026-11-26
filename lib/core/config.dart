@@ -30,7 +30,7 @@ class AppConfig {
   }) {
     if (definida.isNotEmpty) return definida;
     if (release) return produccion;
-    return android ? 'http://10.0.2.2:8080/api' : 'http://localhost:8080/api';
+    return android ? 'http://10.0.2.2:8081/api' : 'http://localhost:8081/api';
   }
 
   /// Límite de la caché local de imágenes (reporte de avances: 150–200 MB, LRU).

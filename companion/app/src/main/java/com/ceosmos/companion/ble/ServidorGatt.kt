@@ -158,7 +158,7 @@ class ServidorGatt(
             // Ocupado: se reintenta en breve sin perder el orden.
             handler.postDelayed({ bombear() }, REINTENTO_MS)
         } else {
-            oyente.registro("Notificación descartada tras ${p.intentos} intentos (estado $estado)")
+            oyente.registro("Notificación descartada tras ${com.ceosmos.companion.Plural.contar(p.intentos, "intento", "intentos")} (estado $estado)")
             if (p.etiqueta != null) oyente.alEntregar(p.rol, p.etiqueta, false)
             bombear()
         }

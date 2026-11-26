@@ -181,8 +181,8 @@ class IncidenciasViewModel(app: Application) : AndroidViewModel(app) {
                 val instantanea = repo.consultar()
                 procesar(instantanea, "consulta manual")
                 val origen = if (instantanea.desdeCache) "caché local (sin conexión)" else "servidor"
-                registrar("Consulta: ${instantanea.incidencias.size} incidencias desde $origen en ${SystemClock.elapsedRealtime() - inicio} ms", TipoEvento.LOCAL)
-                _avisos.tryEmit("Consulta desde $origen: ${instantanea.incidencias.size} incidencias")
+                registrar("Consulta: ${com.ceosmos.practicas.Plural.contar(instantanea.incidencias.size, "incidencia", "incidencias")} desde $origen en ${SystemClock.elapsedRealtime() - inicio} ms", TipoEvento.LOCAL)
+                _avisos.tryEmit("Consulta desde $origen: ${com.ceosmos.practicas.Plural.contar(instantanea.incidencias.size, "incidencia", "incidencias")}")
             } catch (e: Exception) {
                 registrar("Consulta fallida: ${mensajeError(e)}", TipoEvento.ERROR)
                 _avisos.tryEmit("No se pudo consultar: ${mensajeError(e)}")
@@ -211,7 +211,7 @@ class IncidenciasViewModel(app: Application) : AndroidViewModel(app) {
 
         if (previas == null) {
             val fuente = if (instantanea.desdeCache) "caché" else "servidor"
-            registrar("Estado inicial de \"$COLECCION_VISIBLE\": ${nuevas.size} documentos ($fuente, $origen)", TipoEvento.LOCAL)
+            registrar("Estado inicial de \"$COLECCION_VISIBLE\": ${com.ceosmos.practicas.Plural.contar(nuevas.size, "documento", "documentos")} ($fuente, $origen)", TipoEvento.LOCAL)
             return
         }
         for (b in nuevas) {

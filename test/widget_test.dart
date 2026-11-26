@@ -84,7 +84,7 @@ void main() {
 
     await tester.tap(find.byIcon(Icons.person_outline_rounded).last);
     await tester.pumpAndSettle();
-    expect(find.text('1 sesiones'), findsOneWidget);
+    expect(find.text('1 sesión'), findsOneWidget);
     await tester.ensureVisible(find.text('Cerrar sesión'));
     await tester.tap(find.text('Cerrar sesión'));
     await tester.pumpAndSettle();

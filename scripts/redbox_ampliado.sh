@@ -4,7 +4,7 @@
 # JWT_SECRET de PRUEBA desechable (no el de producción); su ruta se pasa en
 # JWT_PRUEBA_ARCHIVO para fabricar tokens expirados o de usuarios inexistentes.
 #   JWT_PRUEBA_ARCHIVO=/ruta/secreto.txt bash scripts/redbox_ampliado.sh > evidencias/blindaje/redbox_ampliado.txt
-API="${1:-http://127.0.0.1:8080/api}"
+API="${1:-http://127.0.0.1:8081/api}"
 case "$API" in *127.0.0.1*|*localhost*) ;; *) echo "Solo API local"; exit 1;; esac
 PASS='P11#Carga2026'
 j() { python -c 'import sys,json;d=json.load(sys.stdin);print(d.get(sys.argv[1],""))' "$1" 2>/dev/null; }

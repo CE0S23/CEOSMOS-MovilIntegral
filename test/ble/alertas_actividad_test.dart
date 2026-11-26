@@ -104,29 +104,70 @@ void main() {
       expect(a?.tipo, TipoAlerta.pulsoBajo);
     });
 
-    test('una lectura normal reinicia el conteo sostenido', () {
+    test('volver a lo normal más de 2 s reinicia el conteo sostenido; un solo segundo no', () {
       final m = MotorAlertas();
       for (var s = 0; s < 9; s++) {
         m.evaluar(160, 'reposo', seg(s));
       }
-      expect(m.evaluar(70, 'reposo', seg(9)), isNull);
-      expect(m.evaluar(160, 'reposo', seg(10)), isNull, reason: 'vuelve a empezar');
+      for (var s = 9; s <= 12; s++) {
+        expect(m.evaluar(70, 'reposo', seg(s)), isNull);
+      }
+      expect(m.evaluar(160, 'reposo', seg(13)), isNull, reason: 'vuelve a empezar');
+      final m2 = MotorAlertas();
+      for (var s = 0; s < 9; s++) {
+        m2.evaluar(160, 'reposo', seg(s));
+      }
+      expect(m2.evaluar(70, 'reposo', seg(9)), isNull);
+      expect(m2.evaluar(160, 'reposo', seg(10))?.tipo, TipoAlerta.pulsoAlto, reason: 'una lectura suelta es ruido');
     });
 
-    test('enfriamiento de 60 s por tipo y tope por sesión', () {
-      final m = MotorAlertas(topePorSesion: 2);
-      var emitidas = 0;
-      for (var s = 0; s < 200; s++) {
-        if (m.evaluar(160, 'reposo', seg(s)) != null) emitidas++;
-        if (s == 59) expect(emitidas, 1, reason: 'una sola en el primer minuto');
+    test('una alerta por episodio, recordatorio a los 5 min y enfriamiento por tipo', () {
+      final m = MotorAlertas();
+      final emitidas = <int>[];
+      for (var s = 0; s < 400; s++) {
+        if (m.evaluar(160, 'reposo', seg(s)) != null) emitidas.add(s);
       }
-      expect(emitidas, 2, reason: 'tope por sesión');
-      m.reiniciarSesion();
-      AlertaSalud? otra;
-      for (var s = 300; s <= 310; s++) {
-        otra ??= m.evaluar(160, 'reposo', seg(s));
+      expect(emitidas, [10, 310], reason: 'episodio sostenido: una al inicio y un recordatorio');
+    });
+
+    test('sin tope compartido: 12 episodios de distinto tipo en la misma sesión alertan todos', () {
+      final m = MotorAlertas();
+      var s = 0, emitidas = 0;
+      for (var i = 0; i < 12; i++) {
+        final hr = [160, 200, 40][i % 3];
+        for (var k = 0; k < 15; k++) {
+          if (m.evaluar(hr, 'reposo', seg(s++)) != null) emitidas++;
+        }
+        for (var k = 0; k < 70; k++) {
+          m.evaluar(70, 'reposo', seg(s++));
+        }
       }
-      expect(otra, isNotNull);
+      expect(emitidas, 12);
+    });
+
+    test('histéresis: el ruido de ±1 bpm en el umbral no reinicia el «sostenido»', () {
+      final m = MotorAlertas();
+      AlertaSalud? a;
+      for (var s = 0; s < 12 && a == null; s++) {
+        a = m.evaluar(s.isEven ? 45 : 46, 'reposo', seg(s));
+      }
+      expect(a?.tipo, TipoAlerta.pulsoBajo);
+      final m2 = MotorAlertas();
+      AlertaSalud? b;
+      for (var s = 0; s < 12 && b == null; s++) {
+        b = m2.evaluar(s.isEven ? 184 : 186, 'reposo', seg(s));
+      }
+      expect(b, isNotNull, reason: 'alto ↔ muy alto no corta el episodio');
+    });
+
+    test('muy alto no se repite como alto en el mismo episodio', () {
+      final m = MotorAlertas();
+      final tipos = <TipoAlerta>[];
+      for (var s = 0; s < 50; s++) {
+        final a = m.evaluar(200, 'reposo', seg(s));
+        if (a != null) tipos.add(a.tipo);
+      }
+      expect(tipos, [TipoAlerta.pulsoMuyAlto]);
     });
 
     test('sin actividad (Reloj antiguo) solo aplican muy alto y bajo', () {

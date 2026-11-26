@@ -7,7 +7,7 @@ api=https://ceosmos-api.vercel.app/api
 servir=0
 for a in "$@"; do
   case "$a" in
-    --local) api=http://localhost:8080/api ;;
+    --local) api=http://localhost:8081/api ;;
     --servir) servir=1 ;;
   esac
 done

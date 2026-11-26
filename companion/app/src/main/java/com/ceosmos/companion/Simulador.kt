@@ -37,8 +37,12 @@ enum class ModoSimulacion(
     CAMINANDO("Caminando", Actividad.CAMINANDO, 85, 105, 100),
     TROTANDO("Trotando", Actividad.TROTANDO, 120, 145, 150),
     CORRIENDO("Corriendo", Actividad.CORRIENDO, 150, 175, 170),
-    ALTA("Frecuencia alta", Actividad.REPOSO, 150, 190, 0, alerta = true),
-    BAJA("Frecuencia baja", Actividad.REPOSO, 35, 45, 0, alerta = true),
+    // 1.4.0: rangos lejos de los umbrales de CEOSMOS (alto > 100 en reposo, muy alto ≥ 185,
+    // bajo ≤ 45) para que cada modo dé SIEMPRE su alerta; antes «alta» (150–190) mezclaba
+    // alto y muy alto y «baja» (35–45) rozaba el umbral.
+    ALTA("Frecuencia alta", Actividad.REPOSO, 125, 175, 0, alerta = true),
+    MUY_ALTA("Frecuencia muy alta", Actividad.REPOSO, 190, 210, 0, alerta = true),
+    BAJA("Frecuencia baja", Actividad.REPOSO, 36, 43, 0, alerta = true),
     AUTOMATICO("Automático", Actividad.REPOSO, 60, 75, 0);
 
     companion object {
@@ -91,7 +95,9 @@ class Simulador(private val azar: Random = Random.Default, hrInicial: Int = 70) 
             objetivo = p.hrMin + azar.nextDouble() * (p.hrMax - p.hrMin)
             segundosObjetivo = 8.0 + azar.nextDouble() * 4.0
         }
-        val delta = (objetivo - hr).coerceIn(-MAX_CAMBIO_POR_SEG * dt, MAX_CAMBIO_POR_SEG * dt)
+        // Los modos de alerta cambian más rápido (8 bpm/s) para no tardar ~30 s en llegar.
+        val maxCambio = (if (p.alerta) MAX_CAMBIO_ALERTA_POR_SEG else MAX_CAMBIO_POR_SEG) * dt
+        val delta = (objetivo - hr).coerceIn(-maxCambio, maxCambio)
         hr = (hr + delta + (azar.nextDouble() * 2 - 1) * RUIDO).coerceIn(HR_MIN.toDouble(), HR_MAX.toDouble())
         if (pasosReales != null) {
             pasos = pasosReales
@@ -109,6 +115,7 @@ class Simulador(private val azar: Random = Random.Default, hrInicial: Int = 70) 
         const val HR_MIN = 30
         const val HR_MAX = 230
         const val MAX_CAMBIO_POR_SEG = 4.0
+        const val MAX_CAMBIO_ALERTA_POR_SEG = 8.0
         const val RUIDO = 1.0
     }
 }

@@ -3,7 +3,7 @@
 
   Uso:
     powershell -ExecutionPolicy Bypass -File scripts\construir_pwa.ps1            # API de producción
-    powershell -ExecutionPolicy Bypass -File scripts\construir_pwa.ps1 -Local     # API local (localhost:8080)
+    powershell -ExecutionPolicy Bypass -File scripts\construir_pwa.ps1 -Local     # API local (localhost:8081)
     powershell -ExecutionPolicy Bypass -File scripts\construir_pwa.ps1 -Servir    # y la sirve en http://localhost:4200
 
   - --no-web-resources-cdn: CanvasKit se sirve desde la propia PWA (no desde gstatic),
@@ -17,7 +17,7 @@ $ErrorActionPreference = 'Stop'
 $raiz = Split-Path -Parent $PSScriptRoot
 Push-Location $raiz
 try {
-  $api = if ($Local) { 'http://localhost:8080/api' } else { 'https://ceosmos-api.vercel.app/api' }
+  $api = if ($Local) { 'http://localhost:8081/api' } else { 'https://ceosmos-api.vercel.app/api' }
   flutter build web --release --no-web-resources-cdn --no-wasm-dry-run "--dart-define=CEOSMOS_API_URL=$api"
   if ($LASTEXITCODE -ne 0) { throw 'Falló flutter build web' }
   python scripts\pwa_precache.py build\web

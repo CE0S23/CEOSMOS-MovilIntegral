@@ -56,6 +56,27 @@ class SimuladorTest {
         }
     }
 
+    /** Regresión 1.4.0: cada modo de alerta queda lejos del umbral de CEOSMOS (±1 bpm de ruido). */
+    @Test fun modosDeAlertaLejosDeLosUmbrales() {
+        (1..5).forEach { semilla ->
+            assertTrue(regimen(ModoSimulacion.ALTA, 300, semilla).all { it.hr in 104..182 })
+            assertTrue(regimen(ModoSimulacion.MUY_ALTA, 300, semilla).all { it.hr >= 187 })
+            assertTrue(regimen(ModoSimulacion.BAJA, 300, semilla).all { it.hr <= 44 })
+        }
+    }
+
+    /** Regresión 1.4.0: desde reposo, el modo de alerta cruza el umbral en menos de 15 s. */
+    @Test fun modosDeAlertaLleganRapidoAlUmbral() {
+        fun segundosHasta(modo: ModoSimulacion, cumple: (Int) -> Boolean): Int {
+            val s = Simulador(Random(9), hrInicial = 70)
+            s.cambiarModo(modo)
+            return (1..60).first { cumple(s.paso().hr) }
+        }
+        assertTrue(segundosHasta(ModoSimulacion.MUY_ALTA) { it >= 185 } <= 16)
+        assertTrue(segundosHasta(ModoSimulacion.ALTA) { it > 100 } <= 8)
+        assertTrue(segundosHasta(ModoSimulacion.BAJA) { it <= 45 } <= 8)
+    }
+
     @Test fun automaticoRecorreElCiclo() {
         val s = Simulador(Random(5))
         s.cambiarModo(ModoSimulacion.AUTOMATICO)

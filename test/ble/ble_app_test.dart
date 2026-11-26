@@ -63,7 +63,7 @@ void main() {
 
     tablet.enviar(RolBle.reloj, {'t': 'hr', 'hr': 77, 'steps': 900});
     await tester.pumpAndSettle();
-    expect(find.text('77 bpm · 900 pasos · 1 lecturas'), findsOneWidget);
+    expect(find.text('77 bpm · 900 pasos · 1 lectura'), findsOneWidget);
 
     await tester.tap(find.text('Enviar al reloj'));
     await tester.pumpAndSettle();

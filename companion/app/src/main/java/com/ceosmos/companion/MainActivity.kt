@@ -324,9 +324,9 @@ private fun PantallaReloj(e: Estado, cambiarModo: (() -> Unit)?, alternarSensor:
                     )
                 } else {
                     Text("♥ ${e.hr}", color = p.tinta, style = t.displayLarge.copy(fontFeatureSettings = Tabulares), modifier = Modifier.testTag("pulso"))
-                    Text("bpm simulado · ${e.pasos} pasos", color = p.textoSecundario, style = t.bodyMedium)
+                    Text("bpm simulado · ${Plural.contar(e.pasos, "paso", "pasos")}", color = p.textoSecundario, style = t.bodyMedium)
                 }
-                if (s != null && s.estado != "idle") Text("♥ ${e.hr} bpm simulado · ${e.pasos} pasos", color = p.exito, style = t.labelMedium)
+                if (s != null && s.estado != "idle") Text("♥ ${e.hr} bpm simulado · ${Plural.contar(e.pasos, "paso", "pasos")}", color = p.exito, style = t.labelMedium)
                 Text(e.actividad.nombre, color = p.enlace, style = t.labelLarge, modifier = Modifier.testTag("actividad"))
                 Spacer(Modifier.height(8.dp))
                 // Primario: guinda con texto blanco (en oscuro, guinda aclarado con texto guinda).

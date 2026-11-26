@@ -3,6 +3,7 @@ import '../core/app_state.dart';
 import '../core/sound_controller.dart';
 import 'theme.dart';
 import 'widgets.dart';
+import '../core/plural.dart';
 
 class SessionScreen extends StatelessWidget {
   const SessionScreen({
@@ -182,7 +183,7 @@ class SessionScreen extends StatelessWidget {
                 ),
                 const SizedBox(height: Espacio.l + 2),
                 Text(
-                  'Objetivo: ${state.targetMinutes} minutos',
+                  'Objetivo: ${contar(state.targetMinutes, 'minuto', 'minutos')}',
                   style: context.texto.bodySmall?.copyWith(
                     color: CeosmosColores.guindaClaro,
                   ),

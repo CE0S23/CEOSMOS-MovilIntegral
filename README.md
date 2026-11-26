@@ -17,10 +17,10 @@ Seguridad de la cuenta, Directorio, Citas), cada una con su propia base de datos
 # 1. Emulador
 & "$env:LOCALAPPDATA\Android\Sdk\emulator\emulator.exe" -avd Pixel_6 -memory 3072
 
-# 2. Backend (PostgreSQL local 5433 + API 8080 + MediConnect 3443 + adb reverse)
+# 2. Backend (PostgreSQL local 5433 + API 8081 + MediConnect 3443 + adb reverse)
 powershell -ExecutionPolicy Bypass -File scripts\dev_backend.ps1
 
-# 3. App (la API se toma de http://10.0.2.2:8080/api)
+# 3. App (la API se toma de http://10.0.2.2:8081/api)
 flutter pub get
 flutter run -d emulator-5554
 ```
@@ -61,7 +61,7 @@ flutter test integration_test/critical_flow_test.dart -d emulator-5554 `
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\construir_pwa.ps1 -Servir          # API de producción
-powershell -ExecutionPolicy Bypass -File scripts\construir_pwa.ps1 -Local -Servir   # API local (8080)
+powershell -ExecutionPolicy Bypass -File scripts\construir_pwa.ps1 -Local -Servir   # API local (8081)
 ```
 
 - Abre `http://localhost:4200` en Chrome o Edge y pulsa **Instalar**. El puerto 4200 ya está

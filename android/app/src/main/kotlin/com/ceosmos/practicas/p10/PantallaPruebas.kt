@@ -51,7 +51,7 @@ fun PantallaSeguridad(vm: IncidenciasViewModel) {
                 Dato("UID", vm.uid)
                 Dato("Otro usuario", otro?.correo ?: "— (inicia sesión con la otra cuenta)")
                 Dato("UID ajeno", otro?.uid ?: "—")
-                Dato("Ids ajenos", "${vm.ajenas.size} conocidos")
+                Dato("Ids ajenos", com.ceosmos.practicas.Plural.contar(vm.ajenas.size, "conocido", "conocidos"))
                 Dato("Asignadas a mí", "${vm.asignadas.size}")
             }
         }

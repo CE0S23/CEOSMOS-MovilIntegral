@@ -7,6 +7,7 @@ import '../core/ble/ble_transporte.dart';
 import '../core/ble/ecosistema_ble.dart';
 import 'theme.dart';
 import 'widgets.dart';
+import '../core/plural.dart';
 
 const _sistema = MethodChannel('ceosmos/sistema');
 
@@ -209,8 +210,8 @@ class _TarjetaBleState extends State<_TarjetaBle> {
             else
               Text(
                 '${ble.ultimaLectura!.heartRate} bpm'
-                '${ble.ultimaLectura!.steps == null ? '' : ' · ${ble.ultimaLectura!.steps} pasos'}'
-                ' · ${ble.muestras.length} lecturas',
+                '${ble.ultimaLectura!.steps == null ? '' : ' · ${contar(ble.ultimaLectura!.steps!, 'paso', 'pasos')}'}'
+                ' · ${contar(ble.muestras.length, 'lectura', 'lecturas')}',
                 key: const Key('ble-lectura'),
                 style: context.texto.titleMedium,
               ),

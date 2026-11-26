@@ -9,6 +9,7 @@ import '../../data/models/models.dart';
 import '../../data/repositories/repositories.dart';
 import '../state/app_state.dart';
 import '../../../../core/sin_espacios.dart';
+import '../../../../core/plural.dart';
 
 final _fmt = DateFormat('dd/MM/yyyy HH:mm');
 
@@ -168,7 +169,7 @@ class _AppointmentsScreenState extends State<AppointmentsScreen> {
             )),
           if (_page!.omitted > 0)
             Padding(padding: const EdgeInsets.only(top: 8),
-                child: Text('${_page!.omitted} registro(s) con formato inválido se omitieron.',
+                child: Text('${contar(_page!.omitted, 'registro', 'registros')} con formato inválido ${palabra(_page!.omitted, 'se omitió', 'se omitieron')}.',
                     style: Theme.of(context).textTheme.bodySmall)),
         ],
       ]),

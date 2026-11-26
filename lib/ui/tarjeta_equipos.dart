@@ -8,6 +8,7 @@ import '../core/ble/ble_protocolo.dart';
 import '../core/ble/ecosistema_ble.dart';
 import 'theme.dart';
 import 'widgets.dart';
+import '../core/plural.dart';
 
 /// Estado visible de un equipo en la tarjeta.
 enum EstadoEquipo { conectado, reconectando, sinConexion }
@@ -153,7 +154,7 @@ class _TarjetaEquiposState extends State<TarjetaEquipos> {
             key: const ValueKey('lectura-reloj'),
             container: true,
             label: 'Pulso simulado ${l.heartRate} latidos por minuto'
-                '${l.steps == null ? '' : ', ${l.steps} pasos'}'
+                '${l.steps == null ? '' : ', ${contar(l.steps!, 'paso', 'pasos')}'}'
                 ', actividad ${nombreActividad(l.actividad)}, última lectura $hace',
             excludeSemantics: true,
             child: Column(
@@ -183,7 +184,7 @@ class _TarjetaEquiposState extends State<TarjetaEquipos> {
                   spacing: Espacio.l,
                   runSpacing: Espacio.xs,
                   children: [
-                    _Dato(icono: Icons.directions_walk_rounded, texto: '${l.steps ?? '—'} pasos'),
+                    _Dato(icono: Icons.directions_walk_rounded, texto: l.steps == null ? '— pasos' : contar(l.steps!, 'paso', 'pasos')),
                     _Dato(icono: Icons.directions_run_rounded, texto: nombreActividad(l.actividad)),
                     _Dato(
                       icono: Icons.schedule_rounded,

@@ -5,6 +5,7 @@ import 'usuario.dart';
 import 'usuario_dao.dart';
 import '../../../core/sin_espacios.dart';
 import '../../../ui/widgets.dart' show Aviso;
+import '../../../core/plural.dart';
 
 /// [CEOSMOS] Práctica 4, caso 4: el correo es obligatorio y con formato válido.
 String? validarCorreoUsuario(String? valor) {
@@ -259,7 +260,7 @@ class _UsuariosPageState extends State<UsuariosPage> {
               child: ListTile(
                 title: Text(usuario.nombre),
                 subtitle: Text(
-                  '${usuario.edad} años · ${usuario.profesion}'
+                  '${contar(usuario.edad, 'año', 'años')} · ${usuario.profesion}'
                   '${(usuario.correo ?? '').isEmpty ? '' : '\n${usuario.correo}'}',
                 ),
                 onTap: habilitado ? () => _seleccionar(usuario) : null,

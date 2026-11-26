@@ -5,6 +5,7 @@ import '../domain/models.dart';
 import 'tarjeta_equipos.dart';
 import 'theme.dart';
 import 'widgets.dart';
+import '../core/plural.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -286,7 +287,7 @@ class _HomeScreenState extends State<HomeScreen> {
               style: TextStyle(color: context.paleta.textoSecundario),
             ),
             Text(
-              '${state.totalSessions} sesiones guardadas',
+              contar(state.totalSessions, 'sesión guardada', 'sesiones guardadas'),
               style: TextStyle(color: context.paleta.textoSecundario),
             ),
             Text(

@@ -91,4 +91,52 @@ void main() {
     expect(campo.controller.text, 'Clave#1');
     await tester.pumpAndSettle(const Duration(seconds: 4));
   });
+
+  testWidgets('Dentro de un diálogo el aviso queda por encima de la capa oscura, con ícono visible y región viva',
+      (tester) async {
+    SinEspacios.reiniciarAviso();
+    final semantica = tester.ensureSemantics();
+    late BuildContext pagina;
+    await tester.pumpWidget(MaterialApp(
+      theme: ThemeData(colorSchemeSeed: const Color(0xFF3949AB)),
+      home: Scaffold(body: Builder(builder: (c) {
+        pagina = c;
+        return const SizedBox.expand();
+      })),
+    ));
+    showDialog<void>(
+      context: pagina,
+      builder: (c) => AlertDialog(
+        content: TextField(key: const ValueKey('campo'), inputFormatters: SinEspacios.formateadores(pagina)),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('campo')), 'a b');
+    await tester.pump();
+    final aviso = find.byKey(const ValueKey('aviso-sin-espacios'));
+    expect(aviso, findsOneWidget);
+    // Lo que se toca en el centro del aviso es el aviso, no la barrera del diálogo.
+    final centro = tester.getCenter(aviso);
+    final golpe = tester.hitTestOnBinding(centro);
+    final dentro = find.descendant(of: aviso, matching: find.byType(Material)).evaluate().single.renderObject!;
+    expect(golpe.path.any((e) => identical(e.target, dentro)), isTrue, reason: 'el aviso está por encima de la capa oscura');
+    // Ícono con color propio (contraste con el fondo del aviso).
+    final icono = tester.widget<Icon>(find.descendant(of: aviso, matching: find.byIcon(Icons.space_bar)));
+    final fondo = tester.widget<Material>(find.descendant(of: aviso, matching: find.byType(Material))).color!;
+    expect(icono.color, isNotNull);
+    expect(_contraste(icono.color!, fondo), greaterThanOrEqualTo(4.5));
+    // Región viva con el mensaje para el lector de pantalla.
+    final nodo = tester.getSemantics(aviso);
+    expect(nodo.getSemanticsData().flagsCollection.isLiveRegion, isTrue);
+    expect(nodo.label, contains(SinEspacios.mensaje));
+    await tester.pump(SinEspacios.duracionAviso + const Duration(milliseconds: 100));
+    expect(aviso, findsNothing, reason: 'se quita solo');
+    semantica.dispose();
+  });
+}
+
+double _contraste(Color a, Color b) {
+  final la = a.computeLuminance(), lb = b.computeLuminance();
+  final (claro, oscuro) = la > lb ? (la, lb) : (lb, la);
+  return (claro + 0.05) / (oscuro + 0.05);
 }

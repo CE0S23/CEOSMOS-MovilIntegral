@@ -13,6 +13,7 @@ import 'alertas_ui.dart';
 import 'funciones.dart';
 import 'theme.dart';
 import 'widgets.dart';
+import '../core/plural.dart';
 
 /// Título legible de un contenido del historial o de favoritos.
 String tituloContenido(AppState state, String key) {
@@ -205,7 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 contentPadding: EdgeInsets.zero,
                 leading: Icon(Icons.favorite_outline, color: context.paleta.enlace),
                 title: const Text('Mis favoritos'),
-                subtitle: Text('${workspace.favorites.length} experiencias guardadas'),
+                subtitle: Text(contar(workspace.favorites.length, 'experiencia guardada', 'experiencias guardadas')),
                 trailing: const Icon(Icons.chevron_right),
                 onTap: widget.onFavorites,
               ),
@@ -232,7 +233,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onPressed: state.loadWorkspace,
                 icon: const Icon(Icons.refresh, size: 20),
               ),
-            Text('${state.totalSessions} sesiones', style: context.texto.bodySmall),
+            Text(contar(state.totalSessions, 'sesión', 'sesiones'), style: context.texto.bodySmall),
           ],
         ),
         const SizedBox(height: 14),
@@ -394,7 +395,7 @@ class _SesionTile extends StatelessWidget {
                   Text(_fecha(session.endedAt), style: context.texto.bodySmall),
                   if (wearable is Map)
                     Text(
-                      '♥ ${wearable['avgHeartRate']} bpm promedio · ${wearable['samples']} lecturas',
+                      '♥ ${wearable['avgHeartRate']} bpm promedio · ${contar((wearable['samples'] as num?) ?? 0, 'lectura', 'lecturas')}',
                       style: context.texto.bodySmall?.copyWith(color: context.paleta.exito),
                     ),
                   if (!session.synced)

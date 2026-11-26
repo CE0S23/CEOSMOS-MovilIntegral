@@ -5,6 +5,7 @@ import '../domain/models.dart';
 import 'theme.dart';
 import 'library_section.dart';
 import 'widgets.dart';
+import '../core/plural.dart';
 
 class ExploreScreen extends StatefulWidget {
   const ExploreScreen({
@@ -118,7 +119,7 @@ class _ExploreScreenState extends State<ExploreScreen> {
         ),
         const SizedBox(height: 24),
         Text(
-          '${items.length} experiencias · Disponibles sin conexión',
+          '${contar(items.length, 'experiencia', 'experiencias')} · Disponibles sin conexión',
           style: context.texto.bodySmall,
         ),
         const SizedBox(height: 16),

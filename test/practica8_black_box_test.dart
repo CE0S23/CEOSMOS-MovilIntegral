@@ -181,7 +181,7 @@ void main() {
     final search = find.byType(TextField);
     await tester.enterText(search, 'ORBITA');
     await tester.pumpAndSettle();
-    expect(find.text('1 experiencias · Disponibles sin conexión'), findsOneWidget);
+    expect(find.text('1 experiencia · Disponibles sin conexión'), findsOneWidget);
     expect(find.text('Órbita tranquila'), findsOneWidget);
     await tester.enterText(search, 'inexistente_123');
     await tester.pumpAndSettle();
@@ -197,7 +197,7 @@ void main() {
     await tester.pumpAndSettle();
     await tester.tap(find.widgetWithText(FilterChip, 'Audio'));
     await tester.pumpAndSettle();
-    expect(find.text('1 experiencias · Disponibles sin conexión'), findsOneWidget);
+    expect(find.text('1 experiencia · Disponibles sin conexión'), findsOneWidget);
     expect(find.text('Bosque en calma'), findsOneWidget);
     expect(find.text('Respira con el océano'), findsNothing);
   });
@@ -210,7 +210,7 @@ void main() {
     await tester.tap(find.byTooltip('Guardar Órbita tranquila'));
     await tester.pumpAndSettle();
     await tapText(tester, 'Mis favoritos');
-    expect(find.text('1 experiencias · Disponibles sin conexión'), findsOneWidget);
+    expect(find.text('1 experiencia · Disponibles sin conexión'), findsOneWidget);
     await tester.tap(find.byTooltip('Quitar Órbita tranquila de favoritos'));
     await tester.pumpAndSettle();
     expect(find.text('Tu colección está por comenzar'), findsOneWidget);
@@ -241,7 +241,7 @@ void main() {
     await tapText(tester, 'Terminar');
     expect(find.text('Todo empieza con una pausa'), findsOneWidget);
     await tab(tester, Icons.person_outline_rounded);
-    expect(find.text('1 sesiones'), findsOneWidget);
+    expect(find.text('1 sesión'), findsOneWidget);
     expect(find.text('Finalizada'), findsOneWidget);
   });
 
@@ -286,7 +286,7 @@ void main() {
     await signOut(tester);
     await login(tester, 'ana@ceosmos.mx', 'Clave#2026');
     await tab(tester, Icons.person_outline_rounded);
-    expect(find.text('1 experiencias guardadas'), findsOneWidget);
+    expect(find.text('1 experiencia guardada'), findsOneWidget);
   });
 
   testWidgets('CP-13 REQ-DAT-02 historial conserva una finalización', (tester) async {
@@ -296,11 +296,11 @@ void main() {
     await tapText(tester, 'Terminar sesión');
     await tapText(tester, 'Terminar');
     await tab(tester, Icons.person_outline_rounded);
-    expect(find.text('1 sesiones'), findsOneWidget);
+    expect(find.text('1 sesión'), findsOneWidget);
     expect(find.text('Órbita tranquila'), findsOneWidget);
     await tab(tester, Icons.timelapse_rounded);
     await tab(tester, Icons.person_outline_rounded);
-    expect(find.text('1 sesiones'), findsOneWidget);
+    expect(find.text('1 sesión'), findsOneWidget);
   });
 
   testWidgets('CP-14 REQ-NAV-01 acceso privado se revoca cuando el servidor invalida la sesión', (tester) async {
@@ -382,12 +382,12 @@ void main() {
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pumpAndSettle();
     await tab(tester, Icons.person_outline_rounded);
-    expect(find.text('1 sesiones'), findsOneWidget);
+    expect(find.text('1 sesión'), findsOneWidget);
     expect(find.text('Completada'), findsOneWidget);
     expect(find.text('05:00'), findsOneWidget);
     tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
     await tester.pumpAndSettle();
-    expect(find.text('1 sesiones'), findsOneWidget);
+    expect(find.text('1 sesión'), findsOneWidget);
   });
 }
 

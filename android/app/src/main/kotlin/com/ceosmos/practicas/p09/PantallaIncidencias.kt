@@ -101,7 +101,7 @@ private fun BarraSincronizacion(vm: IncidenciasViewModel) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text(
-                        "${vm.incidencias.size} incidencias · origen: ${if (vm.desdeCache) "caché local" else "servidor"}",
+                        "${com.ceosmos.practicas.Plural.contar(vm.incidencias.size, "incidencia", "incidencias")} · origen: ${if (vm.desdeCache) "caché local" else "servidor"}",
                         style = MaterialTheme.typography.bodySmall,
                     )
                     Text(

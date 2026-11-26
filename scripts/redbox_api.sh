@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Red Box contra la API LOCAL de CEOSMOS (base .devdb). Nunca contra producción.
-#   bash scripts/redbox_api.sh [http://127.0.0.1:8080/api] > evidencias/redbox_api.txt
-API="${1:-http://127.0.0.1:8080/api}"
+#   bash scripts/redbox_api.sh [http://127.0.0.1:8081/api] > evidencias/redbox_api.txt
+API="${1:-http://127.0.0.1:8081/api}"
 case "$API" in *127.0.0.1*|*localhost*) ;; *) echo "Solo API local"; exit 1;; esac
 PASS='P11#Carga2026'
 j() { python -c 'import sys,json;d=json.load(sys.stdin);print(d.get(sys.argv[1],""))' "$1" 2>/dev/null; }

@@ -38,6 +38,10 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.liveRegion
+import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -242,7 +246,12 @@ private fun PantallaLogin(vm: IncidenciasViewModel, snackbar: SnackbarHostState)
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             )
             if (avisoEspacios) {
-                Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                // Región viva: TalkBack anuncia el aviso al aparecer (1.4.0).
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    modifier = Modifier.heightIn(min = 48.dp).semantics(mergeDescendants = true) { liveRegion = LiveRegionMode.Polite },
+                ) {
                     Icon(Icons.Filled.Info, contentDescription = "Aviso", tint = Color(0xFF8A5A00))
                     Text(com.ceosmos.practicas.SinEspacios.MENSAJE, color = Color(0xFF8A5A00), style = MaterialTheme.typography.bodySmall)
                 }

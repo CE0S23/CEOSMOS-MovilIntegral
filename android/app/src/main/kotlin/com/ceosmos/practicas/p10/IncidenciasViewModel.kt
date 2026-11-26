@@ -152,7 +152,7 @@ class IncidenciasViewModel(app: Application) : AndroidViewModel(app) {
         autenticando = true
         viewModelScope.launch {
             val lectura = try {
-                Respuesta.Permitida("Lectura de $COLECCION_VISIBLE sin sesión: PERMITIDA (${repo.leerTodas().size()} documentos)")
+                Respuesta.Permitida("Lectura de $COLECCION_VISIBLE sin sesión: PERMITIDA (${com.ceosmos.practicas.Plural.contar(repo.leerTodas().size(), "documento", "documentos")})")
             } catch (e: Exception) {
                 respuestaDe(e, "Lectura de $COLECCION_VISIBLE sin sesión")
             }

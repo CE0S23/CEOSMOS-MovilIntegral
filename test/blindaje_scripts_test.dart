@@ -54,4 +54,22 @@ void main() {
     }
     expect(sh, contains('MSYS_NO_PATHCONV=1'));
   });
+
+  test('dev_backend: la API usa su propio puerto y MediConnect no hereda PORT (1.4.0)', () {
+    final s = leer('scripts/dev_backend.ps1');
+    expect(File('scripts/dev_backend.ps1').readAsBytesSync().take(3), [0xEF, 0xBB, 0xBF], reason: 'PowerShell 5.1 necesita el BOM para leer «°» y acentos');
+    expect(s, contains(r'[int]$ApiPort = 8081'));
+    expect(s, isNot(contains("\$env:PORT = '8080'")));
+    final api = s.indexOf(r'$env:PORT = "$ApiPort"');
+    final restaura = s.indexOf(r'Remove-Item Env:PORT');
+    final medi = s.indexOf("-ArgumentList 'server.js'");
+    expect(api, greaterThan(0));
+    expect(restaura, greaterThan(api), reason: 'PORT se restaura después de arrancar la API');
+    expect(medi, greaterThan(restaura), reason: '…y antes de arrancar MediConnect (conserva 3443)');
+    expect(s.indexOf(r'Test-PuertoOcupado $ApiPort'), lessThan(api), reason: 'avisa si el puerto está ocupado');
+    expect(s, contains('exit 2'));
+    // La app y los scripts apuntan al mismo puerto en desarrollo.
+    expect(leer('lib/core/config.dart'), contains('localhost:8081/api'));
+    expect(leer('scripts/construir_pwa.ps1'), contains('localhost:8081/api'));
+  });
 }

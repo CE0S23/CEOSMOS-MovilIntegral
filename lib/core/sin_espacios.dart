@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -28,7 +30,7 @@ abstract final class SinEspacios {
       (v) => tieneEspacios(v) ? error : otro?.call(v);
 
   /// Formateador que quita todo espacio. Si [context] no es nulo avisa con ícono y
-  /// texto (SnackBar) cada vez que se descarta un espacio.
+  /// texto ([AvisoSinEspacios]) cada vez que se descarta un espacio.
   static TextInputFormatter formateador([BuildContext? context]) =>
       _SinEspaciosFormatter(context == null ? null : () => avisar(context));
 
@@ -38,29 +40,48 @@ abstract final class SinEspacios {
   ];
 
   static DateTime _ultimoAviso = DateTime.fromMillisecondsSinceEpoch(0);
+  static OverlayEntry? _aviso;
+
+  /// Duración del aviso en pantalla.
+  static const duracionAviso = Duration(seconds: 3);
 
   /// Aviso visible con ícono + texto (no solo color). Se limita a uno cada 2 s.
+  ///
+  /// 1.4.0: se pinta en el Overlay más cercano (por encima de la capa oscura de los
+  /// diálogos, que antes lo tapaba porque era un SnackBar del Scaffold de atrás), con
+  /// colores explícitos (antes el ícono heredaba un color igual al fondo) y dentro de
+  /// una región viva para que TalkBack lo anuncie.
   static void avisar(BuildContext context) {
+    if (!context.mounted) return;
     final ahora = DateTime.now();
     if (ahora.difference(_ultimoAviso) < const Duration(seconds: 2)) return;
     _ultimoAviso = ahora;
-    final messenger = ScaffoldMessenger.maybeOf(context);
-    if (messenger == null) return;
-    messenger
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        const SnackBar(
-          key: ValueKey('aviso-sin-espacios'),
-          duration: Duration(seconds: 3),
-          content: Row(
-            children: [
-              Icon(Icons.space_bar, semanticLabel: 'Aviso'),
-              SizedBox(width: 12),
-              Expanded(child: Text(mensaje)),
-            ],
-          ),
-        ),
-      );
+    final overlay = Overlay.maybeOf(context, rootOverlay: true);
+    if (overlay == null) return;
+    cerrarAviso();
+    late final OverlayEntry entrada;
+    entrada = OverlayEntry(
+      builder: (_) => AvisoSinEspacios(
+        alTerminar: () {
+          if (identical(_aviso, entrada)) cerrarAviso();
+        },
+      ),
+    );
+    _aviso = entrada;
+    overlay.insert(entrada);
+  }
+
+  /// Quita el aviso si está en pantalla.
+  static void cerrarAviso() {
+    final e = _aviso;
+    _aviso = null;
+    if (e != null && e.mounted) e.remove();
+  }
+
+  @visibleForTesting
+  static void reiniciarAviso() {
+    cerrarAviso();
+    _ultimoAviso = DateTime.fromMillisecondsSinceEpoch(0);
   }
 
   /// Nombre de persona: quita espacios al inicio y al final y colapsa los dobles.
@@ -69,6 +90,76 @@ abstract final class SinEspacios {
   /// Formateador para nombres de persona mientras se escribe: sin espacio inicial ni
   /// dobles (el espacio final se permite para seguir escribiendo la palabra siguiente).
   static TextInputFormatter nombrePersona() => const _NombrePersonaFormatter();
+}
+
+/// Aviso «sin espacios»: tarjeta con ícono y texto sobre la parte baja de la pantalla
+/// (encima del teclado), contraste AA (colores inversos del tema) y región viva.
+/// Se quita solo a los [SinEspacios.duracionAviso] (el temporizador vive con el widget).
+class AvisoSinEspacios extends StatefulWidget {
+  const AvisoSinEspacios({super.key, this.alTerminar});
+  final VoidCallback? alTerminar;
+
+  @override
+  State<AvisoSinEspacios> createState() => _AvisoSinEspaciosState();
+}
+
+class _AvisoSinEspaciosState extends State<AvisoSinEspacios> {
+  Timer? _temporizador;
+
+  @override
+  void initState() {
+    super.initState();
+    _temporizador = Timer(SinEspacios.duracionAviso, () => widget.alTerminar?.call());
+  }
+
+  @override
+  void dispose() {
+    _temporizador?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final esquema = Theme.of(context).colorScheme;
+    final mq = MediaQuery.of(context);
+    return Positioned(
+      left: 16,
+      right: 16,
+      bottom: mq.viewInsets.bottom + mq.padding.bottom + 16,
+      child: Center(
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 560, minHeight: 48),
+          child: Semantics(
+            key: const ValueKey('aviso-sin-espacios'),
+            container: true,
+            liveRegion: true,
+            label: 'Aviso: ${SinEspacios.mensaje}',
+            excludeSemantics: true,
+            child: Material(
+              color: esquema.inverseSurface,
+              elevation: 6,
+              borderRadius: BorderRadius.circular(12),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                child: Row(
+                  children: [
+                    Icon(Icons.space_bar, color: esquema.onInverseSurface, size: 24),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        SinEspacios.mensaje,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: esquema.onInverseSurface),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class _SinEspaciosFormatter extends TextInputFormatter {

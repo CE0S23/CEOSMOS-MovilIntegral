@@ -16,7 +16,7 @@ void main() {
   });
 
   test('depuración sin URL → API local (emulador o escritorio)', () {
-    expect(AppConfig.resolverApi(definida: '', release: false, android: true), 'http://10.0.2.2:8080/api');
-    expect(AppConfig.resolverApi(definida: '', release: false, android: false), 'http://localhost:8080/api');
+    expect(AppConfig.resolverApi(definida: '', release: false, android: true), 'http://10.0.2.2:8081/api');
+    expect(AppConfig.resolverApi(definida: '', release: false, android: false), 'http://localhost:8081/api');
   });
 }
