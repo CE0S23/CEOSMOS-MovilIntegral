@@ -53,5 +53,11 @@ La sección **Administración** de Perfil sigue siendo solo para cuentas ADMIN d
 - [x] Corregido en el recorrido: botón «Siguiente» de la TV partido en 3 líneas (ahora FlowRow), tarjetas grises en pantallas nativas en oscuro (faltaban `surfaceContainer*`), identificadores con «p7/p9/p10» visibles (proyecto y colecciones) y títulos internos «MobileConnect», «MediConnect», «ACCESO SEGURO».
 - [ ] Agente y los 2 usuarios de Soporte: requieren que el usuario escriba sus contraseñas (pendiente del usuario).
 
+## 1.4.0 (26/11/2026)
+- **Inicio**: tarjeta «Tu Reloj y TV» (`lib/ui/tarjeta_equipos.dart`) entre el bloque principal y «¿Qué necesitas hoy?»; lleva a Equipos o conecta.
+- **Perfil › Cuenta y herramientas**: interruptor «Alertas de salud» (`lib/ui/alertas_ui.dart`).
+- **Reloj (companion)**: selector de 8 modos de simulación y «Usar sensor real»; la TV muestra las alertas.
+- Todos los campos de usuario sin espacios (`lib/core/sin_espacios.dart`, `practicas/SinEspacios.kt`). Adenda: `evidencias/v1_4/LEEME.md`.
+
 ---
 Navegación: [[00 - Índice CEOSMOS]] · [[04 - Módulos de la app]] · [[11 - Sistema de diseño]]

@@ -28,5 +28,11 @@ actualizado: 2026-11-22 (noche)
 - [ ] F-14 con un correo propio.
 - [ ] Cerrar las sesiones de prueba de Soporte (S24: admin; tablet: agente).
 
+## 1.4.0 (26/11/2026)
+- Campos sin espacios en app, nativo y API (PR CE0S23/CEOSMOSV2#2 **sin fusionar**: el permiso para fusionar a producción fue denegado en la sesión). Red Box prod con P-24/P-25: 28/29 (P-25 pasa al fusionar).
+- Botones Reloj/TV medidos antes/después (`evidencias/v1_4/botones_*`): el foco del D-pad se perdía tras cada pulsación; ahora 30/30. Reconexión del Reloj con el enlace compartido corregida (redescubrir servicios).
+- Barrido de 91 tamaños con la tarjeta de Inicio cargada: destapó y se corrigió el desborde de la barra de sesión en ventanas < 480 dp de alto.
+- Git Bash: usar `MSYS_NO_PATHCONV=1` con `adb shell ... /sdcard/...` (si no, la ruta se convierte a una local).
+
 ---
 Navegación: [[00 - Índice CEOSMOS]] · [[07 - Pruebas (Black, White, Red Box)]] · [[08 - Pendientes]] · [[06 - BLE Wearable y TV]] · [[10 - Bitácora]]

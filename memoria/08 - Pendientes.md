@@ -55,5 +55,11 @@ actualizado: 2026-11-25
 - [ ] BLE con bonding cifrado (LE Secure Connections). → [[06 - BLE Wearable y TV]]
 - [ ] Lint del companion: 14 advertencias por app (dependencias, `StaticFieldLeak`, `UseKtx`). → [[Práctica 13-14 - Automatización de pruebas y CI]]
 
+## 4. Tras la 1.4.0 (26/11/2026)
+- [ ] **Usuario:** fusionar CE0S23/CEOSMOSV2#2 (`espacios-1.4.0` → `movil-integral`), y luego `scripts/verificar_produccion.ps1` y `bash scripts/redbox_produccion.sh` (esperado 29/29).
+- [ ] Con el S24 desbloqueado: Web Bluetooth (`scripts\construir_pwa.ps1 -Servir`, `adb reverse tcp:4200 tcp:4200`, Chrome → Equipos › Conectar), instalar la PWA, permiso de notificaciones y notificación real de una alerta, capturas del S24 (Inicio con la tarjeta, alerta, PWA instalada) y Administración (Fase B).
+- [ ] Modo sin conexión de la PWA en Chrome de escritorio con DevTools (1.4.0).
+- [ ] Decidir si se actualizan el Reporte final y el Manual con la adenda `evidencias/v1_4/LEEME.md` (no se regeneraron).
+
 ---
 Navegación: [[00 - Índice CEOSMOS]] · [[10 - Bitácora]] · [[07 - Pruebas (Black, White, Red Box)]]
