@@ -5,6 +5,7 @@ import 'package:ceosmos_movil_integral/core/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'support/equipos_demo.dart';
 import 'support/fake_ceosmos_api.dart';
 import 'widget_test.dart' show mockAudio;
 
@@ -47,14 +48,18 @@ void main() {
         }
 
         final api = FakeCeosmosApi()..addUser('ana@example.com', 'Clave#2026', username: 'Ana');
-        final state = api.appState()..status = AuthStatus.signedOut;
+        // 1.4.0: Reloj y TV conectados para barrer la tarjeta «Tu Reloj y TV» cargada.
+        final tablet = tabletDemo();
+        final state = api.appState(ble: bleDemo(tablet))..status = AuthStatus.signedOut;
         addTearDown(state.dispose);
         await tester.pumpWidget(CeosmosApp(state: state));
         await tester.pumpAndSettle();
         anotar(_nombres[0]);
 
         await state.acceptSession(await state.auth.login('ana@example.com', 'Clave#2026'));
+        await tester.runAsync(() => poblarEquipos(state, tablet));
         await tester.pumpAndSettle();
+        anotar('Inicio (tarjeta Reloj y TV)');
         for (var i = 0; i < _iconos.length; i++) {
           final f = find.byIcon(_iconos[i]);
           if (f.evaluate().isEmpty) {

@@ -5,6 +5,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'core/app_state.dart';
 import 'core/sound_controller.dart';
 import 'domain/models.dart';
+import 'ui/alertas_ui.dart';
 import 'ui/auth_screen.dart';
 import 'ui/home_screen.dart';
 import 'ui/explore_screen.dart';
@@ -121,6 +122,12 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
     _previousSession = s.hasSession;
     _previousRunning = s.running;
     _previousMedia = s.currentMedia?.id;
+    final alerta = widget.state.tomarAlertaNueva();
+    if (alerta != null && mounted && widget.state.user != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) mostrarAvisoAlerta(context, alerta);
+      });
+    }
     final aviso = widget.state.notice;
     // Si la sesión terminó, el aviso lo muestra la pantalla de acceso.
     if (aviso != null && mounted && widget.state.user != null) {
@@ -256,8 +263,9 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final state = widget.state;
     final wide = MediaQuery.sizeOf(context).width >= 920;
+    final barraFija = MediaQuery.sizeOf(context).height >= 480;
     final content = switch (_tab) {
-      0 => HomeScreen(state: state, onExplore: _explore, onOpen: _open),
+      0 => HomeScreen(state: state, onExplore: _explore, onOpen: _open, onEquipos: () => _navigate(3)),
       1 => ExploreScreen(
         key: ValueKey(_exploreVersion),
         state: state,
@@ -487,12 +495,31 @@ class _AppShellState extends State<AppShell> with WidgetsBindingObserver {
                         alignment: Alignment.topCenter,
                         child: ConstrainedBox(
                           constraints: const BoxConstraints(maxWidth: 1060),
-                          child: content,
+                          // 1.4.0: en ventanas muy bajas (< 480 dp, p. ej. ventana flotante)
+                          // la barra de sesión fija no cabía junto a la cabecera y la
+                          // navegación; ahí va dentro del área desplazable.
+                          child: barraFija || !(state.hasSession && _tab != 2)
+                              ? content
+                              : Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    _SessionBar(
+                                      state: state,
+                                      onTap: () => _navigate(2),
+                                      onPause: () {
+                                        state.togglePause();
+                                        if (!state.running) _sound.stop();
+                                      },
+                                    ),
+                                    const SizedBox(height: Espacio.l),
+                                    content,
+                                  ],
+                                ),
                         ),
                       ),
                     ),
                   ),
-                  if (state.hasSession && _tab != 2)
+                  if (barraFija && state.hasSession && _tab != 2)
                     _SessionBar(
                       state: state,
                       onTap: () => _navigate(2),
@@ -535,23 +562,30 @@ class _SessionBar extends StatelessWidget {
   final AppState state;
   final VoidCallback onTap, onPause;
   @override
-  Widget build(BuildContext context) => Material(
+  Widget build(BuildContext context) => LayoutBuilder(
+    // 1.4.0: en anchos muy chicos (ventana flotante) se omite el ícono del modo.
+    builder: (context, c) => _barra(context, compacta: c.maxWidth < 300),
+  );
+
+  Widget _barra(BuildContext context, {required bool compacta}) => Material(
     // Barra de sesión en guinda: texto blanco y acentos cian.
     color: CeosmosColores.guinda,
     child: InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: Espacio.l + 4,
+        padding: EdgeInsets.symmetric(
+          horizontal: compacta ? Espacio.s : Espacio.l + 4,
           vertical: Espacio.s,
         ),
         child: Row(
           children: [
-            Icon(
-              modeIcon(state.currentMedia!.mode),
-              color: CeosmosColores.cian,
-            ),
-            const SizedBox(width: Espacio.m + 2),
+            if (!compacta) ...[
+              Icon(
+                modeIcon(state.currentMedia!.mode),
+                color: CeosmosColores.cian,
+              ),
+              const SizedBox(width: Espacio.m + 2),
+            ],
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -584,7 +618,7 @@ class _SessionBar extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(width: Espacio.s + 2),
+            SizedBox(width: compacta ? Espacio.xs : Espacio.s + 2),
             IconButton(
               onPressed: onPause,
               tooltip: state.running ? 'Pausar sesión' : 'Continuar sesión',

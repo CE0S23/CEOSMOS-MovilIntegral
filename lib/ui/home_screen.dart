@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../core/app_state.dart';
 import '../data/catalog.dart';
 import '../domain/models.dart';
+import 'tarjeta_equipos.dart';
 import 'theme.dart';
 import 'widgets.dart';
 
@@ -11,10 +12,14 @@ class HomeScreen extends StatefulWidget {
     required this.state,
     required this.onExplore,
     required this.onOpen,
+    this.onEquipos,
   });
   final AppState state;
   final void Function(FocusMode?) onExplore;
   final ValueChanged<MediaItem> onOpen;
+
+  /// Abre la pestaña Equipos (tarjeta «Tu Reloj y TV»).
+  final VoidCallback? onEquipos;
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -117,6 +122,8 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
+        const SizedBox(height: Espacio.xl),
+        TarjetaEquipos(state: state, onEquipos: widget.onEquipos ?? () {}),
         const SizedBox(height: Espacio.xxl),
         Text(
           '¿Qué necesitas hoy?',

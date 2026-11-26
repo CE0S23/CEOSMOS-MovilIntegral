@@ -3,6 +3,7 @@ import 'package:ceosmos_movil_integral/core/app_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
+import 'support/equipos_demo.dart';
 import 'support/fake_ceosmos_api.dart';
 import 'widget_test.dart' show mockAudio;
 
@@ -19,10 +20,13 @@ void main() {
     tester.platformDispatcher.textScaleFactorTestValue = escala;
     addTearDown(tester.platformDispatcher.clearTextScaleFactorTestValue);
     final api = FakeCeosmosApi()..addUser('ana@example.com', 'Clave#2026', username: 'Ana');
-    final state = api.appState();
+    final tablet = tabletDemo();
+    final state = api.appState(ble: bleDemo(tablet));
     addTearDown(state.dispose);
     if (conSesion) {
       await state.acceptSession(await state.auth.login('ana@example.com', 'Clave#2026'));
+      // 1.4.0: tarjeta «Tu Reloj y TV» con datos, alerta y proyección.
+      await tester.runAsync(() => poblarEquipos(state, tablet));
     } else {
       state.status = AuthStatus.signedOut;
     }
