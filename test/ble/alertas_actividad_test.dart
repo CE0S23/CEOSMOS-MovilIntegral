@@ -226,6 +226,16 @@ void main() {
       expect(ble[RolBle.tv].estado, EstadoEnlace.conectado);
     });
 
+    test('Reloj que arranca después de que la TV abrió el enlace: se redescubren servicios', () async {
+      final tablet = PerifericoFalso(remoteId: 'AA', id: 'ab0102ff', roles: {RolBle.tv});
+      final ble = EcosistemaBle(transporte: TransporteFalso([tablet]));
+      addTearDown(ble.dispose);
+      expect(await ble.conectar(RolBle.tv, pin: '123456'), ResultadoConexion.conectado);
+      tablet.roles.add(RolBle.reloj); // la app Reloj vuelve a anunciar en la misma tablet
+      expect(await ble.conectar(RolBle.reloj, pin: '123456'), ResultadoConexion.conectado);
+      expect(ble[RolBle.tv].estado, EstadoEnlace.conectado, reason: 'la TV no se corta');
+    });
+
     test('WearableLectura conserva la actividad', () {
       final l = WearableLectura(heartRate: 70, at: t0, actividad: 'reposo');
       expect(l.actividad, 'reposo');

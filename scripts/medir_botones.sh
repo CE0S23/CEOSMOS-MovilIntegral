@@ -13,11 +13,15 @@
 # las pulsaciones (la confirmación GATT no queda registrada): la columna «antes» de la
 # tabla se toma con la reacción visible en CEOSMOS, contada a mano o por captura.
 set -u
+export MSYS_NO_PATHCONV=1 # Git Bash en Windows: no convertir /sdcard en una ruta local
 SERIE="${1:?serie de la tablet}"; ROL="${2:?reloj|tv}"; N="${3:-50}"
 A=(adb -s "$SERIE")
 case "$ROL" in
-  reloj) PAQ=com.ceosmos.companion.reloj; BOTONES=("accion");;
-  tv)    PAQ=com.ceosmos.companion.tv;    BOTONES=("tv-▶ Reanudar|tv-❚❚ Pausar" "tv-Siguiente ▶" "tv-◀ Anterior");;
+  # Solo «toggle» y «stop»: sin sesión en CEOSMOS no hacen nada, así que medir no crea
+  # sesiones en la cuenta real (Siguiente/Anterior sí las crearían y se excluyen).
+  # Patrones: resource-id de la 1.4.0 o texto del botón (versión anterior sin resource-id).
+  reloj) PAQ=com.ceosmos.companion.reloj; BOTONES=("accion|Reanudar|Pausar|▶ Reanudar|❚❚ Pausar");;
+  tv)    PAQ=com.ceosmos.companion.tv;    BOTONES=("tv-▶ Reanudar|tv-❚❚ Pausar|▶ Reanudar|❚❚ Pausar");;
   *) echo "rol inválido"; exit 2;;
 esac
 "${A[@]}" shell pidof "$PAQ" >/dev/null || { echo "La app $PAQ no está abierta en $SERIE"; exit 3; }
@@ -31,7 +35,9 @@ for m in re.finditer(r"<node [^>]*>", xml):
     n=m.group(0)
     rid=re.search(r"resource-id=\"([^\"]*)\"", n); b=re.search(r"bounds=\"\[(\d+),(\d+)\]\[(\d+),(\d+)\]\"", n)
     en=re.search(r"enabled=\"(true|false)\"", n)
-    if rid and b and rid.group(1) in pats and (not en or en.group(1)=="true"):
+    tx=re.search(r" text=\"([^\"]*)\"", n)
+    ok=(rid and rid.group(1) in pats) or (tx and tx.group(1) in pats)
+    if ok and b and (not en or en.group(1)=="true"):
         x1,y1,x2,y2=map(int,b.groups()); print((x1+x2)//2,(y1+y2)//2); break
 ' "$1"
 }
@@ -48,7 +54,8 @@ for b in "${BOTONES[@]}"; do
     sleep 1.2
   done
   sleep 2
-  LOG=$("${A[@]}" logcat -d -s CeosmosCompanion:I | grep "MEDICION $ROL" || true)
+  TODO=$("${A[@]}" logcat -d -s CeosmosCompanion:I)
+  LOG=$(echo "$TODO" | grep "MEDICION $ROL" || true)
   echo "--- botón: $b"
   echo "pulsaciones: $pulsadas · botón no encontrado/deshabilitado: $sin_boton"
   echo "$LOG" | python -c '
@@ -60,11 +67,14 @@ for l in sys.stdin:
     k=p.index("MEDICION")
     if p[k+3]=="ok": ok.append(int(p[k+4]))
     else: fallo+=1
-print("confirmadas:",len(ok),"· fallidas:",fallo)
+print("confirmadas (1.4.0, onNotificationSent):",len(ok),"· fallidas:",fallo)
 if ok:
     ok.sort(); p95=ok[min(len(ok)-1,int(len(ok)*0.95))]
     print("latencia ms · mediana:",statistics.median(ok),"· p95:",p95,"· máx:",ok[-1])
 '
+  # Versión anterior: registra «→ CEOSMOS: <cmd>» si notifyCharacteristicChanged aceptó y
+  # «no se envió» si lo rechazó (p. ej. ocupado con una lectura en vuelo).
+  echo "registro: aceptadas $(echo "$TODO" | grep -c "→ CEOSMOS: toggle") · rechazadas $(echo "$TODO" | grep -c "no se envió")"
   "${A[@]}" logcat -c
 done
 "${A[@]}" shell rm -f /sdcard/ceosmos_ui.xml

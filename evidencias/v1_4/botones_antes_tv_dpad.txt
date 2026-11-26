@@ -1,0 +1,5 @@
+D-pad centro sobre «▶ Reanudar» (TV versión anterior) · 2026-11-26 11:43:03
+pulsaciones: 1
+comandos enviados (→ CEOSMOS: toggle): 1
+rechazados: 0
+Ensayos D-pad (TV versión anterior): pulsaciones 5 · foco perdido tras la pulsación: 5 · comandos toggle enviados: 5

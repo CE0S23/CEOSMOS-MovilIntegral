@@ -1,0 +1,6 @@
+Medición de botones · tv · 2026-11-26 12:04:47 · N=50 por botón · tablet R52W80BXQHP
+--- botón: tv-▶ Reanudar|tv-❚❚ Pausar|▶ Reanudar|❚❚ Pausar
+pulsaciones: 50 · botón no encontrado/deshabilitado: 0
+confirmadas (1.4.0, onNotificationSent): 50 · fallidas: 0
+latencia ms · mediana: 34.0 · p95: 73 · máx: 89
+registro: aceptadas 50 · rechazadas 0

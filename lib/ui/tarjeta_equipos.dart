@@ -195,6 +195,10 @@ class _TarjetaEquiposState extends State<TarjetaEquipos> {
             ),
           ),
         if (estado == EstadoEquipo.sinConexion) ...[
+          if (enlace.error case final err?) ...[
+            const SizedBox(height: Espacio.s),
+            Aviso(err, tipo: TipoAviso.advertencia),
+          ],
           const SizedBox(height: Espacio.s),
           _BotonConectar(
             rol: RolBle.reloj,
@@ -254,6 +258,10 @@ class _TarjetaEquiposState extends State<TarjetaEquipos> {
             style: context.texto.bodyMedium?.copyWith(color: context.paleta.textoSecundario),
           ),
         if (estado == EstadoEquipo.sinConexion) ...[
+          if (state.ble[RolBle.tv].error case final err?) ...[
+            const SizedBox(height: Espacio.s),
+            Aviso(err, tipo: TipoAviso.advertencia),
+          ],
           const SizedBox(height: Espacio.s),
           _BotonConectar(
             rol: RolBle.tv,

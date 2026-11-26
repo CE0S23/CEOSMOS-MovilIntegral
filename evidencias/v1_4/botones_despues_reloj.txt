@@ -1,0 +1,6 @@
+Medición de botones · reloj · 2026-11-26 12:01:28 · N=50 por botón · tablet R52W80BXQHP
+--- botón: accion|Reanudar|Pausar|▶ Reanudar|❚❚ Pausar
+pulsaciones: 50 · botón no encontrado/deshabilitado: 0
+confirmadas (1.4.0, onNotificationSent): 50 · fallidas: 0
+latencia ms · mediana: 34.5 · p95: 64 · máx: 93
+registro: aceptadas 50 · rechazadas 0

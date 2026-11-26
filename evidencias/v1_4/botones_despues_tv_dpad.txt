@@ -1,0 +1,4 @@
+D-pad centro sobre «▶ Reanudar» (TV 1.4.0) · 2026-11-26 12:11:01
+pulsaciones: 30 · foco perdido: 0
+comandos enviados: 30 · confirmados: 30 · fallidos: 0
+latencia ms · mediana: 85.5 · p95: 104 · máx: 107

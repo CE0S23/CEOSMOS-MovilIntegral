@@ -260,7 +260,7 @@ class EcosistemaBle extends ChangeNotifier {
           _cambio();
           final c = await transporte.conectar(elegido.remoteId);
           final servicios = await c.servicios();
-          en = _Enlace(c, servicios);
+          en = _Enlace(c, {...servicios});
           _activos[c.remoteId] = en;
           unawaited(c.perdida.then((_) => _alPerder(c.remoteId)));
         }
@@ -272,6 +272,20 @@ class EcosistemaBle extends ChangeNotifier {
       }
       enlace = hallado.$1;
       id = hallado.$2;
+      if (!enlace.servicios.contains(rol.servicio)) {
+        // 1.4.0 (prueba en equipos 26/11): Reloj y TV comparten el enlace físico. Si la TV
+        // conectó mientras la app Reloj se reiniciaba, la lista de servicios guardada no
+        // incluye al Reloj y antes se rechazaba para siempre. Se vuelven a descubrir.
+        final en = enlace;
+        try {
+          final nuevos = await en.op(() => en.conexion.servicios());
+          en.servicios
+            ..clear()
+            ..addAll(nuevos);
+        } on FalloBle {
+          // Se informa abajo.
+        }
+      }
       if (!enlace.servicios.contains(rol.servicio)) {
         e.error = 'El dispositivo no expone el servicio de ${rol.nombre}.';
         await _soltar(enlace, rol);
