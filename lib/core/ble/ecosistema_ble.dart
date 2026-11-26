@@ -96,7 +96,9 @@ class EcosistemaBle extends ChangeNotifier {
     this.maxMensajesPorSegundo = 20,
     this.latido,
     this.esperaReintentoGatt = const Duration(milliseconds: 150),
-  }) : pines = pines ?? AlmacenPinMemoria() {
+    bool? aceptarSinId,
+  }) : pines = pines ?? AlmacenPinMemoria(),
+       aceptarSinId = aceptarSinId ?? kIsWeb {
     adaptador = transporte.adaptadorAhora;
     _subAdaptador = transporte.adaptador.listen(_alCambiarAdaptador);
   }
@@ -104,6 +106,9 @@ class EcosistemaBle extends ChangeNotifier {
   final BleTransporte transporte;
   final AlmacenPinBle pines;
   final Duration esperaBase, duracionEscaneo, esperaReintentoGatt;
+
+  /// Acepta un hallazgo sin id de compañero (la web: el usuario eligió el equipo).
+  final bool aceptarSinId;
   final int maxReintentos, maxMensajesPorSegundo;
 
   /// Cada cuánto se comprueba que el periférico sigue autenticado (null = sin latido).
@@ -245,7 +250,10 @@ class EcosistemaBle extends ChangeNotifier {
         HallazgoBle? elegido;
         await for (final h in transporte.escanear(rol.servicio, duracionEscaneo)) {
           final hid = leerIdCompanero(h.datosFabricante, rol);
-          if (id == null || hid == id) {
+          // 1.4.0 (prueba en S24): Web Bluetooth no entrega los datos de fabricante del
+          // anuncio; el equipo ya lo eligió el usuario en el selector (filtrado por el
+          // servicio del rol), así que se acepta aunque no traiga el id.
+          if (id == null || hid == id || (hid == null && aceptarSinId)) {
             elegido = h;
             break;
           }

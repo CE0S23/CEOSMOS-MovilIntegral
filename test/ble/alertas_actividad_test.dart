@@ -236,6 +236,18 @@ void main() {
       expect(ble[RolBle.tv].estado, EstadoEnlace.conectado, reason: 'la TV no se corta');
     });
 
+    test('Web Bluetooth: el anuncio no trae el id; se acepta el equipo elegido en el selector', () async {
+      final tablet = PerifericoFalso(remoteId: 'AA', id: 'ab0102ff');
+      final radio = TransporteFalso([tablet])..sinDatosFabricante = true;
+      final pines = AlmacenPinMemoria();
+      final web = EcosistemaBle(transporte: radio, pines: pines, aceptarSinId: true);
+      final android = EcosistemaBle(transporte: radio, pines: pines);
+      addTearDown(web.dispose);
+      addTearDown(android.dispose);
+      expect(await android.conectar(RolBle.reloj, pin: '123456', idCompanero: 'ab0102ff'), ResultadoConexion.noEncontrado);
+      expect(await web.conectar(RolBle.reloj, pin: '123456', idCompanero: 'ab0102ff'), ResultadoConexion.conectado);
+    });
+
     test('WearableLectura conserva la actividad', () {
       final l = WearableLectura(heartRate: 70, at: t0, actividad: 'reposo');
       expect(l.actividad, 'reposo');

@@ -56,6 +56,8 @@ class TransporteFalso implements BleTransporte {
   AdaptadorBle estado = AdaptadorBle.encendido;
   bool permisoDenegado = false;
   bool falloAlConectar = false, falloAlEncender = false;
+  /// Como Web Bluetooth: los hallazgos no traen datos de fabricante.
+  bool sinDatosFabricante = false;
   int escaneos = 0, conexiones = 0;
   int _generacion = 0;
 
@@ -91,7 +93,7 @@ class TransporteFalso implements BleTransporte {
       if (g != _generacion) return;
       final rol = RolBle.values.firstWhereOrNull((r) => r.servicio == servicio);
       if (rol != null && p.anunciando && p.roles.contains(rol)) {
-        yield HallazgoBle(remoteId: p.remoteId, rssi: -50, datosFabricante: {fabricanteCeosmos: p.manufacturer(rol)});
+        yield HallazgoBle(remoteId: p.remoteId, rssi: -50, datosFabricante: sinDatosFabricante ? const {} : {fabricanteCeosmos: p.manufacturer(rol)});
       }
     }
   }
