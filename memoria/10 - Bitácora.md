@@ -93,6 +93,38 @@ Estado inicial: S24 con CEOSMOS «Ceos» (USER) + Reloj y TV conectados; Tab S9 
 
 - [ ] B5 · Cierre.
 
+## Cierre completo 1.4.0 (26/11/2026, sesión 3) · retomar desde la primera fase sin marcar
+- [x] Fase 1 · Documentos del dueño revisados (0 credenciales, sin llaves/tokens) y subidos sin cambios (`0539e5d`). PR #2 **NO fusionado**: `USER_STATUS_CHANGE` es un valor nuevo del enum PostgreSQL `AuditAction` y la build de Vercel corre `prisma migrate deploy`, así que fusionar = migrar Neon. Sin migrar, la escritura de la bitácora falla en silencio (try/catch) y el bloqueo sigue funcionando. Pruebas de administración mutantes: solo locales.
+- [x] Fase 2 · 1.4.0+7 (versionCode 7; Reloj/TV versionCode 3, `4bb45c4`) con llave de depuración (`key.properties` apartado y devuelto idéntico, SHA-256 comprobado) e install -r: S24 y Tab S9 con la misma fecha de primera instalación y sesión. S24 pasó de «Ceos» a «OSVA» (ADMIN); la tablet tenía la sesión de «osva» cerrada y se volvió a entrar.
+- [x] Fase 3 · Pruebas completas (26/11, S24 = «OSVA» ADMIN, Tab S9 = «osva» USER). Fallos nuevos: ninguno en esta ronda. No verificado en esta sesión (cierre pedido con prisa): PWA con «Ceos» (Web Bluetooth, ventana propia, sin conexión, Lighthouse), Explorar/biblioteca (enlaces javascript:, longitudes), D-pad y 50 pulsaciones (medidos en la Fase 3 de 1.4.0), Bluetooth apagado/encendido, Wearable por Wi-Fi, reinicio del Reloj/TV sin PIN, F-14. Administración mutante en producción: no (PR #2 sin fusionar; hecho en local en B3).
+
+| Función | Cliente | Cuenta | Resultado |
+|---|---|---|---|
+| Acceso: aviso «sin espacios» (ícono + texto, anunciado) | S24 app | — | ✅ |
+| Acceso: correo inexistente → error genérico | S24 app (prod) | — | ✅ |
+| Acceso y cierre de sesión | S24 / Tab S9 | OSVA / osva | ✅ |
+| Administración visible y carga (solo lectura) | S24 | OSVA (ADMIN) | ✅ |
+| Sin Administración | Tab S9 | osva (USER) | ✅ |
+| Reloj y TV conectados, 6 actividades | S24 + Tab S9 | OSVA | ✅ |
+| Alertas alta / muy alta / baja + notificación del sistema | S24 | OSVA | ✅ (1/1 c/u; 30/30 antes en +6) |
+| Mi sesión: pausa, confirmación, historial solo del dueño, «1 sesión» | Tab S9 / S24 | osva / OSVA | ✅ |
+| Tickets: acceso sin espacios, TC01 turno, TC02, TC03, TC06, TC08 | S24 + Tab S9 | admin, usuario1, usuario2 | ✅ |
+| Chat usuario→admin en tiempo real; admin→usuario por consulta (diseño) | S24 + Tab S9 | admin / usuario1 | ✅ |
+| Adjunto 159 KB aceptado / 475 KB rechazado | Tab S9 | usuario1 | ✅ |
+| Asignación agente→admin→agente, prioridad, presencia | ambos | agente / admin | ✅ |
+| Eliminar ticket y limpiar historial | S24 | admin | ✅ (REP777 QA) |
+| Incidencias en tiempo real, conflicto por campo, bitácora | A=S24, B=Tab S9 | — | ✅ |
+| Mis incidencias: sin sesión rechazado, aislamiento a/b | S24 / Tab S9 | a / b | ✅ |
+| Reportes compartidos Flutter y Kotlin (CRUD; ajenos no legibles por regla) | S24 / Tab S9 | anónimas | ✅ |
+| Incidencias sin conexión (persisten, borrar) | S24 | — | ✅ |
+| Directorio (alta, consulta, edición, baja, correo y espacios, «1 año») | S24 | — | ✅ |
+| Seguridad de la cuenta (espacios, mínimo 8, error genérico) | S24 | — | ✅ |
+| Citas de bienestar (acceso y consulta) | S24 + servidor local | cuenta demo del servidor | ✅ |
+| Mensajería entre equipos TCP en ambos sentidos | S24 ↔ Tab S9 | — | ✅ |
+| PWA, Web Bluetooth, sin conexión, Lighthouse | — | Ceos | ⏸ no verificado |
+| F-14 código por correo | — | — | ⏸ pendiente |
+- [x] Fase 5 · Cierre: etiqueta `entrega-v6` en el commit final; APK en `release/` (`*entrega-v6*`, SHA-256 en `SHA256SUMS.txt`; `release/` no se versiona y el repo no publica Releases de GitHub → no se publicó nada). Producción: Red Box 28/29 (solo P-25, espacios en la contraseña, hasta fusionar el PR #2; la primera repetición inmediata dio 429 por el limitador de P-23 y se repitió a los 2,5 min); `verificar_produccion.ps1` se omite con sesión iniciada, la comprobación equivalente («Correo o contraseña incorrectos.» desde producción) se hizo a mano en el S24. QA limpiado: REP777 (historial y ticket), QA-INC_CIERRE, REP778/REP779, incidencia local, alumno QA e imágenes de la tablet. «osva» y «Ceos» sin cambios (USER, activos). `stay_on_while_plugged_in` = 0 en ambos; adb reverse 3443 quitado. Búsqueda de contraseñas (5 valores, sin imprimir): **0 en archivos** (repo, memoria, evidencias, memoria de Claude, API) y **0 en el historial de este repo**, pero **1 en el historial del repo de la API**: commit `4726986` (11/08/2026, `payload.json`) con la contraseña de las cuentas CEOSMOS; está en la rama local `backup-antes-de-rollback` y GitHub (CEOSMOSV2, público) aún lo sirve por SHA aunque ninguna rama lo incluye → **rotar esa contraseña** y pedir a GitHub Support la purga del commit (no se tocó nada). Estado final: S24 «OSVA» con Reloj y TV conectados; Tab S9 «osva», Reloj y TV abiertos.
+
 ## Estado de las tareas pedidas (18/11)
 - [x] Tarea 1 · Actividades 4–12 validadas (P7 completada el 19/11).
 - [x] Tarea 2 · Requerimientos contrastados; BLE y TV desarrollados; BD propia por práctica verificada.
