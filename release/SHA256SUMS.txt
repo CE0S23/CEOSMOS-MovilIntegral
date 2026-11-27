@@ -7,3 +7,7 @@ f17e6f919a178812e66bf976152811c61c8c8fee2b429f532ebb8851fbd9066e *release/CEOSMO
 5878fea40bd6a530dcd33cee0da78f21a0c8dc7961ae2ece29a7bb74a7f6ff41 *CEOSMOS-Reloj-entrega-v5-1.4.0-release-llave-depuracion.apk
 a7266d3777f963b955dc47ec4c2ee7ae1a6b822fc36fe8a2d8e76ca2ae2ac171 *CEOSMOS-TV-entrega-v5-1.4.0-release-llave-depuracion.apk
 9a28620604289c2528849a754a6a589b07f8dc6e2cdebece15dff8aa8a3e74e5 *CEOSMOS-entrega-v5-1.4.0-release-llave-depuracion.apk
+b6d01d8942e86b649fa10a2fad050e932b4f613cb0ef2e755d91caf2fae72407 *CEOSMOS-Companion-entrega-v6-1.4.0-c3-release-llave-depuracion.apk
+d3e154075f95842e5184ad19ad08202f50b8e6d3fb524b825e5ba5a53a83cf7c *CEOSMOS-Reloj-entrega-v6-1.4.0-c3-release-llave-depuracion.apk
+12889d67828eabc365780c8fb54dee591be49d1d2dc579d9feb5a23544533627 *CEOSMOS-TV-entrega-v6-1.4.0-c3-release-llave-depuracion.apk
+a08944d7f182d89ab2899f6a1f77e66e58bf56fcb208c53e797f913606b194fd *CEOSMOS-entrega-v6-1.4.0+7-release-llave-depuracion.apk
